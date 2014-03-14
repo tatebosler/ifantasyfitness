@@ -9,12 +9,10 @@ This project is open-source except for security requirements such as database cr
 1. Download a release.
 2. Create a MySQL database.
 3. Create a file `php/db.php` that looks like this:
-
     <?php
     # Database Access Credentials - DO NOT share or commit elsewhere.
     $db = mysqli_connect(HOSTNAME, USERNAME, PASSWORD, DATABASE);
     ?>
-
 4. Run the MySQL commands listed below.
 5. Login will not work right away. You will need to use your own authentication system.
 
