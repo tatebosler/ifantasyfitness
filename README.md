@@ -8,13 +8,19 @@ This project is open-source except for security requirements such as database cr
 
 1. Download a release.
 2. Create a MySQL database.
-3. Create a file `php/db.php` that looks like this:
-    <?php
-    # Database Access Credentials - DO NOT share or commit elsewhere.
-    $db = mysqli_connect(HOSTNAME, USERNAME, PASSWORD, DATABASE);
-    ?>
+3. Create a file `php/db.php` that looks like the code below. Replace the strings (in double quotes) with your actual database information.
 4. Run the MySQL commands listed below.
 5. Login will not work right away. You will need to use your own authentication system.
+
+Your `php/db.php` file should look like this:
+	<?php
+    // Database Access Credentials - DO NOT share or commit elsewhere.
+    const DB_HOST = "localhost";
+    const DB_USER = "mysqli_user";
+    const DB_PASSWORD = "extremely secure password";
+    const DB_NAME = "iFF";
+    $db = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
+    ?>
 
 MySQL Queries
 =============
@@ -123,4 +129,8 @@ Run this query to set up your tables.
 	  PRIMARY KEY (`id`)
 	) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
 
-[http://www.ifantasyfitness.com]
+http://www.ifantasyfitness.com
+
+Please star the repository and do all of the GitHub things!
+
+DFTBA
