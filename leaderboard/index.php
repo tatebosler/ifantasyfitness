@@ -64,7 +64,6 @@ if(isset($_GET['season'])) {
 		</div>
 		<div class="hidden-xs hidden-sm list-group">
 			<?php
-			echo $mode;
 			$divisions = array('a' => "All Individuals", 'r' => "Running", 't' => "Teams", 1 => "Upperclassmen", 2 => "Underclassmen", 3 => "Middle School", 4 => "Staff", 5 => "Parents", 6 => "Alumni");
 			foreach($divisions as $key => $value) {
 				echo '<a href="?season='.$season.'&disp='.$key.'" class="list-group-item';
@@ -72,9 +71,6 @@ if(isset($_GET['season'])) {
 				echo '">'.$value.'</a>';
 			}
 			?>
-		</div>
-		<div class="hidden-md hidden-lg">
-			
 		</div>
 	</div>
 	<div class="col-md-9">
@@ -98,12 +94,12 @@ if(isset($_GET['season'])) {
 				$team = 0;
 			}
 			switch($mode) {
-				case 0: # Upperclassmen
-				case 1: # Underclassmen
-				case 2: # Middle school
-				case 3: # Staff
-				case 4: # Parents
-				case 5: # Alumni
+				case 1: # Upperclassmen
+				case 2: # Underclassmen
+				case 3: # Middle school
+				case 4: # Staff
+				case 5: # Parents
+				case 6: # Alumni
 					$data_fetcher = @mysqli_query($db, "SELECT * FROM tMembers WHERE season='$season' AND division='$mode' ORDER BY season_total DESC");
 					if(mysqli_num_rows($data_fetcher) == 0) {
 						echo '<h4>Nobody has registered for this division!</h4>';
@@ -168,6 +164,7 @@ if(isset($_GET['season'])) {
 					}
 					break;
 				case 'r': # Display sorted by running scores
+				case 'a': # all individuals by points
 				default: # Anything else, assume all individuals by points.
 					$dftext = "SELECT * FROM tMembers WHERE season='$season' ORDER BY season_";
 					if($_GET['disp'] == 'r') {
