@@ -114,12 +114,13 @@ if(isset($_GET['season'])) {
 						</tr>
 						</thead>
 						<tbody>';
-						$pl = 1;
+						$pl = 0;
 						while($person = mysqli_fetch_array($data_fetcher)) {
+							$pl++;
 							echo '<tr';
 							if($person['user'] == $id) echo ' class="success"';
 							if($person['team'] == $team and $team > 0 and $person['user'] != $id) echo ' class="info"';
-							echo '><td>'.$i.'</td><td>';
+							echo '><td>'.$pl.'</td><td>';
 							if($person['user'] == $id) echo '<abbr title="This is you!"><i class="fa fa-user"></i></abbr> ';
 							if($person['team'] == $team and $team > 0 and $person['user'] != $id) echo '<abbr title="This is a teammate!"><i class="fa fa-users"></i></abbr> ';
 							# Figure out their name!
@@ -150,11 +151,12 @@ if(isset($_GET['season'])) {
 						</tr>
 						</thead>
 						<tbody>';
-						$pl = 1;
+						$pl = 0;
 						while($the_team = mysqli_fetch_array($data_fetcher)) {
+							$pl++;
 							echo '<tr';
 							if($the_team['id'] == $team) echo ' class="success"';
-							echo '><td>'.$i.'</td><td>'.$the_team['name'].'</td>
+							echo '><td>'.$pl.'</td><td>'.$the_team['name'].'</td>
 							<td>'.round($the_team['total'],4).'</td>
 							<td>'.round($the_team['running'],4).'</td>
 							</tr>';
@@ -187,8 +189,9 @@ if(isset($_GET['season'])) {
 						</tr>
 						</thead>
 						<tbody>';
-						$pl = 1;
+						$pl = 0;
 						while($person = mysqli_fetch_array($data_fetcher)) {
+							$pl++;
 							echo '<tr';
 							if($person['user'] == $id) echo ' class="success"';
 							if($person['team'] == $team and $team > 0 and $person['user'] != $id) echo ' class="info"';
