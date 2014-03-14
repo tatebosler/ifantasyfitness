@@ -107,7 +107,7 @@ if(isset($_GET['season'])) {
 						echo '<table class="table table-striped table-hover">
 						<thead>
 						<tr>
-						<th class="col-xs-2">#</th>
+						<th class="col-xs-2">Place</th>
 						<th class="col-xs-4">User</th>
 						<th class="col-xs-3">Points</th>
 						<th class="col-xs-3">Running</th>
@@ -144,7 +144,7 @@ if(isset($_GET['season'])) {
 						echo '<table class="table table-striped table-hover">
 						<thead>
 						<tr>
-						<th class="col-xs-2">#</th>
+						<th class="col-xs-2">Place</th>
 						<th class="col-xs-4">Team</th>
 						<th class="col-xs-3">Points</th>
 						<th class="col-xs-3">Running</th>
@@ -182,7 +182,7 @@ if(isset($_GET['season'])) {
 						echo '<table class="table table-striped table-hover">
 						<thead>
 						<tr>
-						<th class="col-xs-2">#</th>
+						<th class="col-xs-2">Place</th>
 						<th class="col-xs-4">User</th>
 						<th class="col-xs-3">Points</th>
 						<th class="col-xs-3">Running</th>
@@ -195,7 +195,7 @@ if(isset($_GET['season'])) {
 							echo '<tr';
 							if($person['user'] == $id) echo ' class="success"';
 							if($person['team'] == $team and $team > 0 and $person['user'] != $id) echo ' class="info"';
-							echo '><td>'.$i.'</td><td>';
+							echo '><td>'.$pl.'</td><td>';
 							if($person['user'] == $id) echo '<abbr title="This is you!"><i class="fa fa-user"></i></abbr> ';
 							if($person['team'] == $team and $team > 0 and $person['user'] != $id) echo '<abbr title="This is a teammate!"><i class="fa fa-users"></i></abbr> ';
 							# Figure out their name!
