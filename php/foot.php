@@ -15,6 +15,8 @@
 				<li><a href="/rules">Competition rules</a></li>
 				<li><a href="https://twitter.com/ifantasyfitness">Twitter</a></li>
 				<li><a href="http://www.dreamhost.com/donate.cgi?id=17581">Support us</a></li>
+				<li><a href="http://blog.ifantasyfitness.com">Blog</a></li>
+				<li><a href="https://github.com/ichiefboz/ifantasyfitness"><i class="fa fa-github"></i> Source code</a></li>
 				<li><a href="/privacy">Privacy</a></li>
 				<li><a href="/tos">Terms</a></li>
 			</ul>
