@@ -5,6 +5,7 @@ Welcome to iFantasyFitness. This is an online game, where players score points b
 This project is open-source except for security requirements such as database credentials.
 
 **To install on your own site:**
+
 1. Download a release.
 2. Create a MySQL database.
 3. Create a file `php/db.php` that looks like this:
