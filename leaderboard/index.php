@@ -9,7 +9,11 @@ if(isset($_COOKIE['iff-id'])) {
 		# confirm with social token
 		if(isset($_COOKIE['iff-google']) and $_COOKIE['iff-google'] === $user['google']) $valid = true;
 		if(isset($_COOKIE['iff-facebook']) and $_COOKIE['iff-facebook'] === $user['facebook']) $valid = true;
+	} else {
+		$id = 0;
 	}
+} else {
+	$id = 0;
 }
 
 $title = 'Leaderboard';
@@ -19,11 +23,9 @@ if($valid) {
 } else {
 	include('../php/head.php');
 }
-
+$mode = 'a';
 if(isset($_GET['disp'])) {
 	$mode = $_GET['disp'];
-} else {
-	$mode = 'a';
 }
 
 if(isset($_GET['season'])) {
@@ -62,7 +64,8 @@ if(isset($_GET['season'])) {
 		</div>
 		<div class="hidden-xs hidden-sm list-group">
 			<?php
-			$divisions = array('a' => "Individuals", 'r' => "Running", 't' => "Teams", 0 => "Upperclassmen", 1 => "Underclassmen", 2 => "Middle School", 3 => "Staff", 4 => "Parents", 5 => "Alumni");
+			echo $mode;
+			$divisions = array('a' => "All Individuals", 'r' => "Running", 't' => "Teams", 1 => "Upperclassmen", 2 => "Underclassmen", 3 => "Middle School", 4 => "Staff", 5 => "Parents", 6 => "Alumni");
 			foreach($divisions as $key => $value) {
 				echo '<a href="?season='.$season.'&disp='.$key.'" class="list-group-item';
 				if($mode == $key) echo ' active';
@@ -80,7 +83,7 @@ if(isset($_GET['season'])) {
 		# season - restricts to a specific season id, if omitted, assumes most recent competition start
 		# disp - restricts display of results to a specific group.
 		#      0-5 gives division, t gives teams only, r gives running only
-		# If we don't have a season, stop
+		# If we don't have a season, don't present data
 		if($s) {
 			# Figure out team number
 			if(isset($id)) {
@@ -113,15 +116,16 @@ if(isset($_GET['season'])) {
 						<th class="col-xs-3">Points</th>
 						<th class="col-xs-3">Running</th>
 						</tr>
-						</thead>';
+						</thead>
+						<tbody>';
 						$pl = 1;
 						while($person = mysqli_fetch_array($data_fetcher)) {
 							echo '<tr';
 							if($person['user'] == $id) echo ' class="success"';
-							if($person['team'] == $team and $team > 0) echo ' class="info"';
+							if($person['team'] == $team and $team > 0 and $person['user'] != $id) echo ' class="info"';
 							echo '><td>'.$i.'</td><td>';
 							if($person['user'] == $id) echo '<abbr title="This is you!"><i class="fa fa-user"></i></abbr> ';
-							if($person['team'] == $team and $team > 0) echo '<abbr title="This is a teammate!"><i class="fa fa-users"></i></abbr> ';
+							if($person['team'] == $team and $team > 0 and $person['user'] != $id) echo '<abbr title="This is a teammate!"><i class="fa fa-users"></i></abbr> ';
 							# Figure out their name!
 							$pid = $person['user'];
 							$the_user_fetcher = @mysqli_query($db, "SELECT * FROM users WHERE id=$pid");
@@ -131,6 +135,8 @@ if(isset($_GET['season'])) {
 							<td>'.round($person['season_running'],3).'</td>
 							</tr>';
 						}
+						echo '</tbody>
+							</table>';
 					}
 					break;
 				case 't': # Display team scores
@@ -146,7 +152,8 @@ if(isset($_GET['season'])) {
 						<th class="col-xs-3">Points</th>
 						<th class="col-xs-3">Running</th>
 						</tr>
-						</thead>';
+						</thead>
+						<tbody>';
 						$pl = 1;
 						while($the_team = mysqli_fetch_array($data_fetcher)) {
 							echo '<tr';
@@ -156,6 +163,8 @@ if(isset($_GET['season'])) {
 							<td>'.round($the_team['running'],4).'</td>
 							</tr>';
 						}
+						echo '</tbody>
+							</table>';
 					}
 					break;
 				case 'r': # Display sorted by running scores
@@ -179,15 +188,16 @@ if(isset($_GET['season'])) {
 						<th class="col-xs-3">Points</th>
 						<th class="col-xs-3">Running</th>
 						</tr>
-						</thead>';
+						</thead>
+						<tbody>';
 						$pl = 1;
 						while($person = mysqli_fetch_array($data_fetcher)) {
 							echo '<tr';
 							if($person['user'] == $id) echo ' class="success"';
-							if($person['team'] == $team and $team > 0) echo ' class="info"';
+							if($person['team'] == $team and $team > 0 and $person['user'] != $id) echo ' class="info"';
 							echo '><td>'.$i.'</td><td>';
 							if($person['user'] == $id) echo '<abbr title="This is you!"><i class="fa fa-user"></i></abbr> ';
-							if($person['team'] == $team and $team > 0) echo '<abbr title="This is a teammate!"><i class="fa fa-users"></i></abbr> ';
+							if($person['team'] == $team and $team > 0 and $person['user'] != $id) echo '<abbr title="This is a teammate!"><i class="fa fa-users"></i></abbr> ';
 							# Figure out their name!
 							$pid = $person['user'];
 							$the_user_fetcher = @mysqli_query($db, "SELECT * FROM users WHERE id=$pid");
@@ -197,6 +207,8 @@ if(isset($_GET['season'])) {
 							<td>'.round($person['season_running'],3).'</td>
 							</tr>';
 						}
+						echo '</tbody>
+							</table>';
 					}
 			}
 		} else {

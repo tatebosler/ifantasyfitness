@@ -59,37 +59,37 @@ include('../php/head-auth.php');
 					<p class="form-control-static">Please select a division for the leaderboards.</p>
 					<div class="radio">
 						<label>
-							<input type="radio" name="division" value="0" <?php if($user['grad'] == (date('Y') + 1) or $user['grad'] == (date('Y') + 2)) echo 'checked';?>>
+							<input type="radio" name="division" value="1" <?php if($user['grad'] == (date('Y') + 1) or $user['grad'] == (date('Y') + 2)) echo 'checked';?>>
 							<strong>Upperclassmen</strong> - students entering junior or senior year
 						</label>
 					</div>
 					<div class="radio">
 						<label>
-							<input type="radio" name="division" value="1" <?php if($user['grad'] == (date('Y') + 3) or $user['grad'] == (date('Y') + 4)) echo 'checked';?>>
+							<input type="radio" name="division" value="2" <?php if($user['grad'] == (date('Y') + 3) or $user['grad'] == (date('Y') + 4)) echo 'checked';?>>
 							<strong>Underclassmen</strong> - students entering freshman or sophomore year
 						</label>
 					</div>
 					<div class="radio">
 						<label>
-							<input type="radio" name="division" value="2" <?php if($user['grad'] == (date('Y') + 5) or $user['grad'] == (date('Y') + 6) or $user['grad'] == (date('Y') + 7)) echo 'checked';?>>
+							<input type="radio" name="division" value="3" <?php if($user['grad'] == (date('Y') + 5) or $user['grad'] == (date('Y') + 6) or $user['grad'] == (date('Y') + 7)) echo 'checked';?>>
 							<strong>Middle School</strong> - students entering grades 6 through 8
 						</label>
 					</div>
 					<div class="radio">
 						<label>
-							<input type="radio" name="division" value="3">
+							<input type="radio" name="division" value="4">
 							<strong>Staff</strong> - all SPPS staff, including coaches
 						</label>
 					</div>
 					<div class="radio">
 						<label>
-							<input type="radio" name="division" value="4">
+							<input type="radio" name="division" value="5">
 							<strong>Parents</strong> of runners or skiers (who aren't SPPS staff)
 						</label>
 					</div>
 					<div class="radio">
 						<label>
-							<input type="radio" name="division" value="5" <?php if($user['grad'] <= date('Y')) echo 'checked';?>>
+							<input type="radio" name="division" value="6" <?php if($user['grad'] <= date('Y')) echo 'checked';?>>
 							<strong>Alumni</strong> of Highland (who don't fall into a division above)
 						</label>
 					</div>
