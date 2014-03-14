@@ -20,6 +20,12 @@ if($valid) {
 	include('../php/head.php');
 }
 
+if(isset($_GET['disp'])) {
+	$mode = $_GET['disp'];
+} else {
+	$mode = 'a';
+}
+
 if(isset($_GET['season'])) {
 	$season = $_GET['season'];
 	$s = true;
@@ -47,8 +53,7 @@ if(isset($_GET['season'])) {
 			<?php
 			$season_fetcher = @mysqli_query($db, "SELECT * FROM seasons");
 			while($se = mysqli_fetch_array($season_fetcher)) {
-				echo '<a href="?season='.$se['name'];
-				if(isset($_GET['disp'])) echo '&disp='.$_GET['disp'];
+				echo '<a href="?season='.$se['name'].'&disp='.$mode;
 				echo '" class="list-group-item';
 				if($se['name'] == $season) echo ' active';
 				echo '">'.$se['display_name'].'</a>';
@@ -60,11 +65,7 @@ if(isset($_GET['season'])) {
 			$divisions = array('a' => "Individuals", 'r' => "Running", 't' => "Teams", 0 => "Upperclassmen", 1 => "Underclassmen", 2 => "Middle School", 3 => "Staff", 4 => "Parents", 5 => "Alumni");
 			foreach($divisions as $key => $value) {
 				echo '<a href="?season='.$season.'&disp='.$key.'" class="list-group-item';
-				if(isset($_GET['disp'])) {
-					if($_GET['disp'] == $key) echo ' active';
-				} else {
-					if($key == 'a') echo ' active';
-				}
+				if($mode == $key) echo ' active';
 				echo '">'.$value.'</a>';
 			}
 			?>
@@ -93,17 +94,14 @@ if(isset($_GET['season'])) {
 			} else {
 				$team = 0;
 			}
-			
-			# Fetch data
-			if(isset($_GET['disp'])) $mode = $_GET['disp'];
-			switch($_GET['disp']) {
+			switch($mode) {
 				case 0: # Upperclassmen
 				case 1: # Underclassmen
 				case 2: # Middle school
 				case 3: # Staff
 				case 4: # Parents
 				case 5: # Alumni
-					$data_fetcher = @mysqli_query($db, "SELECT * FROM tMembers WHERE season='$season' AND division=$mode ORDER BY season_total DESC");
+					$data_fetcher = @mysqli_query($db, "SELECT * FROM tMembers WHERE season='$season' AND division='$mode' ORDER BY season_total DESC");
 					if(mysqli_num_rows($data_fetcher) == 0) {
 						echo '<h4>Nobody has registered for this division!</h4>';
 					} else {
