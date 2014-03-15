@@ -1,18 +1,14 @@
 <?php
 require_once __DIR__.'/vendor/autoload.php';
 require_once 'tokens.php';
-session_start();
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-const CLIENT_ID = $google_client_id;
-const CLIENT_SECRET = $google_app_secret;
-const APPLICATION_NAME = $google_app_name;
 
 $client = new Google_Client();
-$client->setApplicationName(APPLICATION_NAME);
-$client->setClientId(CLIENT_ID);
-$client->setClientSecret(CLIENT_SECRET);
+$client->setApplicationName($google_app_name);
+$client->setClientId($google_client_id);
+$client->setClientSecret($google_app_secret);
 $client->setRedirectUri('postmessage');
 
 $plus = new Google_PlusService($client);
@@ -30,9 +26,9 @@ $app->get('/', function () use ($app) {
     $state = md5(rand());
     $app['session']->set('state', $state);
     return $app['twig']->render('index.html', array(
-        'CLIENT_ID' => CLIENT_ID,
+        'CLIENT_ID' => '7336321947-ublsm7i9aa19ae7bn9fsvjeia3qudj3k.apps.googleusercontent.com',
         'STATE' => $state,
-        'APPLICATION_NAME' => APPLICATION_NAME
+        'APPLICATION_NAME' => 'Sign in to iFantasyFitness'
     ));
 });
 
@@ -53,7 +49,7 @@ $app->post('/connect', function (Request $request) use ($app, $client) {
         // simple case, we want a user to be able to connect and disconnect
         // without reloading the page.  Thus, for demonstration, we don't
         // implement this best practice.
-        // $app['session']->set('state', '');
+        $app['session']->set('state', '');
 
         $code = $request->getContent();
         // Exchange the OAuth 2.0 authorization code for user credentials.
@@ -63,7 +59,7 @@ $app->post('/connect', function (Request $request) use ($app, $client) {
         // You can read the Google user ID in the ID token.
         // "sub" represents the ID token subscriber which in our case
         // is the user ID. This sample does not use the user ID.
-        $attributes = $client->verifyIdToken($token->id_token, CLIENT_ID)
+        $attributes = $client->verifyIdToken($token->id_token, $google_client_id)
             ->getAttributes();
         $gplus_id = $attributes["payload"]["sub"];
 
