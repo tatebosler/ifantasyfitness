@@ -45,12 +45,14 @@ if(isset($_COOKIE['iff-id'])) header('Location: http://www.ifantasyfitness.com/h
 // Google based Login
 if(isset($_GET['code'])) {
 	$code = $_GET['code'];
-	$client->authenticate($code);
+	echo $code;
+	echo "Trying to authenticate.";
+	/* $client->authenticate($code);
 	$me = $plus->people->get('me');
 	setcookie('g-uuid',$me['id'],0,'/','.ifantasyfitness.com');
 	setcookie('g-first',$me['name']['givenName'],0,'/','.ifantasyfitness.com');
 	setcookie('g-last',$me['name']['familyName'],0,'/','.ifantasyfitness.com');
-	header('Location: http://www.ifantasyfitness.com/setup/google');
+	header('Location: http://www.ifantasyfitness.com/setup/google'); */
 }
 
 // Facebook based Login

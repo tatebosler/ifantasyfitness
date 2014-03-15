@@ -2,7 +2,7 @@ iFantasyFitness | Train Competitively
 ===============
 Welcome to iFantasyFitness. This is an online game, where players score points by exercising. The more you do, and the harder the activity, the more points you get. At the end of the game, the players with the most points win.
 
-This project is open-source except for security requirements such as database credentials.
+This project is open-source except for security requirements such as database credentials. Original source code is licensed under the MIT License.
 
 **To install on your own site:**
 
@@ -55,8 +55,8 @@ iFantasyFitness currently uses the following libraries and APIs:
 
 - Facebook Graph API and dependencies
 - Google+ Sign-in API and dependencies
-- [http://getbootstrap.com](Bootstrap) 3.1.1
-- [http://bootswatch.com/simplex](Simplex Bootswatch theme) for Bootstrap 3.1.1
+- (http://getbootstrap.com)[Bootstrap] 3.1.1
+- (http://bootswatch.com/simplex)[Simplex Bootswatch theme] for Bootstrap 3.1.1
 
 Dependencies are outlined in `login/composer.json`.
 
