@@ -9,10 +9,11 @@ This project is open-source except for security requirements such as database cr
 1. Download a release.
 2. Create a MySQL database.
 3. Create a file `php/db.php` that looks like the code below. Replace the strings (in double quotes) with your actual database information.
-4. Run the MySQL commands listed below.
-5. Login will not work right away. You will need to use your own authentication system.
+4. Create a file `login/tokens.php` that looks like the code below, replacing the strings with access keys from Google and Facebook.
+5. Run the MySQL commands listed below.
 
 Your `php/db.php` file should look like this:
+
 	<?php
     // Database Access Credentials - DO NOT share or commit elsewhere.
     const DB_HOST = "localhost";
@@ -22,9 +23,48 @@ Your `php/db.php` file should look like this:
     $db = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
     ?>
 
+And your `login/tokens.php` file:
+
+	<?php
+	# Facebook application details
+	
+	$fb_app_id = 'Facebook_App_ID';
+	$fb_app_secret = 'Facebook_App_Secret';
+	
+	# Google application details
+	
+	$google_app_name = 'iFantasyFitness';
+	$google_client_id = 'Google_Client_ID';
+	$google_app_secret = 'Google_Client_Secret';
+	$google_app_redirect = 'Google_OAuth_Redirect_URI';
+	$google_app_key = 'Google_Browser_API_Key';
+	?>
+
+Security notes
+==============
+For security reasons, all tokens and keys in use are stored in two files:
+
+- `php/db.php` for MySQL database credentials
+- `login/tokens.php` for login-related API tokens and keys
+
+It's up to you to get these tokens and credentials for yourself if you want to run iFF on your own server.
+
+APIs and libraries in use
+=========================
+iFantasyFitness currently uses the following libraries and APIs:
+
+- Facebook Graph API and dependencies
+- Google+ Sign-in API and dependencies
+- [http://getbootstrap.com](Bootstrap) 3.1.1
+- [http://bootswatch.com/simplex](Simplex Bootswatch theme) for Bootstrap 3.1.1
+
+Dependencies are outlined in `login/composer.json`.
+
+Note: The web server on which iFantasyFitness is hosted updates the dependencies of Composer, and Composer itself, on a regular basis. The files included in this repository may not be the latest versions.
+
 MySQL Queries
 =============
-Run this query to set up your tables.
+Run this query to set up your tables. These tables all belong in the same database.
 
 	SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 	
