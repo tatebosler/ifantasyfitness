@@ -1,67 +1,98 @@
-<?php
-$title = "Sign in - iFantasyFitness - Train Competitively";
-include('../php/head.php');
-?>
-<script type="text/javascript">
-	(function() {
-	var po = document.createElement('script');
-	po.type = 'text/javascript'; po.async = true;
-	po.src = 'https://plus.google.com/js/client:plusone.js';
-	var s = document.getElementsByTagName('script')[0];
-	s.parentNode.insertBefore(po, s);
-	})();
-</script>
-<div class="row">
-	<div class="col-xs-12">
-		<h1>Sign in</h1>
-	</div>
-</div>
-<div class="row">
-	<div class="col-md-8">
-		<p class="lead">Please choose a social network to sign in with. You can add or remove additional networks at any time.</p>
-	</div>
-	<div class="col-md-4">
-		<p><a href="<?=$login_url?>" class="btn btn-default btn-block" style="background:#3b5998;border:1px solid #3b5998;"><i class="fa fa-facebook"></i> Sign in with Facebook</a></p>
-		<!-- <p><a href="#" class="btn btn-default btn-block" style="background:#55acee;border:1px solid #55acee;"><i class="fa fa-twitter"></i> Sign in with Twitter</a></p> Coming Soon! -->
-		<p><a href="https://accounts.google.com/o/oauth2/auth?scope=profile&redirect_uri=http%3A%2F%2Fwww.ifantasyfitness.com%2Flogin&response_type=code&client_id=7336321947-ublsm7i9aa19ae7bn9fsvjeia3qudj3k.apps.googleusercontent.com" class="btn btn-default btn-block" style="background:#dd4b39;border:1px solid #dd4b39;"><i class="fa fa-google-plus"></i> Sign in with Google</a></p>
-		<div id="gConnect">
-			<button class="g-signin"
-			data-scope="https://www.googleapis.com/auth/plus.login"
-			data-requestvisibleactions="http://schemas.google.com/AddActivity"
-			data-clientId="{{ CLIENT_ID }}"
-			data-accesstype="offline"
-			data-callback="onSignInCallback"
-			data-theme="dark"
-			data-cookiepolicy="single_host_origin">
-			</button>
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>{{ APPLICATION_NAME }}</title>
+	<script type="text/javascript">
+		(function() {
+			var po = document.createElement('script');
+			po.type = 'text/javascript'; po.async = true;
+			po.src = 'https://plus.google.com/js/client:plusone.js';
+			var s = document.getElementsByTagName('script')[0];
+			s.parentNode.insertBefore(po, s);
+		})();
+	</script>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js" ></script>
+	<link href="//ifantasyfitness.com/css/main.css" rel="stylesheet">
+	<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+	<link href="//ifantasyfitness.com/css/bootstrap-datetimepicker.css" rel="stylesheet">
+</head>
+<body>
+	<div class="navbar navbar-default" role="navigation">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="/">iFantasyFitness</a>
+			</div>
+			<div class="collapse navbar-collapse">
+				<ul class="nav navbar-nav">
+					<li><a href="/">Home</a></li>
+					<li><a href="/leaderboard">Leaderboard</a></li>
+					<li><a href="/rules">Rules</a></li>
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+					<li><a href="/login">Sign in</a></li>
+				</ul>
+			</div>
 		</div>
 	</div>
-</div>
-<div class="row">
-	<div class="col-xs-12">
-		<div id="authOps" style="display:none">
-    <h2>User is now signed in to the app using Google+</h2>
-    <p>If the user chooses to disconnect, the app must delete all stored
-    information retrieved from Google for the given user.</p>
-    <button id="disconnect" >Disconnect your Google account from this app</button>
-
-    <h2>User's profile information</h2>
-    <p>This data is retrieved client-side by using the Google JavaScript API
-    client library.</p>
-    <div id="profile"></div>
-
-    <h2>User's friends that are visible to this app</h2>
-    <p>This data is retrieved from your server, where your server makes
-    an authorized HTTP request on the user's behalf.</p>
-    <p>If your app uses server-side rendering, this is the section you
-    would change using your server-side templating system.</p>
-    <div id="visiblePeople"></div>
-
-    <h2>Authentication Logs</h2>
-    <pre id="authResult"></pre>
-  </div>
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-9">
+				<h2>Sign in</h2>
+				<p>Please choose a social network to sign in with. You can add and remove more from your account profile at any time.</p>
+			</div>
+			<div class="col-sm-3">
+				<div id="gConnect">
+					<button class="g-signin"
+					data-scope="profile"
+					data-clientId="{{ CLIENT_ID }}"
+					data-accesstype="offline"
+					data-callback="onSignInCallback"
+					data-theme="dark"
+					data-cookiepolicy="single_host_origin">
+					</button>
+				</div>
+			</div>
+		</div>
 	</div>
-</div>
+	<hr>
+	<div class="container">
+		<div class="row">
+			<div class="col-xs-12">
+				<p class="lead">iFantasyFitness: Train Competitively</p>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-12">
+				<p>iFantasyFitness is Highland Park Cross Country's way of summer training. By training competitively, the team gets stronger.</p>
+				<ul class="list-inline">
+					<li><a href="/about">About</a>
+					<li><a href="/leaderboard">Leaderboard</a></li>
+					<li><a href="/rules">Competition rules</a></li>
+					<li><a href="https://twitter.com/ifantasyfitness">Twitter</a></li>
+					<li><a href="http://www.dreamhost.com/donate.cgi?id=17581">Support us</a></li>
+					<li><a href="http://blog.ifantasyfitness.com">Blog</a></li>
+					<li><a href="https://github.com/ichiefboz/ifantasyfitness"><i class="fa fa-github"></i> Source code</a></li>
+					<li><a href="/privacy">Privacy</a></li>
+					<li><a href="/tos">Terms</a></li>
+				</ul>
+				<p>Copyright &copy; Highland Park Cross Country 2012-{{ "now"|date("Y") }}<span class="pull-right">DFTBA</span></p>
+			</div>
+		</div>
+	</div>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+	<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+	<script src="//ifantasyfitness.com/js/moment.min.js"></script>
+	<script src="//ifantasyfitness.com/js/dates.min.js"></script>
+</body>
 <script type="text/javascript">
 var helper = (function() {
   var authResult = undefined;
@@ -85,15 +116,7 @@ var helper = (function() {
         helper.connectServer();
         // After we load the Google+ API, render the profile data from Google+.
         gapi.client.load('plus','v1',this.renderProfile);
-      } else if (authResult['error']) {
-        // There was an error, which means the user is not signed in.
-        // As an example, you can troubleshoot by writing to the console:
-        console.log('There was an error: ' + authResult['error']);
-        $('#authResult').append('Logged out');
-        $('#authOps').hide('slow');
-        $('#gConnect').show();
       }
-      console.log('authResult', authResult);
     },
     /**
      * Retrieves and renders the authenticated user's Google+ profile.
@@ -101,23 +124,8 @@ var helper = (function() {
     renderProfile: function() {
       var request = gapi.client.plus.people.get( {'userId' : 'me'} );
       request.execute( function(profile) {
-          $('#profile').empty();
-          if (profile.error) {
-            $('#profile').append(profile.error);
-            return;
-          }
-          $('#profile').append(
-              $('<p><img src=\"' + profile.image.url + '\"></p>'));
-          $('#profile').append(
-              $('<p>Hello ' + profile.displayName + '!<br />Tagline: ' +
-              profile.tagline + '<br />About: ' + profile.aboutMe + '</p>'));
-          if (profile.cover && profile.coverPhoto) {
-            $('#profile').append(
-                $('<p><img src=\"' + profile.cover.coverPhoto.url + '\"></p>'));
-          }
-        });
-      $('#authOps').show('slow');
-      $('#gConnect').hide();
+	      // window.location.href = "http://www.ifantasyfitness.com/setup?provider=google&uid=" + profile.id + "&first=" + profile.name.givenName + "&last=" + profile.name.familyName;
+      });
     },
     /**
      * Calls the server endpoint to disconnect the app for the user.
@@ -126,7 +134,7 @@ var helper = (function() {
       // Revoke the server tokens
       $.ajax({
         type: 'POST',
-        url: window.location.href + '/disconnect',
+        url: window.location.href + 'signin.php/disconnect',
         async: false,
         success: function(result) {
           console.log('revoke response: ' + result);
@@ -152,44 +160,11 @@ var helper = (function() {
       console.log(this.authResult.code);
       $.ajax({
         type: 'POST',
-        url: window.location.href + '/connect?state={{ STATE }}',
+        url: window.location.href + 'signin.php/connect?state={{ STATE }}',
         contentType: 'application/octet-stream; charset=utf-8',
-        success: function(result) {
-          console.log(result);
-          helper.people();
-        },
         processData: false,
         data: this.authResult.code
       });
-    },
-    /**
-     * Calls the server endpoint to get the list of people visible to this app.
-     */
-    people: function() {
-      $.ajax({
-        type: 'GET',
-        url: window.location.href + '/people',
-        contentType: 'application/octet-stream; charset=utf-8',
-        success: function(result) {
-          helper.appendCircled(result);
-        },
-        processData: false
-      });
-    },
-    /**
-     * Displays visible People retrieved from server.
-     *
-     * @param {Object} people A list of Google+ Person resources.
-     */
-    appendCircled: function(people) {
-      $('#visiblePeople').empty();
-
-      $('#visiblePeople').append('Number of people visible to this app: ' +
-          people.totalItems + '<br/>');
-      for (var personIndex in people.items) {
-        person = people.items[personIndex];
-        $('#visiblePeople').append('<img src="' + person.image.url + '">');
-      }
     },
   };
 })();
@@ -220,6 +195,4 @@ function onSignInCallback(authResult) {
   helper.onSignInCallback(authResult);
 }
 </script>
-<?php
-include('../php/foot.php');
-?>
+</html>
