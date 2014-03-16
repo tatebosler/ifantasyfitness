@@ -1,6 +1,6 @@
 <?php
-require_once __DIR__.'/vendor/autoload.php';
-require_once 'tokens.php';
+require __DIR__.'/vendor/autoload.php';
+require 'tokens.php';
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,12 +23,29 @@ $app->register(new Silex\Provider\SessionServiceProvider());
 
 // Initialize a session for the current user, and render index.html.
 $app->get('/', function () use ($app) {
+	# Facebook login
+	require __DIR__.'/vendor/autoload.php';
+	require 'tokens.php';
+	$fb_config = array('appId' => $fb_app_id,'secret' => $fb_app_secret,'allowSignedRequest' => false );
+	$facebook = new Facebook($fb_config);
+	$fb_user = $facebook->getUser();
+	if($fb_user) {
+		try {
+			$fb_profile = $facebook->api("/me","GET");
+			header("Location: http://www.ifantasyfitness.com/setup?provider=facebook&uid=".$fb_profile['id']."&first=".$fb_profile['first_name']."&last=".$fb_profile['last_name']."&rq=".time());
+		} catch (FacebookApiException $fb_execption) {
+			define("FB_LOGIN_URL", $facebook->getLoginUrl());
+		}
+	} else {
+		define("FB_LOGIN_URL", $facebook->getLoginUrl());
+	}
     $state = md5(rand());
     $app['session']->set('state', $state);
     return $app['twig']->render('index.html', array(
         'CLIENT_ID' => '7336321947-ublsm7i9aa19ae7bn9fsvjeia3qudj3k.apps.googleusercontent.com',
         'STATE' => $state,
-        'APPLICATION_NAME' => 'Sign in to iFantasyFitness'
+        'APPLICATION_NAME' => 'Sign in to iFantasyFitness',
+        'FACEBOOK_LOGIN' => FB_LOGIN_URL
     ));
 });
 
@@ -69,19 +86,6 @@ $app->post('/connect', function (Request $request) use ($app, $client) {
     }
 
     return new Response($response, 200);
-});
-
-// Get list of people user has shared with this app.
-$app->get('/people', function () use ($app, $client, $plus) {
-    $token = $app['session']->get('token');
-
-    if (empty($token)) {
-        return new Response('Unauthorized request', 401);
-    }
-
-    $client->setAccessToken($token);
-    $people = $plus->people->listPeople('me', 'visible', array());
-    return $app->json($people);
 });
 
 // Revoke current user's token and reset their session.
