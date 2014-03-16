@@ -15,7 +15,7 @@
 	})();
 	
 	function render() {
-		gapi.signin.render('customBtn', {
+		gapi.signin.render('g-customBtn', {
 			'callback': 'onSignInCallback',
 			'clientid': '{{ CLIENT_ID }}',
 			'cookiepolicy': 'single_host_origin',
@@ -24,29 +24,35 @@
 	}
 	</script>
 	<style type="text/css">
-	#g-customBtn {
+	#g-customBtn,
+	#f-customBtn,
+	#t-customBtn {
       display: block;
-      background: #dd4b39;
       color: white;
       width: 100%;
       border-radius: 5px;
       white-space: nowrap;
+    }
+    #g-customBtn {
+      background: #dd4b39;
     }
     #g-customBtn:hover {
       cursor: pointer;
       background: #e8877b;
     }
     #f-customBtn {
-	  display: block;
       background: #3b5998;
-      color: white;
-      width: 100%;
-      border-radius: 5px;
-      white-space: nowrap;
     }
     #f-customBtn:hover {
       cursor: pointer;
       background: #7c90ba;
+    }
+    #t-customBtn {
+      background: #55acee;
+    }
+    #t-customBtn:hover {
+      cursor: not-allowed;
+      background: #8ec8f4;
     }
     span.label {
       font-weight: bold;
@@ -59,8 +65,13 @@
 	  background: url('../img/transparent-fb.png') transparent;
       border-right: #273b65 1px solid;
     }
+    span.t-icon {
+	  background: url('../img/tw-logo.png') transparent;
+      border-right: #39739f 1px solid;
+    }
     span.g-icon,
-    span.f-icon {
+    span.f-icon,
+    span.t-icon {
       display: inline-block;
       vertical-align: middle;
       background-size: 35px 35px;
@@ -104,21 +115,31 @@
 	</div>
 	<div class="container">
 		<div class="row">
-			<div class="col-sm-9">
+			<div class="col-xs-12">
 				<h2>Sign in</h2>
 				<p>Please choose a social network to sign in with. You can add and remove more from your account settings at any time.</p>
+				<p><strong>Please don't test things out yet</strong> as most of the sign-in stuff is being updated.</p>
 			</div>
-			<div class="col-sm-3">
+		</div>
+		<div class="row">
+			<div class="col-sm-4">
 				<div id="gSignInWrapper">
 					<div id="g-customBtn" class="customGPlusSignIn">
 						<span class="g-icon"></span>
 						<span class="buttonText">Sign in with Google</span>
 					</div>
-					<br>
-					<div id="f-customBtn">
-						<span class="f-icon"></span>
-						<span class="buttonText">Sign in with Facebook</span>
-					</div>
+				</div>
+			</div>
+			<div class="col-sm-4">
+				<div id="f-customBtn">
+					<span class="f-icon"></span>
+					<span class="buttonText">Sign in with Facebook</span>
+				</div>
+			</div>
+			<div class="col-sm-4">
+				<div id="t-customBtn">
+					<span class="t-icon"></span>
+					<span class="buttonText">Sign in with Twitter</span>
 				</div>
 			</div>
 		</div>
