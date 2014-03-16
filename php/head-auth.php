@@ -31,9 +31,9 @@ echo '<!DOCTYPE html>
 					</ul>
 					<ul class="nav navbar-nav navbar-right">
 						<li class="hidden-sm"><a href="/settings"><i class="fa fa-cog"></i> Settings</a></li>
-						<li class="hidden-sm"><a href="/logout"><i class="fa fa-sign-out"></i> Sign out</a></li>
+						<li class="hidden-sm"><a href="/login/signout.php"><i class="fa fa-sign-out"></i> Sign out</a></li>
 						<li class="visible-sm"><a href="/settings"><i class="fa fa-cog"></i></a></li>
-						<li class="visible-sm"><a href="/logout"><i class="fa fa-sign-out"></i></a></li>
+						<li class="visible-sm"><a href="/login/signout.php"><i class="fa fa-sign-out"></i></a></li>
 					</ul>
 				</div>
 			</div>

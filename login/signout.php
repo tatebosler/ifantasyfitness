@@ -11,6 +11,6 @@ require_once 'tokens.php';
 
 $fb_config = array("appId" => $fb_app_id, "secret" => $fb_app_secret);
 $facebook = new Facebook($fb_config);
-# will redirect to google next
-header("Location: http://www.ifantasyfitness.com/login");
+$fb_logout = $facebook->getLogoutUrl(array("next" => "http://www.ifantasyfitness.com/login"));
+header("Location: $fb_logout");
 ?>
