@@ -225,7 +225,15 @@ if(!empty($seasons)) {
 			echo '<p><strong>Season goal:</strong> '.$team_data['season_total'].' of '.$team_data['prediction'].' points scored</p>';
 		}
 		echo '<div class="progress">
-			<div class="progress-bar" aria-valuenow="'.$prog_value.'" aria-valuemin="0" aria-valuemax="100" style="width: '.$prog_value.'%;"></div>
+			<div class="progress-bar';
+		if($team_data['season_total'] > $team_data['prediction']) {
+			echo ' progress-bar-info';
+		} elseif ($team_data['season_total'] > 0.9 * $team_data['prediction']) {
+			echo ' progress-bar-success';
+		} elseif ($team_data['season_total'] >= 0.5 * $$team_data['prediction']) {
+			echo ' progress-bar-danger';
+		}
+		echo '" aria-valuenow="'.$prog_value.'" aria-valuemin="0" aria-valuemax="100" style="width: '.$prog_value.'%;"></div>
 		</div>';
 		if($day > 0) {
 			$daily_goal_category = ($team_data['daily_goal']);
@@ -244,11 +252,11 @@ if(!empty($seasons)) {
 		}
 		echo '<div class="progress">
 			<div class="progress-bar';
-		if(5 > $daily_goal) {
+		if($team_data['day_run'] > $daily_goal) {
 			echo ' progress-bar-info';
-		} elseif (5 > 0.9 * $daily_goal) {
+		} elseif ($team_data['day_run'] > 0.9 * $daily_goal) {
 			echo ' progress-bar-success';
-		} elseif (5 >= 0.5 * $daily_goal) {
+		} elseif ($team_data['day_run'] >= 0.5 * $daily_goal) {
 			echo ' progress-bar-danger';
 		}
 		echo '" aria-valuenow="'.$dg_value.'" aria-valuemin="0" aria-valuemax="100" style="width: '.$dg_value.'%;"></div>

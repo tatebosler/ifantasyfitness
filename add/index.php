@@ -63,7 +63,7 @@ if(isset($_POST['submitted'])) {
 			$cap_start = $team_data['week_'.$type];
 			if($cap_start + $total > $capped_types[$type]) {
 				# This record exceeds the cap.
-				$total = ($cap_start + $total) - $capped_types[$type];
+				$total = $capped_types[$type] - $cap_start;
 				# Update value accordingly
 				if($mult_info['special'] == 0) {
 					$value = $total / $mult;
@@ -148,7 +148,7 @@ if(isset($_POST['submitted'])) {
 				$cap_start = $team_data['week_'.$type];
 				if($cap_start + $points > $capped_types[$type]) {
 					# Record has exceeded cap.
-					$points = ($cap_start + $points) - $capped_types[$type];
+					$points = $capped_types[$type] - $cap_start;
 					# Update value accordingly
 					if($mult_info['special'] == 0) {
 						$value = $points / $mult / $alt;
@@ -169,7 +169,7 @@ if(isset($_POST['submitted'])) {
 				}
 				if($type != "run") {
 					$update_value = $team_data['week_'.$type] + $points;
-					$updater_q .= ", $type=$update_value";
+					$updater_q .= ", week_$type=$update_value";
 				}
 			}
 		}
@@ -180,7 +180,12 @@ if(isset($_POST['submitted'])) {
 			$newDayRun = $team_data['day_run'] + $run_total;
 			$updater_q .= ", day_run=$newDayRun, week_run=$newWeekRun, season_run=$newSeasonRun";
 		}
-		if($team_no > 0) $updater_q .= " WHERE user=$id AND team=$team_no";
+		if($team_no > 0) {
+			$newSeasonTotal = $team_data['season_total'] + $total;
+			$newWeekTotal = $team_data['week_total'] + $total;
+			$newDayTotal = $team_data['day_total'] + $total;
+			$updater_q .= ", season_total=$newSeasonTotal, day_total=$newDayTotal, week_total=$newWeekTotal WHERE user=$id AND team=$team_no";
+		}
 		
 		# Data collected and stored.
 		# Next - put the data into a query command
