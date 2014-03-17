@@ -129,7 +129,7 @@ if(isset($_GET['season'])) {
 							$the_user = mysqli_fetch_array($the_user_fetcher);
 							echo $the_user['first'].' '.$the_user['last'].'</td>
 							<td>'.round($person['season_total'],3).'</td>
-							<td>'.round($person['season_running'],3).'</td>
+							<td>'.round($person['season_run'],3).'</td>
 							</tr>';
 						}
 						echo '</tbody>
@@ -170,9 +170,9 @@ if(isset($_GET['season'])) {
 				default: # Anything else, assume all individuals by points.
 					$dftext = "SELECT * FROM tMembers WHERE season='$season' ORDER BY season_";
 					if($_GET['disp'] == 'r') {
-						$dftext .= "run";
+						$dftext .= "run DESC, season_total";
 					} else {
-						$dftext .= "total";
+						$dftext .= "total DESC, season_run";
 					}
 					$dftext .= " DESC";
 					$data_fetcher = @mysqli_query($db, $dftext);
@@ -204,7 +204,7 @@ if(isset($_GET['season'])) {
 							$the_user = mysqli_fetch_array($the_user_fetcher);
 							echo $the_user['first'].' '.$the_user['last'].'</td>
 							<td>'.round($person['season_total'],3).'</td>
-							<td>'.round($person['season_running'],3).'</td>
+							<td>'.round($person['season_run'],3).'</td>
 							</tr>';
 						}
 						echo '</tbody>
