@@ -51,6 +51,7 @@ if(isset($_GET['season'])) {
 </div>
 <div class="row">
 	<div class="col-md-3">
+		<h4 class="hidden-xs hidden-sm">Select Season</h4>
 		<div class="hidden-xs hidden-sm list-group">
 			<?php
 			$season_fetcher = @mysqli_query($db, "SELECT * FROM seasons");
@@ -62,6 +63,7 @@ if(isset($_GET['season'])) {
 			}
 			?>
 		</div>
+		<h4 class="hidden-xs hidden-sm">Select Division</h4>
 		<div class="hidden-xs hidden-sm list-group">
 			<?php
 			$divisions = array('a' => "All Individuals", 'r' => "Running", 't' => "Teams", 1 => "Upperclassmen", 2 => "Underclassmen", 3 => "Middle School", 4 => "Staff", 5 => "Parents", 6 => "Alumni");
@@ -71,6 +73,38 @@ if(isset($_GET['season'])) {
 				echo '">'.$value.'</a>';
 			}
 			?>
+		</div>
+		<div class="row visible-xs visible-sm">
+			<div class="col-xs-6">
+				<h4>Select Season</h4>
+				<form name="sel_season">
+					<select name="SelSeason" onchange="document.location.href=document.sel_season.SelSeason.options[document.sel_season.SelSeason.selectedIndex].value" class="form-control">
+					<?php
+					$season_fetcher = @mysqli_query($db, "SELECT * FROM seasons");
+					while($se = mysqli_fetch_array($season_fetcher)) {
+						echo '<option value="/leaderboard?season='.$se['name'].'&disp='.$mode.'"';
+						if($se['name'] == $season) echo ' selected';
+						echo '>'.$se['display_name'].'</option>';
+					}
+					?>
+					</select>
+				</form>
+			</div>
+			<div class="col-xs-6">
+				<h4>Select Division</h4>
+				<form name="sel_disp">
+					<select name="SelDisp" onchange="document.location.href=document.sel_disp.SelDisp.options[document.sel_disp.SelDisp.selectedIndex].value" class="form-control">
+					<?php
+					$divisions = array('a' => "All Individuals", 'r' => "Running", 't' => "Teams", 1 => "Upperclassmen", 2 => "Underclassmen", 3 => "Middle School", 4 => "Staff", 5 => "Parents", 6 => "Alumni");
+					foreach($divisions as $key => $value) {
+						echo '<option value="/leaderboard?season='.$season.'&disp='.$key.'"';
+						if($mode == $key) echo ' selected';
+						echo '>'.$value.'</option>';
+					}
+					?>
+					</select>
+				</form>
+			</div>
 		</div>
 	</div>
 	<div class="col-md-9">
