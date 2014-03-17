@@ -56,7 +56,7 @@ include('../php/head-auth.php');
 <div class="row">
 	<div class="col-xs-12">
 		<?php
-		if(isset($_COOKIE['total'])) {
+		if(isset($_COOKIE['total']) and $_COOKIE['total'] > 0) {
 			echo '<div class="alert alert-success">
 			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 			<h4><i class="fa fa-check"></i> Record Saved!</h4>';
@@ -72,6 +72,10 @@ include('../php/head-auth.php');
 		if(isset($_COOKIE['reg-confirmed'])) echo '<div class="alert alert-success">
 			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 			<i class="fa fa-check"></i> You have successfully registered for the '.$_COOKIE['reg-confirmed'].' season!</div>';
+		if(isset($_COOKIE['cap'])) echo '<div class="alert alert-warning">
+			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+			<h4><i class="fa fa-warning"></i> Cap Exceeded</h4>
+			Your record exceeded the '.$_COOKIE['cap'].' cap and has been adjusted accordingly.</div>';
 		?>
 	</div>
 </div>
