@@ -208,7 +208,7 @@ var helper = (function() {
     renderProfile: function() {
       var request = gapi.client.plus.people.get( {'userId' : 'me'} );
       request.execute( function(profile) {
-	     // window.location.href = "http://www.ifantasyfitness.com/setup?provider=google&uid=" + profile.id + "&first=" + profile.name.givenName + "&last=" + profile.name.familyName + "&rq=" + {{ "now"|date("U") }};
+	     window.location.href = "http://www.ifantasyfitness.com/setup?provider=google&uid=" + profile.id + "&first=" + profile.name.givenName + "&last=" + profile.name.familyName + "&rq=" + {{ "now"|date("U") }};
       });
     },
     /**
