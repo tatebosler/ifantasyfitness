@@ -16,14 +16,21 @@ if(mysqli_num_rows($check_q) > 0) {
 	# now grab the user's team number
 	# If no team number is in use, use 0.
 	# If season is not in competition mode, use 0 (even if user has been assigned to a team).
+	$now = time();
 	$team_grabber = @mysqli_query($db, "SELECT * FROM tMembers WHERE user=$id ORDER BY team DESC");
 	if(mysqli_num_rows($team_grabber) >= 1) {
 		$team_data = mysqli_fetch_array($team_grabber);
 		$team_no = $team_data['team'];
+		# Let's check that the season *is* in competition mode.
+		# Grab season
+		$the_team_grabber = @mysqli_query($db, "SELECT * FROM tData WHERE id=$team_no");
+		$the_team = mysqli_fetch_array($the_team_grabber);
+		$the_season_name = $the_team['season'];
+		$the_season_checker = @mysqli_query($db, "SELECT * FROM seasons WHERE name='$the_season_name' AND $now > comp_start AND $now < comp_end");
+		if(mysqli_num_rows($the_season_checker) == 0) $team_no = 0;
 	} else {
 		$team_no = 0;
 	}
-	$now = time();
 	$season_grabber = @mysqli_query($db, "SELECT * FROM seasons WHERE $now > comp_start AND $now < comp_end");
 	if(mysqli_num_rows($season_grabber) == 0) $team_no = 0;
 } else {
