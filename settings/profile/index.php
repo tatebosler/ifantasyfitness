@@ -56,7 +56,7 @@ if($_POST['submitted'] == 'profile') {
 		$query .= "grad=$grad, ";
 	}
 	if($_POST['gender'] != $user['gender']) {
-		$gender = $_POST['gender'];
+		$gender = filter_var($_POST['gender'], FILTER_SANITIZE_NUMBER_INT);
 		$user['gender'] = $_POST['gender'];
 		$query .= "gender=$gender, ";
 	}
