@@ -1,12 +1,12 @@
 <?php
 if(!isset($_GET['id']) and !isset($_POST['id'])) header('Location: http://www.ifantasyfitness.com');
 if(!isset($_GET['id'])) {
-	$slug = $_POST['id'];
+	$slug = filter_var($_POST['id'], FILTER_SANITIZE_ENCODED);
 } else {
-	$slug = $_GET['id'];
+	$slug = filter_var($_GET['id'], FILTER_SANITIZE_ENCODED);
 }
 if(!isset($_COOKIE['iff-id'])) header('Location: http://www.ifantasyfitness.com');
-$id = $_COOKIE['iff-id'];
+$id = filter_var($_COOKIE['iff-id'], FILTER_SANITIZE_NUMBER_INT);
 
 # Validate the user
 include('../../php/db.php');
@@ -35,15 +35,15 @@ if($perms < 2) header('Location: http://www.ifantasyfitness.com/settings/profile
 if(isset($_POST['t-submit'])) {
 	if($_POST['t-submit'] > 0) {
 		# Editing existing team
-		$tid = $_POST['t-submit'];
-		$name = filter_var($_POST['name-'.$tid], FILTER_SANITIZE_STRING);
-		$captain = $_POST['captain-'.$tid];
+		$tid = filter_var($_POST['t-submit'], FILTER_SANITIZE_NUMBER_INT);
+		$name = filter_var($_POST['name-'.$tid], FILTER_SANITIZE_ENCODED);
+		$captain = filter_var($_POST['captain-'.$tid], FILTER_SANITIZE_NUMBER_INT);
 		
 		if(strlen($name) > 0) $team_updater = @mysqli_query($db, "UPDATE tData SET name='$name', captain=$captain WHERE id=$tid");
 	} elseif ($_POST['t-submit'] == 0) {
 		# Creating new team
-		$name = filter_var($_POST['name-0'], FILTER_SANITIZE_STRING);
-		$captain = $_POST['captain-0'];
+		$name = filter_var($_POST['name-0'], FILTER_SANITIZE_ENCODED);
+		$captain = filter_var($_POST['captain-0'], FILTER_SANITIZE_NUMBER_INT);
 		
 		$team_inserter = @mysqli_query($db, "INSERT INTO tData (name, season, captain) VALUES ('$name', '$slug', $captain)");
 	}
@@ -51,7 +51,7 @@ if(isset($_POST['t-submit'])) {
 if($_POST['td-submit'] > 0) {
 	# Deletion is confirmed, go!
 	# Delete the team
-	$tid = $_POST['td-submit'];
+	$tid = filter_var($_POST['td-submit'], FILTER_SANITIZE_NUMBER_INT);
 	$team_deleter = @mysqli_query($db, "DELETE FROM tData WHERE id=$tid");
 	
 	# Delete registrations
@@ -70,7 +70,7 @@ if($_POST['td-submit'] > 0) {
 if ($_POST['other-submitted'] == 1) {
 	# Doing other things
 	$ok = true;
-	$name = filter_var($_POST['name'], FILTER_SANITIZE_STRING);
+	$name = filter_var($_POST['name'], FILTER_SANITIZE_ENCODED);
 	$regStart = strtotime($_POST['reg_start']);
 	$regEnd = strtotime($_POST['reg_end']);
 	$compStart = strtotime($_POST['comp_start']);

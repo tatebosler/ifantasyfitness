@@ -1,7 +1,7 @@
 <?php
 if(!isset($_GET['id']) and !isset($_POST['id'])) header('Location: http://www.ifantasyfitness.com/records');
 if(!isset($_COOKIE['iff-id'])) header('Location: http://www.ifantasyfitness.com');
-$id = $_COOKIE['iff-id'];
+$id = filter_var($_COOKIE['iff-id'], FILTER_SANITIZE_NUMBER_INT);
 
 # Validate the user
 include('../../php/db.php');
@@ -17,14 +17,17 @@ if(mysqli_num_rows($check_q) > 0) {
 
 # Grab the record
 if(!isset($_GET['id'])) {
-	$rid = $_POST['id'];
+	$rid = filter_var($_POST['id'],FILTER_SANITIZE_NUMBER_INT);
 } else {
-	$rid = $_GET['id'];
+	$rid = filter_var($_GET['id'],FILTER_SANITIZE_NUMBER_INT);
 }
 
 $record_fetcher = @mysqli_query($db, "SELECT * FROM records WHERE id=$rid");
 if(mysqli_num_rows($record_fetcher) == 0) header('Location: http://www.ifantasyfitness.com/records'); # Record doesn't exist
+
+# Make sure that the record does in fact belong to the user
 $record = mysqli_fetch_array($record_fetcher);
+if($record['user'] != $id) header('Location: http://www.ifantasyfitness.com/records'); # Nope.
 
 if(isset($_POST['go'])) {
 	$record_deleter = @mysqli_query($db, "DELETE FROM records WHERE id=$rid");

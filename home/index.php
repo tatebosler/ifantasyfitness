@@ -1,7 +1,7 @@
 <?php
 if(!isset($_COOKIE['iff-id'])) header('Location: http://www.ifantasyfitness.com');
 include('../php/db.php');
-$id = $_COOKIE['iff-id'];
+$id = filter_var($_COOKIE['iff-id'], FILTER_SANITIZE_NUMBER_INT);
 
 $check_q = @mysqli_query($db, "SELECT * FROM users WHERE id=$id");
 if(mysqli_num_rows($check_q) > 0) {
@@ -272,7 +272,7 @@ if(!empty($seasons)) {
 			<li><a href="/import">Import records</a></li>
 			<li><a href="/rules/ask">Message Rules Committee</a></li>
 			<li><a href="/settings">Account settings</a></li>
-			<li><a href="/settings/social">Add/remove social networks</a></li>
+			<li><a href="/settings/profile">Add/remove social networks</a></li>
 			<li><a href="http://www.dreamhost.com/donate.cgi?id=17581">Support us</a> (Help offset our hosting bill)</li>
 			<li><a href="/logout">Sign out</a></li>
 		</ul>

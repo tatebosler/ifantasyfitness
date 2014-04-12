@@ -1,6 +1,6 @@
 <?php
 if(!isset($_COOKIE['iff-id'])) header('Location: http://www.ifantasyfitness.com');
-$id = $_COOKIE['iff-id'];
+$id = filter_var($_COOKIE['iff-id'], FILTER_SANITIZE_NUMBER_INT);
 
 # Validate the user
 include('../php/db.php');
@@ -48,9 +48,9 @@ while($type = mysqli_fetch_array($cap_fetcher)) {
 if(isset($_POST['submitted'])) {
 	$record_types = array('run','run_team','rollerski','walk','hike','bike','swim','paddle','strength','sports');
 	if($_POST['submitted'] == 'quick') {
-		$type = $_POST['type'];
-		$value = $_POST['distance'];
-		$comments = filter_var($_POST['comments'],FILTER_SANITIZE_STRING);
+		$type = filter_var($_POST['type'],FILTER_SANITIZE_ENCODED);
+		$value = filter_var($_POST['distance'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+		$comments = filter_var($_POST['comments'],FILTER_SANITIZE_ENCODED);
 		# Get the multiplier
 		$mult_fname = 'mult_'.$type;
 		$mult_grabber = @mysqli_query($db, "SELECT * FROM globals WHERE name='$mult_fname'");
@@ -112,7 +112,7 @@ if(isset($_POST['submitted'])) {
 		if($team_no > 0) $updater_q = "UPDATE tMembers SET flag=1";
 		
 		# Grab altitude
-		$alt_fname = 'alt_'.$_POST['altitude'];
+		$alt_fname = 'alt_'.filter_var($_POST['altitude'],FILTER_SANITIZE_ENCODED);
 		$alt_grabber = @mysqli_query($db, "SELECT * FROM globals WHERE name='$alt_fname'");
 		$alt_info = mysqli_fetch_array($alt_grabber);
 		$alt = $alt_info['value'];
@@ -123,7 +123,7 @@ if(isset($_POST['submitted'])) {
 			if(empty($_POST[$type])) {
 				$value = 0;
 			} else {
-				$value = $_POST[$type];
+				$value = filter_var($_POST[$type], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
 			}
 			$mult_fname = 'mult_'.$type;
 			$mult_grabber = @mysqli_query($db, "SELECT * FROM globals WHERE name='$mult_fname'");
@@ -205,7 +205,7 @@ if(isset($_POST['submitted'])) {
 			$add_query .= $value.', ';
 		}
 		# grab and clean up things
-		$comments = filter_var($_POST['comments'],FILTER_SANITIZE_STRING);
+		$comments = filter_var($_POST['comments'],FILTER_SANITIZE_ENCODED);
 		if(strlen($comments) <= 3) $comments = "";
 		$add_query .= "$id, $now, $total, $team_no, '$comments', 'standard', $alt)";
 		if($total > 0) {

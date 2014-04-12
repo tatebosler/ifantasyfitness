@@ -2,8 +2,8 @@
 # Must have provider.
 if(!isset($_GET['provider'])) header("Location: http://www.ifantasyfitness.com/login");
 
-$provider = $_GET['provider'];
-$time = $_GET['rq'];
+$provider = filter_var($_GET['provider'],FITLER_SANITIZE_STRING);
+$time = filter_var($_GET['rq'],FILTER_SANITIZE_NUMBER_INT);
 
 # For requests to be considered "authentic" they must have been initiated within the last 15 seconds. If not, redo
 if(time()-15 > $time) header("Location: http://www.ifantasyfitness.com/login");
@@ -11,7 +11,7 @@ if(time()-15 > $time) header("Location: http://www.ifantasyfitness.com/login");
 include('../php/db.php');
 $exp = time() + 90 * 24 * 60 * 60;
 
-$uid = $_GET['uid'];
+$uid = filter_var($_GET['uid'],FILTER_SANITIZE_NUMBER_INT);
 if($provider == "twitter") {
 	# Twitter is special so handle it differently
 	$ue_check = @mysqli_query($db, "SELECT * FROM users WHERE twitter=$uid");

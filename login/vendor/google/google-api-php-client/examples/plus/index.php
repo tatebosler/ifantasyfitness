@@ -50,7 +50,7 @@ if ($client->getAccessToken()) {
   // See http://www.php.net/manual/en/filter.filters.sanitize.php
   $url = filter_var($me['url'], FILTER_VALIDATE_URL);
   $img = filter_var($me['image']['url'], FILTER_VALIDATE_URL);
-  $name = filter_var($me['displayName'], FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH);
+  $name = filter_var($me['displayName'], FILTER_SANITIZE_ENCODED, FILTER_FLAG_STRIP_HIGH);
   $personMarkup = "<a rel='me' href='$url'>$name</a><div><img src='$img'></div>";
 
   $optParams = array('maxResults' => 100);
@@ -60,8 +60,8 @@ if ($client->getAccessToken()) {
     // These fields are currently filtered through the PHP sanitize filters.
     // See http://www.php.net/manual/en/filter.filters.sanitize.php
     $url = filter_var($activity['url'], FILTER_VALIDATE_URL);
-    $title = filter_var($activity['title'], FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH);
-    $content = filter_var($activity['object']['content'], FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH);
+    $title = filter_var($activity['title'], FILTER_SANITIZE_ENCODED, FILTER_FLAG_STRIP_HIGH);
+    $content = filter_var($activity['object']['content'], FILTER_SANITIZE_ENCODED, FILTER_FLAG_STRIP_HIGH);
     $activityMarkup .= "<div class='activity'><a href='$url'>$title</a><div>$content</div></div>";
   }
 
