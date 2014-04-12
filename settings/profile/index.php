@@ -58,8 +58,11 @@ if($_POST['submitted'] == 'profile') {
 	if($_POST['gender'] != $user['gender']) {
 		$gender = filter_var($_POST['gender'], FILTER_SANITIZE_NUMBER_INT);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		$user['gender'] = filter_var($_POST['gender'], FILTER_SANITIZE_NUMBER_INT);
 =======
+=======
+>>>>>>> FETCH_HEAD
 		$user['gender'] = $_POST['gender'];
 >>>>>>> a8a6cb29254529cfee621b14ab4a948bb91e619d
 		$query .= "gender=$gender, ";
