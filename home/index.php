@@ -1,6 +1,6 @@
 <?php
 if(!isset($_COOKIE['iff-id'])) header('Location: http://www.ifantasyfitness.com');
-include('../php/db.php');
+include('../php/db.php');  # include data base
 $id = $_COOKIE['iff-id'];
 
 $check_q = @mysqli_query($db, "SELECT * FROM users WHERE id=$id");
