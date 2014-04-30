@@ -1,7 +1,7 @@
 <?php
 if(!isset($_GET['id']) and !isset($_POST['id'])) header('Location: http://www.ifantasyfitness.com');
 if(!isset($_COOKIE['iff-id'])) header('Location: http://www.ifantasyfitness.com');
-$id = $_COOKIE['iff-id'];
+$id = filter_var($_COOKIE['iff-id'], FILTER_SANITIZE_NUMBER_INT);
 
 # Validate the user
 include('../../php/db.php');
@@ -28,7 +28,7 @@ if($perms < 2) header('Location: http://www.ifantasyfitness.com/settings/profile
 
 if(isset($_POST['id'])) {
 	# Deletion is confirmed - GO.
-	$sid = $_POST['id'];
+	$sid = filter_var($_POST['id'], FILTER_SANITIZE_NUMBER_INT);
 	
 	# Delete season
 	$season_deleter = @mysqli_query($db, "DELETE FROM seasons WHERE name='$sid'");

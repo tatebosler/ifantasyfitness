@@ -2,8 +2,8 @@
 if(!isset($_COOKIE['iff-id'])) header('Location: http://www.ifantasyfitness.com');
 if(!isset($_GET['season'])) header("Location: http://www.ifantasyfitnes.com/home");
 include('../php/db.php');
-$id = $_COOKIE['iff-id'];
-$slug = $_GET['season'];
+$id = filter_var($_COOKIE['iff-id'], FILTER_SANITIZE_NUMBER_INT);
+$slug = filter_var($_GET['season'], FILTER_SANITIZE_ENCODED);
 
 $check_q = @mysqli_query($db, "SELECT * FROM users WHERE id=$id");
 if(mysqli_num_rows($check_q) > 0) {
@@ -20,7 +20,10 @@ if($user['profile'] == 1) header('Location: http://www.ifantasyfitness.com/setti
 # Validate that the given season exists, AND that registration is open now.
 $now = time();
 $season_fetcher = @mysqli_query($db, "SELECT * FROM seasons WHERE name='$slug' AND reg_start <= $now AND reg_end >= $now");
-if(mysqli_num_rows($season_fetcher) == 0) header("Location: http://www.ifantasyfitness.com/home");
+if(mysqli_num_rows($season_fetcher) == 0) {
+	setcookie("reg-fail",rand(6,9000),$now+3,'/','.ifantasyfitness.com');
+	header("Location: http://www.ifantasyfitness.com/home");
+}
 
 # Season and user are valid.
 # If user is confirming registration, process
@@ -31,7 +34,7 @@ if(isset($_POST['submitted'])) {
 	if($predict > 0 and $division >= 0 and $goal >= 0) {
 		$registerer = @mysqli_query($db, "INSERT INTO tMembers (user, team, season, prediction, division, daily_goal) VALUES ($id, 1, '$slug', $predict, $division, $goal)");
 		if($registerer) {
-			setcookie('reg-confirmed',$slug,time()+3,'/','.ifantasyfitness.com');
+			setcookie('reg-confirmed',$slug,$now+3,'/','.ifantasyfitness.com');
 			header("Location: http://www.ifantasyfitness.com/home");
 		}
 	}

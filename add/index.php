@@ -1,6 +1,6 @@
 <?php
 if(!isset($_COOKIE['iff-id'])) header('Location: http://www.ifantasyfitness.com');
-$id = $_COOKIE['iff-id'];
+$id = filter_var($_COOKIE['iff-id'], FILTER_SANITIZE_NUMBER_INT);
 
 # Validate the user
 include('../php/db.php');
@@ -16,14 +16,21 @@ if(mysqli_num_rows($check_q) > 0) {
 	# now grab the user's team number
 	# If no team number is in use, use 0.
 	# If season is not in competition mode, use 0 (even if user has been assigned to a team).
+	$now = time();
 	$team_grabber = @mysqli_query($db, "SELECT * FROM tMembers WHERE user=$id ORDER BY team DESC");
 	if(mysqli_num_rows($team_grabber) >= 1) {
 		$team_data = mysqli_fetch_array($team_grabber);
 		$team_no = $team_data['team'];
+		# Let's check that the season *is* in competition mode.
+		# Grab season
+		$the_team_grabber = @mysqli_query($db, "SELECT * FROM tData WHERE id=$team_no");
+		$the_team = mysqli_fetch_array($the_team_grabber);
+		$the_season_name = $the_team['season'];
+		$the_season_checker = @mysqli_query($db, "SELECT * FROM seasons WHERE name='$the_season_name' AND $now > comp_start AND $now < comp_end");
+		if(mysqli_num_rows($the_season_checker) == 0) $team_no = 0;
 	} else {
 		$team_no = 0;
 	}
-	$now = time();
 	$season_grabber = @mysqli_query($db, "SELECT * FROM seasons WHERE $now > comp_start AND $now < comp_end");
 	if(mysqli_num_rows($season_grabber) == 0) $team_no = 0;
 } else {
@@ -41,9 +48,9 @@ while($type = mysqli_fetch_array($cap_fetcher)) {
 if(isset($_POST['submitted'])) {
 	$record_types = array('run','run_team','rollerski','walk','hike','bike','swim','paddle','strength','sports');
 	if($_POST['submitted'] == 'quick') {
-		$type = $_POST['type'];
-		$value = $_POST['distance'];
-		$comments = filter_var($_POST['comments'],FILTER_SANITIZE_STRING);
+		$type = filter_var($_POST['type'],FILTER_SANITIZE_ENCODED);
+		$value = filter_var($_POST['distance'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+		$comments = filter_var($_POST['comments'],FILTER_SANITIZE_ENCODED);
 		# Get the multiplier
 		$mult_fname = 'mult_'.$type;
 		$mult_grabber = @mysqli_query($db, "SELECT * FROM globals WHERE name='$mult_fname'");
@@ -105,7 +112,7 @@ if(isset($_POST['submitted'])) {
 		if($team_no > 0) $updater_q = "UPDATE tMembers SET flag=1";
 		
 		# Grab altitude
-		$alt_fname = 'alt_'.$_POST['altitude'];
+		$alt_fname = 'alt_'.filter_var($_POST['altitude'],FILTER_SANITIZE_ENCODED);
 		$alt_grabber = @mysqli_query($db, "SELECT * FROM globals WHERE name='$alt_fname'");
 		$alt_info = mysqli_fetch_array($alt_grabber);
 		$alt = $alt_info['value'];
@@ -116,7 +123,7 @@ if(isset($_POST['submitted'])) {
 			if(empty($_POST[$type])) {
 				$value = 0;
 			} else {
-				$value = $_POST[$type];
+				$value = filter_var($_POST[$type], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
 			}
 			$mult_fname = 'mult_'.$type;
 			$mult_grabber = @mysqli_query($db, "SELECT * FROM globals WHERE name='$mult_fname'");
@@ -198,7 +205,7 @@ if(isset($_POST['submitted'])) {
 			$add_query .= $value.', ';
 		}
 		# grab and clean up things
-		$comments = filter_var($_POST['comments'],FILTER_SANITIZE_STRING);
+		$comments = filter_var($_POST['comments'],FILTER_SANITIZE_ENCODED);
 		if(strlen($comments) <= 3) $comments = "";
 		$add_query .= "$id, $now, $total, $team_no, '$comments', 'standard', $alt)";
 		if($total > 0) {

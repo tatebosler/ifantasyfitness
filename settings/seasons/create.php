@@ -1,6 +1,6 @@
 <?php
 if(!isset($_COOKIE['iff-id'])) header('Location: http://www.ifantasyfitness.com');
-$id = $_COOKIE['iff-id'];
+$id = filter_var($_COOKIE['iff-id'], FILTER_SANITIZE_NUMBER_INT);
 
 # Validate the user
 include('../../php/db.php');
@@ -38,8 +38,8 @@ if(isset($_POST['submitted'])) {
 	$goalStart = strtotime($goalStartStr);
 	
 	# Escape name
-	$name = filter_var($_POST['name'], FILTER_SANITIZE_STRING);
-	$slug = filter_var($_POST['slug'], FILTER_SANITIZE_STRING);
+	$name = filter_var($_POST['name'], FILTER_SANITIZE_ENCODED);
+	$slug = filter_var($_POST['slug'], FILTER_SANITIZE_ENCODED);
 	
 	# If all looks good, add to database.
 	$fields = array('reg_start','reg_end','comp_start','comp_end','name','slug');

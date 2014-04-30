@@ -1,8 +1,9 @@
 <?php
+#  establish user identity
 $valid = false;
 include('../php/db.php');
 if(isset($_COOKIE['iff-id'])) {
-	$id = $_COOKIE['iff-id'];
+	$id = filter_var($_COOKIE['iff-id'], FILTER_SANITIZE_NUMBER_INT);
 	$check_q = @mysqli_query($db, "SELECT * FROM users WHERE id=$id");
 	if(mysqli_num_rows($check_q) > 0) {
 		$user = mysqli_fetch_array($check_q);
@@ -25,11 +26,11 @@ if($valid) {
 }
 $mode = 'a';
 if(isset($_GET['disp'])) {
-	$mode = $_GET['disp'];
+	$mode = filter_var($_GET['disp'],FILTER_SANITIZE_ENCODED);
 }
 
 if(isset($_GET['season'])) {
-	$season = $_GET['season'];
+	$season = filter_var($_GET['season'],FILTER_SANITIZE_ENCODED);
 	$s = true;
 } else {
 	# figure out what season it is

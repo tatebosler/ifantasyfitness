@@ -1,6 +1,6 @@
 <?php
 if(!isset($_COOKIE['iff-id'])) header('Location: http://www.ifantasyfitness.com');
-$id = $_COOKIE['iff-id'];
+$id = filter_var($_COOKIE['iff-id'], FILTER_SANITIZE_NUMBER_INT);
 
 # Validate the user
 include('../../php/db.php');
@@ -41,23 +41,23 @@ if($_POST['submitted'] == 'profile') {
 	# process profile update requests
 	$query = "UPDATE users SET ";
 	if($_POST['first'] != $user['first']) {
-		$first = filter_var($_POST['first'], FILTER_SANITIZE_STRING);
-		$user['first'] = $_POST['first'];
+		$first = filter_var($_POST['first'], FILTER_SANITIZE_ENCODED);
+		$user['first'] = filter_var($_POST['first'], FILTER_SANITIZE_ENCODED);
 		$query .= "first='$first', ";
 	}
 	if($_POST['last'] != $user['last']) {
-		$last = filter_var($_POST['last'], FILTER_SANITIZE_STRING);
-		$user['last'] = $_POST['last'];
+		$last = filter_var($_POST['last'], FILTER_SANITIZE_ENCODED);
+		$user['last'] = filter_var($_POST['last'], FILTER_SANITIZE_ENCODED);
 		$query .= "last='$last', ";
 	}
 	if($_POST['grad'] != $user['grad']) {
 		$grad = filter_var($_POST['grad'], FILTER_SANITIZE_NUMBER_INT);
-		$user['grad'] = $_POST['grad'];
+		$user['grad'] = filter_var($_POST['grad'], FILTER_SANITIZE_NUMBER_INT);
 		$query .= "grad=$grad, ";
 	}
 	if($_POST['gender'] != $user['gender']) {
-		$gender = $_POST['gender'];
-		$user['gender'] = $_POST['gender'];
+		$gender = filter_var($_POST['gender'], FILTER_SANITIZE_NUMBER_INT);
+		$user['gender'] = filter_var($_POST['gender'], FILTER_SANITIZE_NUMBER_INT);
 		$query .= "gender=$gender, ";
 	}
 	if(!empty($user['first']) and !empty($user['last']) and ($user['gender'] <= 1) and ($user['grad'] >= 1900)) {
