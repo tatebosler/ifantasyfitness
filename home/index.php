@@ -1,12 +1,9 @@
 <?php
+# check for existence of cookie
+
 if(!isset($_COOKIE['iff-id'])) header('Location: http://www.ifantasyfitness.com');
-<<<<<<< HEAD
 include('../php/db.php');  # include data base
 $id = $_COOKIE['iff-id'];
-=======
-include('../php/db.php');
-$id = filter_var($_COOKIE['iff-id'], FILTER_SANITIZE_NUMBER_INT);
->>>>>>> FETCH_HEAD
 
 $check_q = @mysqli_query($db, "SELECT * FROM users WHERE id=$id");
 if(mysqli_num_rows($check_q) > 0) {
