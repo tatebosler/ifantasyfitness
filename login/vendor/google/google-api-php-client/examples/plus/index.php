@@ -50,7 +50,7 @@ if ($client->getAccessToken()) {
   // See http://www.php.net/manual/en/filter.filters.sanitize.php
   $url = filter_var($me['url'], FILTER_VALIDATE_URL);
   $img = filter_var($me['image']['url'], FILTER_VALIDATE_URL);
-  $name = filter_var($me['displayName'], FILTER_SANITIZE_SPECIAL_CHARS, FILTER_FLAG_STRIP_HIGH);
+  $name = filter_var($me['displayName'], FILTER_SANITIZE_ENCODED, FILTER_FLAG_STRIP_HIGH);
   $personMarkup = "<a rel='me' href='$url'>$name</a><div><img src='$img'></div>";
 
   $optParams = array('maxResults' => 100);
