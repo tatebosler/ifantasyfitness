@@ -3,7 +3,7 @@ if(!isset($_COOKIE['iff-id'])) header('Location: http://www.ifantasyfitness.com'
 if(!isset($_GET['season'])) header("Location: http://www.ifantasyfitnes.com/home");
 include('../php/db.php');
 $id = filter_var($_COOKIE['iff-id'], FILTER_SANITIZE_NUMBER_INT);
-$slug = filter_var($_GET['season'], FILTER_SANITIZE_ENCODED);
+$slug = filter_var($_GET['season'], FILTER_SANITIZE_SPECIAL_CHARS);
 
 $check_q = @mysqli_query($db, "SELECT * FROM users WHERE id=$id");
 if(mysqli_num_rows($check_q) > 0) {
@@ -44,6 +44,8 @@ if(isset($_POST['submitted'])) {
 			setcookie('reg-confirmed',$slug,$now+3,'/','.ifantasyfitness.com');
 			header("Location: http://www.ifantasyfitness.com/home");
 		}
+	} elseif ($predict == 0) {
+		$no_goal = true;
 	}
 }
 
@@ -55,12 +57,20 @@ include('../php/head-auth.php');
 	<div class="col-xs-12">
 		<h2>Register for <?=$slug?></h2>
 		<p><strong>Team Leaders:</strong> Once you have completed the registration process, be sure to ask your coaches for the Team Leader permissions.</p>
+		<?php
+		if($no_goal) {
+			echo '<div class="alert alert-warning">
+			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+			<h4><i class="fa fa-warning"></i> No Goal</h4>
+			Please enter your prediction of how many points you think you\'ll earn in the '.$slug.' season.</div>';
+		}
+		?>
 		<form name="register" action="./index.php?season=<?=$slug?>" method="post" class="form-horizontal">
-			<div class="form-group">
+			<div class="form-group<?php if ($no_goal) echo ' has-error'?>">
 				<label class="col-xs-2 control-label">Prediction</label>
 				<div class="col-xs-10">
 					<p class="form-control-static">Please enter your prediction for <strong>how many TOTAL points you will score this season.</strong> This will also serve as your season point goal, and you can view it on your <a href="/home">home screen</a>. Captains and coaches will see this value when drafting you to a team, so please enter a realistic prediction.</p><br>
-					<input type="number" name="prediction" class="form-control" min="0" max="1000">
+					<input type="number" name="prediction" class="form-control" min="0" max="5000">
 				</div>
 			</div>
 			<div class="form-group">
