@@ -32,9 +32,18 @@ if(isset($_POST['submitted'])) {
 	if($_POST['division'] >= 0) $division = filter_var($_POST['division'], FILTER_SANITIZE_NUMBER_INT);
 	if($_POST['goal'] >= 0) $goal = filter_var($_POST['goal'], FILTER_SANITIZE_NUMBER_INT);
 	if($predict > 0 and $division >= 0 and $goal >= 0) {
-		$registerer = @mysqli_query($db, "INSERT INTO tMembers (user, team, season, prediction, division, daily_goal) VALUES ($id, 1, '$slug', $predict, $division, $goal)");
-		if($registerer) {
-			setcookie('reg-confirmed',$slug,$now+3,'/','.ifantasyfitness.com');
+		# Let's make sure you're not already a part of the season...
+		# (Check database for existing season record)
+		# This prevents multiple registrations by pressing reload.
+		$regExists = @mysqli_query($db, "SELECT * FROM tMembers WHERE user=$id AND season='$slug'");
+		if(mysqli_num_rows($regExists) == 0) {
+			$registerer = @mysqli_query($db, "INSERT INTO tMembers (user, team, season, prediction, division, daily_goal) VALUES ($id, 1, '$slug', $predict, $division, $goal)");
+			if($registerer) {
+				setcookie('reg-confirmed',$slug,$now+3,'/','.ifantasyfitness.com');
+				header("Location: http://www.ifantasyfitness.com/home");
+			}
+		} else {
+			# User has already registered for this season, so don't do it again.
 			header("Location: http://www.ifantasyfitness.com/home");
 		}
 	}
