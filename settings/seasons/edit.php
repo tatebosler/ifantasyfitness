@@ -1,9 +1,9 @@
 <?php
 if(!isset($_GET['id']) and !isset($_POST['id'])) header('Location: http://www.ifantasyfitness.com');
 if(!isset($_GET['id'])) {
-	$slug = filter_var($_POST['id'], FILTER_SANITIZE_ENCODED);
+	$slug = filter_var($_POST['id'], FILTER_SANITIZE_SPECIAL_CHARS);
 } else {
-	$slug = filter_var($_GET['id'], FILTER_SANITIZE_ENCODED);
+	$slug = filter_var($_GET['id'], FILTER_SANITIZE_SPECIAL_CHARS);
 }
 if(!isset($_COOKIE['iff-id'])) header('Location: http://www.ifantasyfitness.com');
 $id = filter_var($_COOKIE['iff-id'], FILTER_SANITIZE_NUMBER_INT);
@@ -36,13 +36,13 @@ if(isset($_POST['t-submit'])) {
 	if($_POST['t-submit'] > 0) {
 		# Editing existing team
 		$tid = filter_var($_POST['t-submit'], FILTER_SANITIZE_NUMBER_INT);
-		$name = filter_var($_POST['name-'.$tid], FILTER_SANITIZE_ENCODED);
+		$name = filter_var($_POST['name-'.$tid], FILTER_SANITIZE_SPECIAL_CHARS);
 		$captain = filter_var($_POST['captain-'.$tid], FILTER_SANITIZE_NUMBER_INT);
 		
 		if(strlen($name) > 0) $team_updater = @mysqli_query($db, "UPDATE tData SET name='$name', captain=$captain WHERE id=$tid");
 	} elseif ($_POST['t-submit'] == 0) {
 		# Creating new team
-		$name = filter_var($_POST['name-0'], FILTER_SANITIZE_ENCODED);
+		$name = filter_var($_POST['name-0'], FILTER_SANITIZE_SPECIAL_CHARS);
 		$captain = filter_var($_POST['captain-0'], FILTER_SANITIZE_NUMBER_INT);
 		
 		$team_inserter = @mysqli_query($db, "INSERT INTO tData (name, season, captain) VALUES ('$name', '$slug', $captain)");
@@ -70,7 +70,7 @@ if($_POST['td-submit'] > 0) {
 if ($_POST['other-submitted'] == 1) {
 	# Doing other things
 	$ok = true;
-	$name = filter_var($_POST['name'], FILTER_SANITIZE_ENCODED);
+	$name = filter_var($_POST['name'], FILTER_SANITIZE_SPECIAL_CHARS);
 	$regStart = strtotime($_POST['reg_start']);
 	$regEnd = strtotime($_POST['reg_end']);
 	$compStart = strtotime($_POST['comp_start']);
@@ -166,7 +166,7 @@ asort($captains);
 			<thead>
 				<tr>
 					<th>Team Name</th>
-					<th>Captain</th>
+					<th>Team Leader</th>
 					<th>Actions</th>
 				</tr>
 			</thead>
@@ -259,7 +259,7 @@ foreach($teams as $team) {
 						</div>
 					</div>
 					<div class="form-group">
-						<label class="col-xs-4 control-label">Captain</label>
+						<label class="col-xs-4 control-label">Team Leader</label>
 						<div class="col-xs-8">
 							<select name="captain-'.$team['id'].'" class="form-control">';
 		foreach($captains as $id => $name) {
@@ -298,7 +298,7 @@ foreach($teams as $team) {
 					<p>Deleting this team will:</p>
 					<ul>
 						<li>Unregister all of its members from this season, and</li>
-						<li>Delete all records that its members have made while competing in this team and season.</li>
+						<li>Delete <strong>all records that its members have made</strong> while competing in this team and season.</li>
 					</ul>
 					<p><span class="text-primary"><strong>You cannot undo this action.</strong></span> Are you sure you want to delete the team?</p>
 				</div>

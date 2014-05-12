@@ -38,8 +38,8 @@ if(isset($_POST['submitted'])) {
 	$goalStart = strtotime($goalStartStr);
 	
 	# Escape name
-	$name = filter_var($_POST['name'], FILTER_SANITIZE_ENCODED);
-	$slug = filter_var($_POST['slug'], FILTER_SANITIZE_ENCODED);
+	$name = filter_var($_POST['name'], FILTER_SANITIZE_SPECIAL_CHARS);
+	$slug = filter_var($_POST['slug'], FILTER_SANITIZE_SPECIAL_CHARS);
 	
 	# If all looks good, add to database.
 	$fields = array('reg_start','reg_end','comp_start','comp_end','name','slug');

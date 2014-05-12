@@ -41,13 +41,13 @@ if($_POST['submitted'] == 'profile') {
 	# process profile update requests
 	$query = "UPDATE users SET ";
 	if($_POST['first'] != $user['first']) {
-		$first = filter_var($_POST['first'], FILTER_SANITIZE_ENCODED);
-		$user['first'] = filter_var($_POST['first'], FILTER_SANITIZE_ENCODED);
+		$first = filter_var($_POST['first'], FILTER_SANITIZE_SPECIAL_CHARS);
+		$user['first'] = filter_var($_POST['first'], FILTER_SANITIZE_SPECIAL_CHARS);
 		$query .= "first='$first', ";
 	}
 	if($_POST['last'] != $user['last']) {
-		$last = filter_var($_POST['last'], FILTER_SANITIZE_ENCODED);
-		$user['last'] = filter_var($_POST['last'], FILTER_SANITIZE_ENCODED);
+		$last = filter_var($_POST['last'], FILTER_SANITIZE_SPECIAL_CHARS);
+		$user['last'] = filter_var($_POST['last'], FILTER_SANITIZE_SPECIAL_CHARS);
 		$query .= "last='$last', ";
 	}
 	if($_POST['grad'] != $user['grad']) {

@@ -26,11 +26,11 @@ if($valid) {
 }
 $mode = 'a';
 if(isset($_GET['disp'])) {
-	$mode = filter_var($_GET['disp'],FILTER_SANITIZE_ENCODED);
+	$mode = filter_var($_GET['disp'],FILTER_SANITIZE_SPECIAL_CHARS);
 }
 
 if(isset($_GET['season'])) {
-	$season = filter_var($_GET['season'],FILTER_SANITIZE_ENCODED);
+	$season = filter_var($_GET['season'],FILTER_SANITIZE_SPECIAL_CHARS);
 	$s = true;
 } else {
 	# figure out what season it is

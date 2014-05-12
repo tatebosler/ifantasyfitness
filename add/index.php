@@ -48,9 +48,9 @@ while($type = mysqli_fetch_array($cap_fetcher)) {
 if(isset($_POST['submitted'])) {
 	$record_types = array('run','run_team','rollerski','walk','hike','bike','swim','paddle','strength','sports');
 	if($_POST['submitted'] == 'quick') {
-		$type = filter_var($_POST['type'],FILTER_SANITIZE_ENCODED);
+		$type = filter_var($_POST['type'],FILTER_SANITIZE_SPECIAL_CHARS);
 		$value = filter_var($_POST['distance'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-		$comments = filter_var($_POST['comments'],FILTER_SANITIZE_ENCODED);
+		$comments = filter_var($_POST['comments'],FILTER_SANITIZE_SPECIAL_CHARS);
 		# Get the multiplier
 		$mult_fname = 'mult_'.$type;
 		$mult_grabber = @mysqli_query($db, "SELECT * FROM globals WHERE name='$mult_fname'");
@@ -112,7 +112,7 @@ if(isset($_POST['submitted'])) {
 		if($team_no > 0) $updater_q = "UPDATE tMembers SET flag=1";
 		
 		# Grab altitude
-		$alt_fname = 'alt_'.filter_var($_POST['altitude'],FILTER_SANITIZE_ENCODED);
+		$alt_fname = 'alt_'.filter_var($_POST['altitude'],FILTER_SANITIZE_SPECIAL_CHARS);
 		$alt_grabber = @mysqli_query($db, "SELECT * FROM globals WHERE name='$alt_fname'");
 		$alt_info = mysqli_fetch_array($alt_grabber);
 		$alt = $alt_info['value'];
@@ -205,7 +205,7 @@ if(isset($_POST['submitted'])) {
 			$add_query .= $value.', ';
 		}
 		# grab and clean up things
-		$comments = filter_var($_POST['comments'],FILTER_SANITIZE_ENCODED);
+		$comments = filter_var($_POST['comments'],FILTER_SANITIZE_SPECIAL_CHARS);
 		if(strlen($comments) <= 3) $comments = "";
 		$add_query .= "$id, $now, $total, $team_no, '$comments', 'standard', $alt)";
 		if($total > 0) {
