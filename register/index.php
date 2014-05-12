@@ -25,6 +25,13 @@ if(mysqli_num_rows($season_fetcher) == 0) {
 	header("Location: http://www.ifantasyfitness.com/home");
 }
 
+# Preliminary reg-exist check
+$regExists = @mysqli_query($db, "SELECT * FROM tMembers WHERE user=$id AND season='$slug'");
+if(mysqli_num_rows($regExists) > 0) {
+	setcookie('reg-exists',$slug,$now+3,'/','.ifantasyfitness.com');
+	header("Location: http://www.ifantasyfitness.com/home");
+}
+
 # Season and user are valid.
 # If user is confirming registration, process
 if(isset($_POST['submitted'])) {
@@ -32,18 +39,9 @@ if(isset($_POST['submitted'])) {
 	if($_POST['division'] >= 0) $division = filter_var($_POST['division'], FILTER_SANITIZE_NUMBER_INT);
 	if($_POST['goal'] >= 0) $goal = filter_var($_POST['goal'], FILTER_SANITIZE_NUMBER_INT);
 	if($predict > 0 and $division >= 0 and $goal >= 0) {
-		# Let's make sure you're not already a part of the season...
-		# (Check database for existing season record)
-		# This prevents multiple registrations by pressing reload.
-		$regExists = @mysqli_query($db, "SELECT * FROM tMembers WHERE user=$id AND season='$slug'");
-		if(mysqli_num_rows($regExists) == 0) {
-			$registerer = @mysqli_query($db, "INSERT INTO tMembers (user, team, season, prediction, division, daily_goal) VALUES ($id, 1, '$slug', $predict, $division, $goal)");
-			if($registerer) {
-				setcookie('reg-confirmed',$slug,$now+3,'/','.ifantasyfitness.com');
-				header("Location: http://www.ifantasyfitness.com/home");
-			}
-		} else {
-			# User has already registered for this season, so don't do it again.
+		$registerer = @mysqli_query($db, "INSERT INTO tMembers (user, team, season, prediction, division, daily_goal) VALUES ($id, 1, '$slug', $predict, $division, $goal)");
+		if($registerer) {
+			setcookie('reg-confirmed',$slug,$now+3,'/','.ifantasyfitness.com');
 			header("Location: http://www.ifantasyfitness.com/home");
 		}
 	}
@@ -56,7 +54,7 @@ include('../php/head-auth.php');
 <div class="row">
 	<div class="col-xs-12">
 		<h2>Register for <?=$slug?></h2>
-		<p><strong>Captains:</strong> Once you have completed the registration process, be sure to ask your coaches for the Captain permissions.</p>
+		<p><strong>Team Leaders:</strong> Once you have completed the registration process, be sure to ask your coaches for the Team Leader permissions.</p>
 		<form name="register" action="./index.php?season=<?=$slug?>" method="post" class="form-horizontal">
 			<div class="form-group">
 				<label class="col-xs-2 control-label">Prediction</label>

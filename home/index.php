@@ -74,6 +74,9 @@ include('../php/head-auth.php');
 		if(isset($_COOKIE['reg-confirmed'])) echo '<div class="alert alert-success">
 			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 			<i class="fa fa-check"></i> You have successfully registered for the '.$_COOKIE['reg-confirmed'].' season!</div>';
+		if(isset($_COOKIE['reg-exists'])) echo '<div class="alert alert-info">
+			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+			<i class="fa fa-info"></i> It looks like you\'re already registered for the '.$_COOKIE['reg-confirmed'].' season. Need to change your settings or drop out? Do that <a class="alert-link" href="/settings/goals">here</a>.</div>';
 		if(isset($_COOKIE['cap'])) echo '<div class="alert alert-warning">
 			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 			<h4><i class="fa fa-warning"></i> Cap Exceeded</h4>
