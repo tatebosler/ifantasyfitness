@@ -36,6 +36,9 @@ if($provider == "twitter") {
 			# Welcome
 			$ue_insert = @mysqli_query($db, "INSERT INTO users (first, last, $provider) VALUES ('$first', '$last', $uid)");
 			$id = mysqli_insert_id($db);
+			
+			if($provider == 'facebook') setcookie('iff-facebook',$uid,$exp,'/','.ifantasyfitness.com');
+			if($provider == 'google') setcookie('iff-google',$uid,$exp,'/','.ifantasyfitness.com');
 		} else {
 			$ue_grab = mysqli_fetch_array($ue_name_check);
 			$id = $ue_grab['id'];
