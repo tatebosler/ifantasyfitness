@@ -80,7 +80,7 @@ include('../php/head-auth.php');
 		if(isset($_COOKIE['cap'])) echo '<div class="alert alert-warning">
 			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 			<h4><i class="fa fa-warning"></i> Cap Exceeded</h4>
-			Your record exceeded the '.$_COOKIE['cap'].' cap and has been adjusted accordingly.</div>';
+			Your record has been saved. However, it exceeded the '.$_COOKIE['cap'].' cap, and your point totals have been adjusted accordingly.</div>';
 		?>
 	</div>
 </div>
