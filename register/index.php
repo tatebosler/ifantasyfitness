@@ -122,25 +122,31 @@ include('../php/head-auth.php');
 					<div class="radio">
 						<label>
 							<input type="radio" name="goal" value="0">
-							<strong>Rookie</strong> - Choose if you are new to the team, or have been on for one year or less.
+							<strong>Rookie</strong> - Choose if you are new to the team, or have been on for one year or less. (100-150 miles)
 						</label>
 					</div>
 					<div class="radio">
 						<label>
 							<input type="radio" name="goal" value="1">
-							<strong>JV</strong> - Choose if you have been on the team for more than one year, or are recovering from an injury preventing you from training at Varsity.
+							<strong>JV</strong> - Choose if you have been on the team for more than one year, or are recovering from an injury preventing you from training at Varsity. (225-250 miles)
 						</label>
 					</div>
 					<div class="radio">
 						<label>
 							<input type="radio" name="goal" value="2">
-							<strong>Varsity</strong> - Choose if you have been running varsity for more than one year, or have been on the team for more than two years.
+							<strong>Varsity</strong> - Choose if you have been running varsity for more than one year, or have been on the team for more than two years. (300-350 miles)
 						</label>
 					</div>
 					<div class="radio">
 						<label>
 							<input type="radio" name="goal" value="3">
-							<strong>Elite</strong> - Choose if you want to run at State. Warning: requires serious motivation.
+							<strong>Elite</strong> - Choose if you want to run at State. Warning: requires serious motivation. (Gold Distance - 400 miles)
+						</label>
+					</div>
+					<div class="radio">
+						<label>
+							<input type="radio" name="goal" value="3">
+							<strong>Ultra</strong> - Choose if you want to go for the Platinum Distance Award - that\'s <strong>500 miles</strong>.
 						</label>
 					</div>
 					<br>
