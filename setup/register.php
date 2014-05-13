@@ -2,7 +2,6 @@
 if(!isset($_COOKIE['iff-id'])) header('Location: http://www.ifantasyfitness.com');
 include('../php/db.php');
 $id = filter_var($_COOKIE['iff-id'], FILTER_SANITIZE_NUMBER_INT);
-$slug = filter_var($_GET['season'], FILTER_SANITIZE_SPECIAL_CHARS);
 
 $check_q = @mysqli_query($db, "SELECT * FROM users WHERE id=$id");
 if(mysqli_num_rows($check_q) > 0) {
@@ -46,10 +45,23 @@ if(isset($_POST['submitted'])) {
 		$query .= "profile=1";
 	}
 	$query .= " WHERE id=$id";
+	$profile_updater = @mysqli_query($db, $query);
 	
 	# then process team registration ONLY IF profile is OK.
-	if($user['profile'] == 0) {
-		
+	if($user['profile'] == 0 and $profile_updater) {
+		$slug = filter_var($_POST['season'], FILTER_SANITIZE_SPECIAL_CHARS);
+		if($_POST['prediction'] > 0) $predict = filter_var($_POST['prediction'], FILTER_SANITIZE_NUMBER_INT);
+		if($_POST['division'] >= 0) $division = filter_var($_POST['division'], FILTER_SANITIZE_NUMBER_INT);
+		if($_POST['goal'] >= 0) $goal = filter_var($_POST['goal'], FILTER_SANITIZE_NUMBER_INT);
+		if($predict > 0 and $division >= 0 and $goal >= 0) {
+			$registerer = @mysqli_query($db, "INSERT INTO tMembers (user, team, season, prediction, division, daily_goal) VALUES ($id, 1, '$slug', $predict, $division, $goal)");
+			if($registerer) {
+				setcookie('reg-confirmed',$slug,$now+3,'/','.ifantasyfitness.com');
+				header("Location: http://www.ifantasyfitness.com/home");
+			}
+		} elseif ($predict == 0) {
+			$no_goal = true;
+		}
 	}
 }
 $title = "Welcome";
@@ -58,13 +70,8 @@ include('../php/head-auth.php');
 <div class="row">
 	<div class="col-xs-12">
 		<form name="profile" class="form-horizontal" method="post">
+			<h2>Welcome to iFantasyFitness. Please fill out all fields to set up your account.</h2>
 			<h4>Account information</h4>
-			<div class="form-group">
-				<label class="col-xs-2 control-label">First name</label>
-				<div class="col-xs-10">
-					<input type="text" name="first" class="form-control" value="<?=$user['first']?>">
-				</div>
-			</div>
 			<div class="form-group">
 				<label class="col-xs-2 control-label">First name</label>
 				<div class="col-xs-10">
@@ -195,6 +202,7 @@ include('../php/head-auth.php');
 					</div>
 					<br>
 					<input type="submit" class="btn btn-primary" value="Register">
+					<input type="hidden" name="submitted" value="9000">
 				</div>
 			</div>';
 			}
