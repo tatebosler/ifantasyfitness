@@ -33,7 +33,7 @@ echo '<!DOCTYPE html>
 				</div>
 			</div>
 		</div>
-		<div class="container hidden-print">';
+		<div class="hidden-print">';
 if(!$connected) include('db.php');
 $announce_data = array();
 $announcement_grab = @mysqli_query($db, "SELECT * FROM globals WHERE name LIKE 'announcement\_%'");
@@ -42,7 +42,7 @@ while($announcement_info = mysqli_fetch_array($announcement_grab)) {
 	$announce_data[$ada_field] = $announcement_info['value'];
 }
 if(!empty($announce_data['text'])) {
-	echo '<div class="row">
+	echo '<div class="row hidden-print">
 	<div class="col-xs-12">
 	<div class="well">'.$announce_data['text'];
 	if(!empty($announce_data['link'])) {
