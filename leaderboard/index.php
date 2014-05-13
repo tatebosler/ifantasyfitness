@@ -35,13 +35,22 @@ if(isset($_GET['season'])) {
 } else {
 	# figure out what season it is
 	$now = time();
-	$season_finder = @mysqli_query($db, "SELECT * FROM seasons WHERE comp_start <= $now ORDER BY comp_start DESC");
-	if(mysqli_num_rows($season_finder) == 0) {
-		$s = false;
-	} else {
-		$season_data = mysqli_fetch_array($season_finder);
+	$season_count = @mysqli_query($db, "SELECT * FROM seasons");
+	if(mysqli_num_rows($season_count) == 1) {
+		$season_data = mysqli_fetch_array($season_count);
 		$season = $season_data['name'];
 		$s = true;
+	} elseif (mysqli_num_rows($season_count) == 0) {
+		$s = false;
+	} else {
+		$season_finder = @mysqli_query($db, "SELECT * FROM seasons WHERE comp_start <= $now ORDER BY comp_start DESC");
+		if(mysqli_num_rows($season_finder) == 0) {
+			$s = false;
+		} else {
+			$season_data = mysqli_fetch_array($season_finder);
+			$season = $season_data['name'];
+			$s = true;
+		}
 	}
 }
 ?>
