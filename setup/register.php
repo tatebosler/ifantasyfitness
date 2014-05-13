@@ -2,6 +2,7 @@
 if(!isset($_COOKIE['iff-id'])) header('Location: http://www.ifantasyfitness.com');
 include('../php/db.php');
 $id = filter_var($_COOKIE['iff-id'], FILTER_SANITIZE_NUMBER_INT);
+$now = time();
 
 $check_q = @mysqli_query($db, "SELECT * FROM users WHERE id=$id");
 if(mysqli_num_rows($check_q) > 0) {
@@ -56,7 +57,7 @@ if(isset($_POST['submitted'])) {
 		if($predict > 0 and $division >= 0 and $goal >= 0) {
 			$registerer = @mysqli_query($db, "INSERT INTO tMembers (user, team, season, prediction, division, daily_goal) VALUES ($id, 1, '$slug', $predict, $division, $goal)");
 			if($registerer) {
-				setcookie('reg-confirmed',$slug,$now+3,'/','.ifantasyfitness.com');
+				setcookie('reg-welcome',$slug,$now+5,'/','.ifantasyfitness.com');
 				header("Location: http://www.ifantasyfitness.com/home");
 			}
 		} elseif ($predict == 0) {

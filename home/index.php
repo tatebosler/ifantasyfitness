@@ -74,6 +74,9 @@ include('../php/head-auth.php');
 		if(isset($_COOKIE['reg-confirmed'])) echo '<div class="alert alert-success">
 			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 			<i class="fa fa-check"></i> You have successfully registered for the '.$_COOKIE['reg-confirmed'].' season!</div>';
+		if(isset($_COOKIE['reg-welcome'])) echo '<div class="alert alert-success">
+			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+			<h4><i class="fa fa-check"></i> Welcome to iFantasyFitness!</h4> Your account has been created, and you have successfully registered for the '.$_COOKIE['reg-welcome'].' season! Come back when the season starts to <a href="/add" class="alert-link">start adding points</a>!</div>';
 		if(isset($_COOKIE['reg-fail'])) echo '<div class="alert alert-warning">
 			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 			<h4><i class="fa fa-info"></i> The '.$_COOKIE['reg-fail'].' season is not accepting registrations.</h4> The season might not exist, or we might be outside its registration window. Please check with coaches if you believe this is an error. For best results, use the buttons below to start a registration.</div>';
