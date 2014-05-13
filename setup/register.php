@@ -115,7 +115,7 @@ include('../php/head-auth.php');
 						echo '<div class="radio">
 						<label><input type="radio" name="season" value="'.$season['name'].'">'.$season['display_nane'].'</label></div>';
 					}
-					echo '</div>'
+					echo '</div>';
 				}
 				echo '<div class="form-group">
 				<label class="col-xs-2 control-label">Prediction</label>
