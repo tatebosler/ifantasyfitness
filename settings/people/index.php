@@ -60,6 +60,28 @@ function settingsType($name, $link, $min_perm) {
 			?>
 		</ul>
 	</div>
+	<div class="col-sm-9 col-md-10">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title">Filter</h3>
+			</div>
+			<div class="panel-body">
+				<div class="row">
+					<label class="col-xs-6">Season</label>
+					<label class="col-xs-6">Role</label>
+				</div>
+				<div class="row">
+					<div class="col-xs-6">
+						<form name="f_season">
+							<select name="season" onchange="document.location.href=document.f_season.season.options[document.f_season.season.selectedIndex].value" class="form-control">
+							<option value="2014">2014</option>
+							</select>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 <?php
 include('../../php/foot.php');
