@@ -79,7 +79,7 @@ include('../php/head-auth.php');
 			<h4><i class="fa fa-info"></i> The '.$_COOKIE['reg-fail'].' season is not accepting registrations.</h4> The season might not exist, or we might be outside its registration window. Please check with coaches if you believe this is an error. For best results, use the buttons below to start a registration.</div>';
 		if(isset($_COOKIE['reg-exists'])) echo '<div class="alert alert-info">
 			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-			<h4><i class="fa fa-info"></i> It looks like you\'re already registered for the '.$_COOKIE['reg-exists'].' season.</h4> Need to change your settings or drop out? Do that <a class="alert-link" href="/settings/goals">here</a>.</div>';
+			<h4><i class="fa fa-info"></i> It looks like you\'re already registered for the '.$_COOKIE['reg-exists'].' season.</h4> If you need to change your settings or drop out, you can do that <a class="alert-link" href="/settings/goals">here</a>.</div>';
 		if(isset($_COOKIE['cap'])) echo '<div class="alert alert-warning">
 			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 			<h4><i class="fa fa-warning"></i> Cap Exceeded</h4>
