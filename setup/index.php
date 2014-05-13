@@ -53,8 +53,9 @@ if($provider == "twitter") {
 }
 
 setcookie('iff-id',$id,$exp,'/','.ifantasyfitness.com');
-/* if(isset($ue_insert)) {
+if(isset($ue_insert)) {
 	header("Location: http://www.ifantasyfitness.com/setup/register.php");
-} */
-header("Location: http://www.ifantasyfitness.com/home");
+} else {
+	header("Location: http://www.ifantasyfitness.com/home");
+}
 ?>
