@@ -6,7 +6,7 @@
 			<p class="lead">iFantasyFitness: Train Competitively</p>
 		</div>
 	</div>
-	<div class="row">
+	<div class="row hidden-print">
 		<div class="col-xs-12">
 			<p>iFantasyFitness is Highland Park Cross Country's way of summer training. By training competitively, the team gets stronger.</p>
 			<ul class="list-inline">
@@ -20,6 +20,11 @@
 				<li><a href="/privacy">Privacy</a></li>
 				<li><a href="/tos">Terms</a></li>
 			</ul>
+			<p>Copyright &copy; Highland Park Cross Country 2012-<?php echo date('Y');?><span class="pull-right">DFTBA</span></p>
+		</div>
+	</div>
+	<div class="row visible-print">
+		<div class="col-xs-12">
 			<p>Copyright &copy; Highland Park Cross Country 2012-<?php echo date('Y');?><span class="pull-right">DFTBA</span></p>
 		</div>
 	</div>
