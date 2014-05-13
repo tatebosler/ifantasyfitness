@@ -56,7 +56,7 @@ if($provider == "twitter") {
 }
 
 setcookie('iff-id',$id,$exp,'/','.ifantasyfitness.com');
-if(isset($ue_insert)) {
+if(isset($ue_insert) or $ue_grab['profile'] == 1) {
 	header("Location: http://www.ifantasyfitness.com/setup/register.php");
 } else {
 	header("Location: http://www.ifantasyfitness.com/home");
