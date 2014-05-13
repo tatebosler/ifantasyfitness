@@ -21,7 +21,7 @@ if($user['profile'] == 1) header('Location: http://www.ifantasyfitness.com/setti
 $now = time();
 $season_fetcher = @mysqli_query($db, "SELECT * FROM seasons WHERE name='$slug' AND reg_start <= $now AND reg_end >= $now");
 if(mysqli_num_rows($season_fetcher) == 0) {
-	setcookie("reg-fail",rand(6,9000),$now+3,'/','.ifantasyfitness.com');
+	setcookie("reg-fail",$slug,$now+3,'/','.ifantasyfitness.com');
 	header("Location: http://www.ifantasyfitness.com/home");
 }
 
