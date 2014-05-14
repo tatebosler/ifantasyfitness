@@ -1,3 +1,22 @@
+<?php
+include('php/db.php');
+if(isset($_COOKIE['iff-id'])) {
+	$id = filter_var($_COOKIE['iff-id'], FILTER_SANITIZE_NUMBER_INT);
+
+	# Validate the user
+	$check_q = @mysqli_query($db, "SELECT * FROM users WHERE id=$id");
+	if(mysqli_num_rows($check_q) > 0) {
+		$user = mysqli_fetch_array($check_q);
+		# confirm with social token
+		$valid = false;
+		if(isset($_COOKIE['iff-google']) and $_COOKIE['iff-google'] === $user['google']) $valid = true;
+		if(isset($_COOKIE['iff-facebook']) and $_COOKIE['iff-facebook'] === $user['facebook']) $valid = true;
+	}
+} else {
+	$valid = false;
+}
+?>
+
 <!DOCTYPE html>
 <head>
 	<meta charset="utf-8">
@@ -18,7 +37,7 @@
 						<h3 class="masthead-brand" style="color:#fff;">iFantasyFitness</h3>
 						<ul class="nav masthead-nav">
 						<?php
-						if(isset($_COOKIE['iff-id'])) {
+						if($valid) {
 							echo '<li><a href="/add">Add points</a></li>
 							<li><a href="/leaderboard">Leaderboard</a></li>';
 						} else {
@@ -35,7 +54,7 @@
 				<p class="lead">iFantasyFitness is Highland Park Cross Country's game of summer training. By competing, the team gets stronger.</p>
 				<p class="lead">
 					<?php
-					if(isset($_COOKIE['iff-id'])) {
+					if($valid) {
 						echo '<a href="/home" class="btn btn-lg btn-custom">Go to dashboard</a>';
 					} else {
 						echo '<a href="/login" class="btn btn-lg btn-custom">Get started</a>';
