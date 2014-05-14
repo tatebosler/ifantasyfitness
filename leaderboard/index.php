@@ -64,7 +64,7 @@ if(isset($_GET['season'])) {
 		<h4 class="hidden-xs hidden-sm">Select Season</h4>
 		<div class="hidden-xs hidden-sm list-group">
 			<?php
-			$season_fetcher = @mysqli_query($db, "SELECT * FROM seasons");
+			$season_fetcher = @mysqli_query($db, "SELECT * FROM seasons ORDER BY display_name ASC");
 			while($se = mysqli_fetch_array($season_fetcher)) {
 				echo '<a href="?season='.$se['name'].'&disp='.$mode;
 				echo '" class="list-group-item';
@@ -90,7 +90,7 @@ if(isset($_GET['season'])) {
 				<form name="sel_season">
 					<select name="SelSeason" onchange="document.location.href=document.sel_season.SelSeason.options[document.sel_season.SelSeason.selectedIndex].value" class="form-control">
 					<?php
-					$season_fetcher = @mysqli_query($db, "SELECT * FROM seasons");
+					$season_fetcher = @mysqli_query($db, "SELECT * FROM seasons ORDER BY display_name ASC");
 					while($se = mysqli_fetch_array($season_fetcher)) {
 						echo '<option value="/leaderboard?season='.$se['name'].'&disp='.$mode.'"';
 						if($se['name'] == $season) echo ' selected';
@@ -144,7 +144,7 @@ if(isset($_GET['season'])) {
 				case 4: # Staff
 				case 5: # Parents
 				case 6: # Alumni
-					$data_fetcher = @mysqli_query($db, "SELECT * FROM tMembers WHERE season='$season' AND division='$mode' ORDER BY season_total DESC");
+					$data_fetcher = @mysqli_query($db, "SELECT * FROM tMembers WHERE season='$season' AND division='$mode' ORDER BY season_total DESC, season_run DESC, user ASC");
 					if(mysqli_num_rows($data_fetcher) == 0) {
 						echo '<h4>Nobody has registered for this division!</h4>';
 					} else {
@@ -181,7 +181,7 @@ if(isset($_GET['season'])) {
 					}
 					break;
 				case 't': # Display team scores
-					$data_fetcher = @mysqli_query($db, "SELECT * FROM tData WHERE season='$season'");
+					$data_fetcher = @mysqli_query($db, "SELECT * FROM tData WHERE season='$season' ORDER BY total DESC");
 					if(mysqli_num_rows($data_fetcher) == 0) {
 						echo '<h4>No teams have been configured for this season!</h4>';
 					} else {
@@ -218,7 +218,7 @@ if(isset($_GET['season'])) {
 					} else {
 						$dftext .= "total DESC, season_run";
 					}
-					$dftext .= " DESC";
+					$dftext .= " DESC, user ASC";
 					$data_fetcher = @mysqli_query($db, $dftext);
 					if(mysqli_num_rows($data_fetcher) == 0) {
 						echo '<h4>Nobody has registered for this season!</h4>';
