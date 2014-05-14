@@ -38,7 +38,7 @@ echo '<!DOCTYPE html>
 				</div>
 			</div>
 		</div>
-		<div class="hidden-print">';
+		<div class="container">';
 if(!$connected) include('db.php');
 $announce_data = array();
 $announcement_grab = @mysqli_query($db, "SELECT * FROM globals WHERE name LIKE 'announcement\_%'");
