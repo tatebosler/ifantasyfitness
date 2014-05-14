@@ -17,9 +17,16 @@
 					<div class="inner">
 						<h3 class="masthead-brand" style="color:#fff;">iFantasyFitness</h3>
 						<ul class="nav masthead-nav">
-						<li><a href="/leaderboard">Leaderboard</a></li>
-						<li><a href="/rules">Rules</a></li>
-						<li><a href="/login">Sign in</a></li>
+						<?php
+						if(isset($_COOKIE['iff-id'])) {
+							echo '<li><a href="/add">Add points</a></li>
+							<li><a href="/leaderboard">Leaderboard</a></li>';
+						} else {
+							echo '<li><a href="/leaderboard">Leaderboard</a></li>
+							<li><a href="/rules">Rules</a></li>
+							<li><a href="/login">Sign in</a></li>';
+						}
+						?>
 						</ul>
 					</div>
 				</div>
@@ -27,7 +34,13 @@
 				<h1 class="cover-heading" style="color: #fff;">Welcome to iFantasyFitness.</h1>
 				<p class="lead">iFantasyFitness is Highland Park Cross Country's game of summer training. By competing, the team gets stronger.</p>
 				<p class="lead">
-					<a href="/login" class="btn btn-lg btn-custom">Get started</a>
+					<?php
+					if(isset($_COOKIE['iff-id'])) {
+						echo '<a href="/home" class="btn btn-lg btn-custom">Go to dashboard</a>';
+					} else {
+						echo '<a href="/login" class="btn btn-lg btn-custom">Get started</a>';
+					}
+					?>
 				</p>
 			</div>
 			<div class="mastfoot">
