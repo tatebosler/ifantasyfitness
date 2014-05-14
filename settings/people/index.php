@@ -60,8 +60,37 @@ switch($_POST['action']) {
 	case 'edit':
 		$ePlayer = filter_var($_POST['ePlayer'], FILTER_SANITIZE_NUMBER_INT);
 		$eSeason = filter_var($_POST['eSeason'], FILTER_SANITIZE_SPECIAL_CHARS);
+		$eName = filter_var($_POST['eName'], FILTER_SANITIZE_SPECIAL_CHARS);
 		
+		# Original data values
+		$oRole = filter_var($_POST['eRole'], FILTER_SANITIZE_NUMBER_INT);
+		$oDiv = filter_var($_POST['eDiv'], FILTER_SANITIZE_NUMBER_INT);
+		$oTeam = filter_var($_POST['eTeam'], FILTER_SANITIZE_NUMBER_INT);
+		$oPredict = filter_var($_POST['ePredict'], FILTER_SANITIZE_NUMBER_INT);
 		
+		# New data values
+		$ePredict = filter_var($_POST["predict-$ePlayer-$eSeason"], FILTER_SANITIZE_NUMBER_INT);
+		$eDiv = filter_var($_POST["div-$ePlayer-$eSeason"], FILTER_SANITIZE_NUMBER_INT);
+		$eRole = filter_var($_POST["role-$ePlayer-$eSeason"], FILTER_SANITIZE_NUMBER_INT);
+		$eTeam = filter_var($_POST["team-$ePlayer-$eSeason"], FILTER_SANITIZE_NUMBER_INT);
+		
+		if($ePredict != $oPredict or $eDiv != $oDiv or $eTeam != $oTeam) {
+			$personUpdateQ = "UPDATE tMembers SET ";
+			if($ePredict != $oPredict) $personUpdateQ .= "prediction=$ePredict, ";
+			if($eDiv != $oDiv) $personUpdateQ .= "division=$eDiv, ";
+			if($eTeam != $oTeam) $personUpdateQ .= "team=$eTeam, ";
+			$personUpdateQ .= "flag=0 WHERE user=$ePlayer AND season='$eSeason'";
+			$personUpdater = @mysqli_query($db, $personUpdateQ);
+			if($personUpdater) {
+				$message = "$eName's settings for the $eSeason season have been updated.";
+			}
+		}
+		if($eRole != $oRole) {
+			$personUpdate = @mysqli_query($db, "UPDATE users SET permissions=$eRole WHERE id=$ePlayer");
+			if($personUpdate) {
+				$message = "$eName's permissions have been updated.";
+			}
+		}
 }
 
 $divisions = array(1 => "Upperclassmen", 2 => "Underclassmen", 3 => "Middle School", 4 => "Staff", 5 => "Parents", 6 => "Alumni");
@@ -150,10 +179,11 @@ $divisions = array(1 => "Upperclassmen", 2 => "Underclassmen", 3 => "Middle Scho
 				$person_checker = @mysqli_query($db, "SELECT * FROM users WHERE id=$person_id");
 				$fullPerson = mysqli_fetch_array($person_checker);
 				$person['name'] = $fullPerson['first'].' '.$fullPerson['last'];
+				$person['gender'] = $fullPerson['gender'];
 				$person['role'] = $fullPerson['permissions'];
 				if($role != 'all') {
 					if($fullPerson['permissions'] == $role) {
-						$people[] = $person; # add to array
+						$people[$person['name']] = $person;
 					}
 				} else {
 					$people[$person['name']] = $person;
@@ -181,7 +211,7 @@ $divisions = array(1 => "Upperclassmen", 2 => "Underclassmen", 3 => "Middle Scho
 					<td>'.$person['season'].' - '.$teams[$person['team']].'</td>
 					<td>'.$person['prediction'].'</td>
 					<td>'.$divisions[$person['division']].'</td>
-					<td class="hidden-print"><a data-toggle="modal" data-target="#edit-'.$person['user'].'-'.$person['season'].'">edit</a> - drop</td>
+					<td class="hidden-print"><a data-toggle="modal" data-target="#edit-'.$person['user'].'-'.$person['season'].'">edit</a> - <a data-toggle="modal" data-target="#drop-'.$person['user'].'-'.$person['season'].'">drop</a></td>
 					</tr>';
 				}
 				echo '</tbody></table>';
@@ -193,6 +223,13 @@ $divisions = array(1 => "Upperclassmen", 2 => "Underclassmen", 3 => "Middle Scho
 <?php
 $theRoles = array(0 => "Athlete", 1 => "Team leader", 2 => "Coach", 3 => "Administrator");
 foreach($people as $person) {
+	if($person['gender'] == 0) {
+		$gPro = "him";
+		$gProPoss = "he";
+	} else {
+		$gPro = "her";
+		$gProPoss = "she";
+	}
 	echo '<form name="edit-'.$person['user'].'-'.$person['season'].'" method="post" class="form-horizontal">
 	<div id="edit-'.$person['user'].'-'.$person['season'].'" aria-hidden="true" class="modal fade">
 		<div class="modal-dialog">
@@ -249,8 +286,44 @@ foreach($people as $person) {
 					<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
 					<input type="submit" class="btn btn-primary" value="Save changes">
 					<input type="hidden" name="action" value="edit">
+					<input type="hidden" name="eName" value="'.$person['name'].'">
 					<input type="hidden" name="ePlayer" value="'.$person['user'].'">
+					<input type="hidden" name="ePredict" value="'.$person['prediction'].'">
+					<input type="hidden" name="eRole" value="'.$person['role'].'">
+					<input type="hidden" name="eTeam" value="'.$person['team'].'">
+					<input type="hidden" name="eDiv" value="'.$person['division'].'">
 					<input type="hidden" name="eSeason" value="'.$person['season'].'">
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+<form name="drop-'.$person['user'].'-'.$person['season'].'" method="post">
+	<div id="drop-'.$person['user'].'-'.$person['season'].'" aria-hidden="true" class="modal fade">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title">Drop '.$person['name'].' ('.$person['season'].' season)</h4>
+				</div>
+				<div class="modal-body">
+					<div class="alert alert-danger">
+						<h4><strong>Warning!</strong></h4>
+						You are about to drop '.$person['name'].' from the '.$person['season'].' season.
+					</div>
+					<p>Dropping '.$gPro.' will:</p>
+					<ul>
+						<li>Unregister '.$gPro.' from the season, and</li>
+						<li>Delete <strong>all records that '.$gProPoss.' has made</strong> while competing in this season.</li>
+					</ul>
+					<p><span class="text-primary"><strong>You cannot undo this action.</strong></span> Are you sure you want to drop '.$person['name'].' from the '.$person['season'].' season?</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+					<input type="submit" class="btn btn-primary" value="Yes - drop '.$person['name'].'.">
+					<input type="hidden" name="action" value="drop">
+					<input type="hidden" name="dPlayer" value="'.$person['user'].'">
+					<input type="hidden" name="dSeason" value="'.$person['season'].'">
 				</div>
 			</div>
 		</div>
