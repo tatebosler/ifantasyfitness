@@ -270,7 +270,7 @@ foreach($teams as $team) {
 		echo '</select>
 						</div>
 					</div>
-					Don\'t see the athlete you want? Just go to <a href="/settings/people?p=0">People settings</a> and click "Make Captain" next to their name.
+					Don\'t see the athlete you want? Just go to <a href="/settings/people?role=0">People settings</a> and click "Edit" next to their name.
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
