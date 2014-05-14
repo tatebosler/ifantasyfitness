@@ -45,8 +45,9 @@
 			</div>
 			<div class="mastfoot">
 				<div class="inner">
-					<p>iFantasyFitness copyright &copy; 2012-<?=date('Y')?> Highland Park Cross Country. Developed by <a href="http://www.tatebosler.com">Tate Bosler</a>.</p>
-					<p><a href="http://blog.ifantasyfitness.com">blog</a> - <a href="https://github.com/ichiefboz/ifantasyfitness">source code</a> - <a href="https://twitter.com/ifantasyfitness">twitter</a> - <a href="http://www.dreamhost.com/donate.cgi?id=17581">support us</a></p>
+					<p class="hidden-xs">iFantasyFitness copyright &copy; 2012-<?=date('Y')?> Highland Park Cross Country. Developed by <a href="http://www.tatebosler.com">Tate Bosler</a>.</p>
+					<p class="hidden-xs"><a href="http://blog.ifantasyfitness.com">blog</a> - <a href="https://github.com/ichiefboz/ifantasyfitness">source code</a> - <a href="https://twitter.com/ifantasyfitness">twitter</a> - <a href="http://www.dreamhost.com/donate.cgi?id=17581">support us</a></p>
+					<p class="visible-xs">&copy; 2012-<?=date('Y')?> HP Cross Country</p>
 				</div>
 			</div>
 		</div>
