@@ -39,13 +39,17 @@ if(isset($_POST['t-submit'])) {
 		$name = filter_var($_POST['name-'.$tid], FILTER_SANITIZE_SPECIAL_CHARS);
 		$captain = filter_var($_POST['captain-'.$tid], FILTER_SANITIZE_NUMBER_INT);
 		
-		if(strlen($name) > 0) $team_updater = @mysqli_query($db, "UPDATE tData SET name='$name', captain=$captain WHERE id=$tid");
+		if(strlen($name) > 0) {
+			$team_updater = @mysqli_query($db, "UPDATE tData SET name='$name', captain=$captain WHERE id=$tid");
+			$team_assigner = @mysqli_query($db, "UPDATE tMembers SET team=$tid WHERE user=$captain AND season='$slug'");
+		}
 	} elseif ($_POST['t-submit'] == 0) {
 		# Creating new team
 		$name = filter_var($_POST['name-0'], FILTER_SANITIZE_SPECIAL_CHARS);
 		$captain = filter_var($_POST['captain-0'], FILTER_SANITIZE_NUMBER_INT);
 		
 		$team_inserter = @mysqli_query($db, "INSERT INTO tData (name, season, captain) VALUES ('$name', '$slug', $captain)");
+		$team_assigner = @mysqli_query($db, "UPDATE tMembers SET team=$tid WHERE user=$captain AND season='$slug'");
 	}
 }
 if($_POST['td-submit'] > 0) {
@@ -54,8 +58,8 @@ if($_POST['td-submit'] > 0) {
 	$tid = filter_var($_POST['td-submit'], FILTER_SANITIZE_NUMBER_INT);
 	$team_deleter = @mysqli_query($db, "DELETE FROM tData WHERE id=$tid");
 	
-	# Delete registrations
-	$reg_deleter = @mysqli_query($db, "DELETE FROM tMembers WHERE team=$tid");
+	# Clear registrations by setting users' team value to 1.
+	$reg_deleter = @mysqli_query($db, "UPDATE tMembers SET team=1 WHERE team=$tid");
 	
 	# Delete records associated with it
 	$record_deleter = @mysqli_query($db, "DELETE FROM records WHERE team=$tid");
@@ -297,8 +301,8 @@ foreach($teams as $team) {
 					</div>
 					<p>Deleting this team will:</p>
 					<ul>
-						<li>Unregister all of its members from this season, and</li>
-						<li>Delete <strong>all records that its members have made</strong> while competing in this team and season.</li>
+						<li>Unregister all of its members from the team (but not from the season), and</li>
+						<li>Delete <strong>all records that its members have made</strong> while competing in this team.</li>
 					</ul>
 					<p><span class="text-primary"><strong>You cannot undo this action.</strong></span> Are you sure you want to delete the team?</p>
 				</div>
