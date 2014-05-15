@@ -70,6 +70,11 @@ function settingsType($name, $link, $min_perm) {
 }
 ?>
 <div class="row">
+	<div class="col-xs-12">
+		<h2>Settings</h2>
+	</div>
+</div>
+<div class="row">
 	<div class="col-sm-3 col-md-2">
 		<ul class="nav nav-pills nav-stacked">
 			<?php

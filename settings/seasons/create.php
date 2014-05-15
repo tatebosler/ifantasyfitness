@@ -89,6 +89,7 @@ function settingsType($name, $link, $min_perm) {
 			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 			<i class="fa fa-times"></i> Sorry! That slug already exists. Please use a different slug.';
 		?>
+		<h2>Settings</h2>
 	</div>
 </div>
 <div class="row">

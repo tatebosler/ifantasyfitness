@@ -57,6 +57,7 @@ function settingsType($name, $link, $min_perm) {
 				break;
 		}
 		?>
+		<h2>Settings</h2>
 	</div>
 </div>
 <div class="row">

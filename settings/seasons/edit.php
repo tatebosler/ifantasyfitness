@@ -146,6 +146,7 @@ asort($captains);
 			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 			<i class="fa fa-check"></i> The team has been successfully deleted.</div>';
 		?>
+		<h2>Settings</h2>
 	</div>
 </div>
 <div class="row">

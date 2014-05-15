@@ -82,6 +82,7 @@ if($_POST['submitted'] == 'profile') {
 			<h4><i class="fa fa-info-circle"></i> Your profile is not ready yet.</h4>
 			Please fill in all of the fields below, then click Save Changes to finish setting up your profile. You must do this before you can post records.</div>';
 		?>
+		<h2>Settings</h2>
 	</div>
 </div>
 <div class="row">
