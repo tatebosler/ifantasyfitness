@@ -49,16 +49,22 @@ For security reasons, all tokens and keys in use are stored in two files:
 
 It's up to you to get these tokens and credentials for yourself if you want to run iFF on your own server.
 
+Bug reporting!
+==============
+If you find a bug please please please report it as an issue.
+
+If it's a security hole, please send us an email, or fork the repository and send us a pull request with the fix.
+
 APIs and libraries in use
 =========================
 iFantasyFitness currently uses the following libraries and APIs:
 
 - Facebook Graph API and dependencies
 - Google+ Sign-in API and dependencies
-- (http://getbootstrap.com)[Bootstrap] 3.1.1
-- (http://bootswatch.com/simplex)[Simplex Bootswatch theme] for Bootstrap 3.1.1
+- Bootstrap 3.1.1 - http://getbootstrap.com
+- Simplex Bootswatch theme for Bootstrap 3.1.1 - http://bootswatch.com/simplex 
 
-Dependencies are outlined in `login/composer.json`.
+Dependencies for Google, Facebook and other things are outlined in `login/composer.json`.
 
 Note: The web server on which iFantasyFitness is hosted updates the dependencies of Composer, and Composer itself, on a regular basis. The files included in this repository may not be the latest versions.
 
