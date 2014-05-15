@@ -28,27 +28,25 @@ if($perms < 2) header('Location: http://www.ifantasyfitness.com/settings/profile
 
 if(isset($_POST['id'])) {
 	# Deletion is confirmed - GO.
-	$sid = filter_var($_POST['id'], FILTER_SANITIZE_NUMBER_INT);
-	
-	# Delete season
-	$season_deleter = @mysqli_query($db, "DELETE FROM seasons WHERE name='$sid'");
+	$sid = filter_var($_POST['id'], FILTER_SANITIZE_SPECIAL_CHARS);
 	
 	# Delete teams
 	$team_fetcher = @mysqli_query($db, "SELECT * FROM tData WHERE season='$sid'");
-	
-	$teams = array();
-	while($team = mysqli_fetch_array($team_fetcher)) {
-		$teams[] = $team['id'];
+	if(mysqli_num_rows($team_fetcher) > 0) {
+		$teams = array();
+		while($team = mysqli_fetch_array($team_fetcher)) {
+			$tid = $team['id'];
+			$record_deleter = @mysqli_query($db, "DELETE FROM records WHERE team=$tid");
+		}
 	}
+	
 	$team_deleter = @mysqli_query($db, "DELETE FROM tData WHERE season='$sid'");
 	
 	# Delete registrations
 	$reg_deleter = @mysqli_query($db, "DELETE FROM tMembers WHERE season='$sid'");
 	
-	# Delete records
-	foreach($teams as $tid) {
-		$record_deleter = @mysqli_query($db, "DELETE FROM records WHERE team=$tid");
-	}
+	# Delete season
+	$season_deleter = @mysqli_query($db, "DELETE FROM seasons WHERE name='$sid'");
 	
 	# Done
 	setcookie('confirm_message','delete',time()+3,'/','.ifantasyfitness.com');
