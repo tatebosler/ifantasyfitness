@@ -47,13 +47,26 @@ if(isset($_GET['season'])) {
 	$season = filter_var($_GET['season'],FILTER_SANITIZE_SPECIAL_CHARS);
 }
 
+$div = 'all';
+if(isset($_GET['div'])) {
+	$div = filter_var($_GET['div'],FILTER_SANITIZE_SPECIAL_CHARS);
+}
+
+$theTeam = 'all';
+if(isset($_GET['season'])) {
+	$theTeam = filter_var($_GET['team'],FILTER_SANITIZE_SPECIAL_CHARS);
+}
+
 $teams = array();
-$teams[1] = "No team";
+$teamDisp = array();
+$teams[1] = "Pending team placement";
+$teamDisp[1] = 'all';
 $tlq = "SELECT * FROM tData";
 if($season != 'all') $tlq .= " WHERE season='$season'";
 $team_lister = @mysqli_query($db, $tlq);
 while($team = mysqli_fetch_array($team_lister)) {
 	$teams[$team['id']] = $team['name']; # Puts all teams for listed season into an array
+	$teamDisp[$team['id']] = $team['season']; # Useful for filtering
 }
 
 switch($_POST['action']) {
@@ -91,9 +104,20 @@ switch($_POST['action']) {
 				$message = "$eName's permissions have been updated.";
 			}
 		}
+		break;
+	case 'drop':
+		$dPlayer = filter_var($_POST['ePlayer'], FILTER_SANITIZE_NUMBER_INT);
+		$dSeason = filter_var($_POST['eSeason'], FILTER_SANITIZE_SPECIAL_CHARS);
+		$dName = filter_var($_POST['eName'], FILTER_SANITIZE_SPECIAL_CHARS);
+		$dG = filter_var($_POST['eName'], FILTER_SANITIZE_SPECIAL_CHARS);
+		$personUpdate = @mysqli_query($db, "DELETE FROM tMembers WHERE id=$dPlayer AND season='$dSeason'");
+		if($personUpdate) {
+			$message = "$dName has been dropped from the $dSeason season and will need to re-register at ifantasyfitness.com.";
+		}
+		break;
 }
 
-$divisions = array(1 => "Upperclassmen", 2 => "Underclassmen", 3 => "Middle School", 4 => "Staff", 5 => "Parents", 6 => "Alumni");
+$divisions = array(1 => "Upperclassmen", 2 => "Underclassmen", 3 => "Middle school", 4 => "Staff", 5 => "Parents", 6 => "Alumni");
 ?>
 <div class="row hidden-print">
 	<div class="col-xs-12">
@@ -125,18 +149,20 @@ $divisions = array(1 => "Upperclassmen", 2 => "Underclassmen", 3 => "Middle Scho
 			</div>
 			<div class="panel-body">
 				<div class="row">
-					<label class="col-xs-6">Season</label>
-					<label class="col-xs-6">Role</label>
+					<label class="col-xs-6 col-md-3">Season</label>
+					<label class="col-xs-6 col-md-3">Team</label>
+					<label class="col-xs-6 col-md-3">Role</label>
+					<label class="col-xs-6 col-md-3">Division</label>
 				</div>
 				<div class="row">
-					<div class="col-xs-6">
+					<div class="col-xs-6 col-md-3">
 						<form name="f_season">
 							<select name="season" onchange="document.location.href=document.f_season.season.options[document.f_season.season.selectedIndex].value" class="form-control">
-								<option value="/settings/people?season=all&role=<?=$role?>">All seasons</option>
+								<option value="/settings/people?season=all&role=<?=$role?>&team=<?=$theTeam?>&div=<?=$div?>">All seasons</option>
 								<?php
-								$seasons_fetcher = @mysqli_query($db, "SELECT * FROM seasons");
+								$seasons_fetcher = @mysqli_query($db, "SELECT * FROM seasons ORDER BY display_name ASC");
 								while($the_season = mysqli_fetch_array($seasons_fetcher)) {
-									echo '<option value="/settings/people?season='.$the_season['name'].'&role='.$role.'"';
+									echo '<option value="/settings/people?season='.$the_season['name'].'&role='.$role.'&team='.$theTeam.'&div='.$div.'"';
 									if($season == $the_season['name']) echo ' selected';
 									echo '>'.$the_season['display_name'].'</option>';
 								}
@@ -144,14 +170,44 @@ $divisions = array(1 => "Upperclassmen", 2 => "Underclassmen", 3 => "Middle Scho
 							</select>
 						</form>
 					</div>
-					<div class="col-xs-6">
+					<div class="col-xs-6 col-md-3">
+						<form name="f_team">
+							<select name="team" onchange="document.location.href=document.f_team.team.options[document.f_team.team.selectedIndex].value" class="form-control">
+								<option value="/settings/people?season=<?=$season?>&role=<?=$role?>&team=all&div=<?=$div?>">All teams</option>
+								<?php
+								if(!empty($teams)) {
+									foreach($teams as $key=>$name) {
+										echo '<option value="/settings/people?season='.$season.'&role='.$role.'&team='.$key.'&div='.$div.'"';
+										if($key == $theTeam) echo ' selected';
+										echo '>'.$name.' ('.$teamDisp[$key].')</option>';
+									}
+								}
+								?>
+							</select>
+						</form>
+					</div>
+					<div class="col-xs-6 col-md-3">
 						<form name="f_role">
 							<select name="role" onchange="document.location.href=document.f_role.role.options[document.f_role.role.selectedIndex].value" class="form-control">
 							<?php
 							$roles = array(0=>'Athletes',1=>'Team leaders',2=>'Coaches',3=>'Administrators','all'=>'All participants');
 							foreach($roles as $key=>$name) {
-								echo '<option value="/settings/people?season='.$season.'&role='.$key.'"';
+								echo '<option value="/settings/people?season='.$season.'&role='.$key.'&team='.$theTeam.'&div='.$div.'"';
 								if($role == $key) echo ' selected';
+								echo '>'.$name.'</option>';
+							}
+							?>
+							</select>
+						</form>
+					</div>
+					<div class="col-xs-6 col-md-3">
+						<form name="f_div">
+							<select name="div" onchange="document.location.href=document.f_div.div.options[document.f_div.div.selectedIndex].value" class="form-control">
+							<option value="/settings/people?season=<?=$season?>&role=<?=$role?>&team<?=$theTeam?>&div=all">All divisions</option>
+							<?php
+							foreach($divisions as $key=>$name) {
+								echo '<option value="/settings/people?season='.$season.'&role='.$role.'&team='.$theTeam.'&div='.$key.'"';
+								if($div == $key) echo ' selected';
 								echo '>'.$name.'</option>';
 							}
 							?>
@@ -166,8 +222,11 @@ $divisions = array(1 => "Upperclassmen", 2 => "Underclassmen", 3 => "Middle Scho
 			Not all elements of this page will be printed - just the important ones.
 		</div>
 		<?php
-		$people_fetcher_q = "SELECT * FROM tMembers";
-		if($season != 'all') $people_fetcher_q .= " WHERE season='$season'";
+		$people_fetcher_q = "SELECT * FROM tMembers WHERE ";
+		if($season != 'all') $people_fetcher_q .= "season='$season' AND ";
+		if($theTeam != 'all') $people_fetcher_q .= "team=$theTeam AND ";
+		if($div != 'all') $people_fetcher_q .= "division=$div AND ";
+		$people_fetcher_q .= "flag=0";
 		$people_fetcher = @mysqli_query($db, $people_fetcher_q);
 		if(mysqli_num_rows($people_fetcher) == 0) {
 			echo '<p class="lead">Looks like there isn\'t anyone that matches your search criteria.</p>';
@@ -222,113 +281,115 @@ $divisions = array(1 => "Upperclassmen", 2 => "Underclassmen", 3 => "Middle Scho
 </div>
 <?php
 $theRoles = array(0 => "Athlete", 1 => "Team leader", 2 => "Coach", 3 => "Administrator");
-foreach($people as $person) {
-	if($person['gender'] == 0) {
-		$gPro = "him";
-		$gProPoss = "he";
-	} else {
-		$gPro = "her";
-		$gProPoss = "she";
-	}
-	echo '<form name="edit-'.$person['user'].'-'.$person['season'].'" method="post" class="form-horizontal">
-	<div id="edit-'.$person['user'].'-'.$person['season'].'" aria-hidden="true" class="modal fade">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h4 class="modal-title">Edit '.$person['name'].' ('.$person['season'].' season)</h4>
-				</div>
-				<div class="modal-body">
-					<div class="form-group">
-						<label class="col-xs-4 control-label">Team</label>
-						<div class="col-xs-8">
-							<select name="team-'.$person['user'].'-'.$person['season'].'" class="form-control">';
-							foreach($teams as $id => $name) {
-								echo '<option value="'.$id.'"';
-								if($id == $person['team']) echo ' selected';
-								echo '>'.$name.'</option>';
+if(!empty($people)) {
+	foreach($people as $person) {
+		if($person['gender'] == 0) {
+			$gPro = "him";
+			$gProPoss = "he";
+		} else {
+			$gPro = "her";
+			$gProPoss = "she";
+		}
+		echo '<form name="edit-'.$person['user'].'-'.$person['season'].'" method="post" class="form-horizontal">
+		<div id="edit-'.$person['user'].'-'.$person['season'].'" aria-hidden="true" class="modal fade">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title">Edit '.$person['name'].' ('.$person['season'].' season)</h4>
+					</div>
+					<div class="modal-body">
+						<div class="form-group">
+							<label class="col-xs-4 control-label">Team</label>
+							<div class="col-xs-8">
+								<select name="team-'.$person['user'].'-'.$person['season'].'" class="form-control">';
+								foreach($teams as $id => $name) {
+									if($teamDisp[$id] == $person['season'] or $teamDisp[$id] == 'all') {
+										echo '<option value="'.$id.'"';
+										if($id == $person['team']) echo ' selected';
+										echo '>'.$name.'</option>';
+									}
+								}
+								echo '</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-xs-4 control-label">Prediction</label>
+							<div class="col-xs-8">
+								<input type="number" name="predict-'.$person['user'].'-'.$person['season'].'" class="form-control" max="5000" value="'.$person['prediction'].'">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-xs-4 control-label">Division</label>
+							<div class="col-xs-8">';
+							foreach($divisions as $key => $name) {
+								echo '<div class="radio">
+								<label>
+								<input type="radio" name="div-'.$person['user'].'-'.$person['season'].'" value="'.$key.'"';
+								if($key == $person['division']) echo ' checked';
+								echo '>'.$name.'</label></div>';
 							}
-							echo '</select>
+							echo '</div>
+						</div>
+						<div class="form-group" style="margin-bottom:0px;">
+							<label class="col-xs-4 control-label">Permission</label>
+							<div class="col-xs-8">';
+							foreach($theRoles as $id => $name) {
+								echo '<div class="radio">
+								<label>
+								<input type="radio" name="role-'.$person['user'].'-'.$person['season'].'" value="'.$id.'"';
+								if($id == $person['role']) echo ' checked';
+								echo '>'.$name.'</label></div>';
+							}
+							echo '<span class="help-block"><strong>Note:</strong> changing this setting will affect '.$gPro.' on <em>all seasons</em> across the site, including future seasons.</span></div>
 						</div>
 					</div>
-					<div class="form-group">
-						<label class="col-xs-4 control-label">Prediction</label>
-						<div class="col-xs-8">
-							<input type="number" name="predict-'.$person['user'].'-'.$person['season'].'" class="form-control" max="5000" value="'.$person['prediction'].'">
-						</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+						<input type="submit" class="btn btn-primary" value="Save changes">
+						<input type="hidden" name="action" value="edit">
+						<input type="hidden" name="eName" value="'.$person['name'].'">
+						<input type="hidden" name="ePlayer" value="'.$person['user'].'">
+						<input type="hidden" name="ePredict" value="'.$person['prediction'].'">
+						<input type="hidden" name="eRole" value="'.$person['role'].'">
+						<input type="hidden" name="eTeam" value="'.$person['team'].'">
+						<input type="hidden" name="eDiv" value="'.$person['division'].'">
+						<input type="hidden" name="eSeason" value="'.$person['season'].'">
 					</div>
-					<div class="form-group">
-						<label class="col-xs-4 control-label">Division</label>
-						<div class="col-xs-8">';
-						foreach($divisions as $key => $name) {
-							echo '<div class="radio">
-							<label>
-							<input type="radio" name="div-'.$person['user'].'-'.$person['season'].'" value="'.$key.'"';
-							if($key == $person['division']) echo ' checked';
-							echo '>'.$name.'</label></div>';
-						}
-						echo '</div>
-					</div>
-					<div class="form-group" style="margin-bottom:0px;">
-						<label class="col-xs-4 control-label">Permission</label>
-						<div class="col-xs-8">';
-						foreach($theRoles as $id => $name) {
-							echo '<div class="radio">
-							<label>
-							<input type="radio" name="role-'.$person['user'].'-'.$person['season'].'" value="'.$id.'"';
-							if($id == $person['role']) echo ' checked';
-							echo '>'.$name.'</label></div>';
-						}
-						echo '<span class="help-block"><strong>Note:</strong> changing this setting will affect '.$person['name'].' on <em>all seasons</em> across the site, including future seasons.</span></div>
-					</div>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-					<input type="submit" class="btn btn-primary" value="Save changes">
-					<input type="hidden" name="action" value="edit">
-					<input type="hidden" name="eName" value="'.$person['name'].'">
-					<input type="hidden" name="ePlayer" value="'.$person['user'].'">
-					<input type="hidden" name="ePredict" value="'.$person['prediction'].'">
-					<input type="hidden" name="eRole" value="'.$person['role'].'">
-					<input type="hidden" name="eTeam" value="'.$person['team'].'">
-					<input type="hidden" name="eDiv" value="'.$person['division'].'">
-					<input type="hidden" name="eSeason" value="'.$person['season'].'">
 				</div>
 			</div>
 		</div>
-	</div>
-</form>
-<form name="drop-'.$person['user'].'-'.$person['season'].'" method="post">
-	<div id="drop-'.$person['user'].'-'.$person['season'].'" aria-hidden="true" class="modal fade">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h4 class="modal-title">Drop '.$person['name'].' ('.$person['season'].' season)</h4>
-				</div>
-				<div class="modal-body">
-					<div class="alert alert-danger">
-						<h4><strong>Warning!</strong></h4>
-						You are about to drop '.$person['name'].' from the '.$person['season'].' season.
+	</form>
+	<form name="drop-'.$person['user'].'-'.$person['season'].'" method="post">
+		<div id="drop-'.$person['user'].'-'.$person['season'].'" aria-hidden="true" class="modal fade">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title">Drop '.$person['name'].' ('.$person['season'].' season)</h4>
 					</div>
-					<p>Dropping '.$gPro.' will:</p>
-					<ul>
-						<li>Unregister '.$gPro.' from the season, and</li>
-						<li>Delete <strong>all records that '.$gProPoss.' has made</strong> while competing in this season.</li>
-					</ul>
-					<p><span class="text-primary"><strong>You cannot undo this action.</strong></span> Are you sure you want to drop '.$person['name'].' from the '.$person['season'].' season?</p>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-					<input type="submit" class="btn btn-primary" value="Yes - drop '.$person['name'].'.">
-					<input type="hidden" name="action" value="drop">
-					<input type="hidden" name="dPlayer" value="'.$person['user'].'">
-					<input type="hidden" name="dSeason" value="'.$person['season'].'">
+					<div class="modal-body">
+						<div class="alert alert-danger">
+							<h4><strong>Warning!</strong></h4>
+							You are about to drop '.$person['name'].' from the '.$person['season'].' season.
+						</div>
+						<p>Dropping '.$gPro.' will unregister '.$gPro.' from the season, and '.$gProPoss.' will need to re-register.</p>
+						<p><span class="text-primary"><strong>You cannot undo this action.</strong></span> Are you sure you want to drop '.$person['name'].' from the '.$person['season'].' season?</p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+						<input type="submit" class="btn btn-primary" value="Yes - drop '.$person['name'].'.">
+						<input type="hidden" name="action" value="drop">
+						<input type="hidden" name="dG" value="'.$gProPoss.'">
+						<input type="hidden" name="dPlayer" value="'.$person['user'].'">
+						<input type="hidden" name="dName" value="'.$person['name'].'">
+						<input type="hidden" name="dSeason" value="'.$person['season'].'">
+					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-</form>';
+	</form>';
+	}
 }
 
 include('../../php/foot.php');
