@@ -106,11 +106,10 @@ switch($_POST['action']) {
 		}
 		break;
 	case 'drop':
-		$dPlayer = filter_var($_POST['ePlayer'], FILTER_SANITIZE_NUMBER_INT);
-		$dSeason = filter_var($_POST['eSeason'], FILTER_SANITIZE_SPECIAL_CHARS);
-		$dName = filter_var($_POST['eName'], FILTER_SANITIZE_SPECIAL_CHARS);
-		$dG = filter_var($_POST['eName'], FILTER_SANITIZE_SPECIAL_CHARS);
-		$personUpdate = @mysqli_query($db, "DELETE FROM tMembers WHERE id=$dPlayer AND season='$dSeason'");
+		$dPlayer = filter_var($_POST['dPlayer'], FILTER_SANITIZE_NUMBER_INT);
+		$dSeason = filter_var($_POST['dSeason'], FILTER_SANITIZE_SPECIAL_CHARS);
+		$dName = filter_var($_POST['dName'], FILTER_SANITIZE_SPECIAL_CHARS);
+		$personUpdate = @mysqli_query($db, "DELETE FROM tMembers WHERE user=$dPlayer AND season='$dSeason'");
 		if($personUpdate) {
 			$message = "$dName has been dropped from the $dSeason season and will need to re-register at ifantasyfitness.com.";
 		}
