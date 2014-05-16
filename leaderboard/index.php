@@ -163,10 +163,10 @@ if(isset($_GET['season'])) {
 							$pl++;
 							echo '<tr';
 							if($person['user'] == $id) echo ' class="success"';
-							if($person['team'] == $team and $team > 0 and $person['user'] != $id) echo ' class="info"';
+							if($person['team'] == $team and $team > 1 and $person['user'] != $id) echo ' class="info"';
 							echo '><td>'.$pl.'</td><td>';
 							if($person['user'] == $id) echo '<abbr title="This is you!"><i class="fa fa-user"></i></abbr> ';
-							if($person['team'] == $team and $team > 0 and $person['user'] != $id) echo '<abbr title="This is a teammate!"><i class="fa fa-users"></i></abbr> ';
+							if($person['team'] == $team and $team > 1 and $person['user'] != $id) echo '<abbr title="This is a teammate!"><i class="fa fa-users"></i></abbr> ';
 							# Figure out their name!
 							$pid = $person['user'];
 							$the_user_fetcher = @mysqli_query($db, "SELECT * FROM users WHERE id=$pid");
@@ -238,10 +238,10 @@ if(isset($_GET['season'])) {
 							$pl++;
 							echo '<tr';
 							if($person['user'] == $id) echo ' class="success"';
-							if($person['team'] == $team and $team > 0 and $person['user'] != $id) echo ' class="info"';
+							if($person['team'] == $team and $team > 1 and $person['user'] != $id) echo ' class="info"';
 							echo '><td>'.$pl.'</td><td>';
 							if($person['user'] == $id) echo '<abbr title="This is you!"><i class="fa fa-user"></i></abbr> ';
-							if($person['team'] == $team and $team > 0 and $person['user'] != $id) echo '<abbr title="This is a teammate!"><i class="fa fa-users"></i></abbr> ';
+							if($person['team'] == $team and $team > 1 and $person['user'] != $id) echo '<abbr title="This is a teammate!"><i class="fa fa-users"></i></abbr> ';
 							# Figure out their name!
 							$pid = $person['user'];
 							$the_user_fetcher = @mysqli_query($db, "SELECT * FROM users WHERE id=$pid");
