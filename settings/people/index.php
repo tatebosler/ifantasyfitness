@@ -202,7 +202,7 @@ $divisions = array(1 => "Upperclassmen", 2 => "Underclassmen", 3 => "Middle scho
 					<div class="col-xs-6 col-md-3">
 						<form name="f_div">
 							<select name="div" onchange="document.location.href=document.f_div.div.options[document.f_div.div.selectedIndex].value" class="form-control">
-							<option value="/settings/people?season=<?=$season?>&role=<?=$role?>&team<?=$theTeam?>&div=all">All divisions</option>
+							<option value="/settings/people?season=<?=$season?>&role=<?=$role?>&team=<?=$theTeam?>&div=all">All divisions</option>
 							<?php
 							foreach($divisions as $key=>$name) {
 								echo '<option value="/settings/people?season='.$season.'&role='.$role.'&team='.$theTeam.'&div='.$key.'"';
