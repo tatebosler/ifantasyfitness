@@ -312,10 +312,19 @@ if(!empty($people)) {
 							<div class="col-xs-8">
 								<select name="team-'.$person['user'].'-'.$person['season'].'" class="form-control">';
 								foreach($teams as $id => $name) {
-									if($teamDisp[$id] == $person['season'] or $teamDisp[$id] == 'all') {
-										echo '<option value="'.$id.'"';
-										if($id == $person['team']) echo ' selected';
-										echo '>'.$name.'</option>';
+									if($id == 0) {
+										# let's check if the user is already a member of a non-1 team
+										if($person['team'] == 1) {
+											echo '<option value="'.$id.'"';
+											if($id == $person['team']) echo ' selected';
+											echo '>'.$name.'</option>';
+										}
+									} else {
+										if($teamDisp[$id] == $person['season'] or $teamDisp[$id] == 'all') {
+											echo '<option value="'.$id.'"';
+											if($id == $person['team']) echo ' selected';
+											echo '>'.$name.'</option>';
+										}
 									}
 								}
 								echo '</select>
