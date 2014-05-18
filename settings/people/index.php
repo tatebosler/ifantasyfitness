@@ -57,18 +57,6 @@ if(isset($_GET['season'])) {
 	$theTeam = filter_var($_GET['team'],FILTER_SANITIZE_SPECIAL_CHARS);
 }
 
-$teams = array();
-$teamDisp = array();
-$teams[1] = "Pending team placement";
-$teamDisp[1] = 'all';
-$tlq = "SELECT * FROM tData";
-if($season != 'all') $tlq .= " WHERE season='$season'";
-$team_lister = @mysqli_query($db, $tlq);
-while($team = mysqli_fetch_array($team_lister)) {
-	$teams[$team['id']] = $team['name']; # Puts all teams for listed season into an array
-	$teamDisp[$team['id']] = $team['season']; # Useful for filtering
-}
-
 switch($_POST['action']) {
 	case 'edit':
 		$ePlayer = filter_var($_POST['ePlayer'], FILTER_SANITIZE_NUMBER_INT);
@@ -91,7 +79,16 @@ switch($_POST['action']) {
 			$personUpdateQ = "UPDATE tMembers SET ";
 			if($ePredict != $oPredict) $personUpdateQ .= "prediction=$ePredict, ";
 			if($eDiv != $oDiv) $personUpdateQ .= "division=$eDiv, ";
-			if($eTeam != $oTeam) $personUpdateQ .= "team=$eTeam, ";
+			if($eTeam != $oTeam) {
+				if($eTeam == 0) {
+					$newTeamName = $eName ."'s team";
+					$newTeamCreate = @mysqli_query($db, "INSERT INTO tData (name, captain, season) VALUES (\"$newTeamName\", $ePlayer, '$eSeason')");
+					$newTID = mysqli_insert_id($db);
+					$personUpdateQ .= "team=$newTID, ";
+				} else {
+					$personUpdateQ .= "team=$eTeam, ";
+				}
+			}
 			$personUpdateQ .= "flag=0 WHERE user=$ePlayer AND season='$eSeason'";
 			$personUpdater = @mysqli_query($db, $personUpdateQ);
 			if($personUpdater) {
@@ -114,6 +111,18 @@ switch($_POST['action']) {
 			$message = "$dName has been dropped from the $dSeason season and will need to re-register at ifantasyfitness.com.";
 		}
 		break;
+}
+
+$teams = array();
+$teamDisp = array();
+$teams[1] = "Pending team placement";
+$teamDisp[1] = 'all';
+$tlq = "SELECT * FROM tData";
+if($season != 'all') $tlq .= " WHERE season='$season'";
+$team_lister = @mysqli_query($db, $tlq);
+while($team = mysqli_fetch_array($team_lister)) {
+	$teams[$team['id']] = $team['name']; # Puts all teams for listed season into an array
+	$teamDisp[$team['id']] = $team['season']; # Useful for filtering
 }
 
 $divisions = array(1 => "Upperclassmen", 2 => "Underclassmen", 3 => "Middle school", 4 => "Staff", 5 => "Parents", 6 => "Alumni");
@@ -278,6 +287,8 @@ $divisions = array(1 => "Upperclassmen", 2 => "Underclassmen", 3 => "Middle scho
 </div>
 <?php
 $theRoles = array(0 => "Athlete", 1 => "Team leader", 2 => "Coach", 3 => "Administrator");
+$teams[0] = "Create new team";
+$teamDisp[0] = "all";
 if(!empty($people)) {
 	foreach($people as $person) {
 		if($person['gender'] == 0) {
