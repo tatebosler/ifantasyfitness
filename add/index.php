@@ -18,21 +18,20 @@ if(mysqli_num_rows($check_q) > 0) {
 	# If season is not in competition mode, use 0 (even if user has been assigned to a team).
 	$now = time();
 	$team_grabber = @mysqli_query($db, "SELECT * FROM tMembers WHERE user=$id ORDER BY team DESC");
-	if(mysqli_num_rows($team_grabber) >= 1) {
-		$team_data = mysqli_fetch_array($team_grabber);
-		$team_no = $team_data['team'];
+	$team_no = array(0 => 0);
+	while($team_data = mysqli_fetch_array($team_grabber)) {
+		$team_no_temp = $team_data['team'];
 		# Let's check that the season *is* in competition mode.
 		# Grab season
-		$the_team_grabber = @mysqli_query($db, "SELECT * FROM tData WHERE id=$team_no");
+		$the_team_grabber = @mysqli_query($db, "SELECT * FROM tData WHERE id=$team_no_temp");
 		$the_team = mysqli_fetch_array($the_team_grabber);
 		$the_season_name = $the_team['season'];
 		$the_season_checker = @mysqli_query($db, "SELECT * FROM seasons WHERE name='$the_season_name' AND $now > comp_start AND $now < comp_end");
-		if(mysqli_num_rows($the_season_checker) == 0) $team_no = 0;
-	} else {
-		$team_no = 0;
+		
+		# If the season is not in competition mode do not include it for records.
+		if(mysqli_num_rows($the_season_checker) == 0) $team_no_temp = 0;
+		if($team_no_temp != 0) $team_no[] = $team_no_temp;
 	}
-	$season_grabber = @mysqli_query($db, "SELECT * FROM seasons WHERE $now > comp_start AND $now < comp_end");
-	if(mysqli_num_rows($season_grabber) == 0) $team_no = 0;
 } else {
 	setcookie('iff-id',0,4,'/','.ifantasyfitness.com');
 	header('Location: http://www.ifantasyfitness.com');
@@ -64,7 +63,6 @@ if(isset($_POST['submitted'])) {
 			$total = $value / $mult;
 		}
 		
-		$now = time();
 		if(array_key_exists($type, $capped_types) and $team_no > 0) {
 			# This record is capped.
 			$cap_start = $team_data['week_'.$type];
@@ -83,20 +81,23 @@ if(isset($_POST['submitted'])) {
 		
 		if(strlen($comments) <= 3) $comments = "";
 		if($total > 0) {
-			$inserter = @mysqli_query($db, "INSERT INTO records (user, team, timestamp, `$type`, `$type".'_p'."`, total, comments, source) VALUES ($id, $team_no, $now, $value, $total, $total, '$comments', 'quick')");
-			if($team_no > 0) {
-				$newSeasonTotal = $team_data['season_total'] + $total;
-				$newWeekTotal = $team_data['week_total'] + $total;
-				$newDayTotal = $team_data['day_total'] + $total;
-				$updater_q = "UPDATE tMembers SET season_total=$newSeasonTotal, day_total=$newDayTotal, week_total=$newWeekTotal";
-				if($type == "run" or $type == "run_team") {
-					$newSeasonRun = $team_data['season_run'] + $value;
-					$newWeekRun = $team_data['week_run'] + $value;
-					$newDayRun = $team_data['day_run'] + $value;
-					$updater_q .= ", day_run=$newDayRun, week_run=$newWeekRun, season_run=$newSeasonRun";
+			$disp_id = $id.$now;
+			foreach($team_no as $no) {
+				$inserter = @mysqli_query($db, "INSERT INTO records (user, team, timestamp, `$type`, `$type".'_p'."`, total, comments, source, disp_id) VALUES ($id, $no, $now, $value, $total, $total, '$comments', 'quick', $disp_id)");
+				if($no > 0) {
+					$newSeasonTotal = $team_data['season_total'] + $total;
+					$newWeekTotal = $team_data['week_total'] + $total;
+					$newDayTotal = $team_data['day_total'] + $total;
+					$updater_q = "UPDATE tMembers SET season_total=$newSeasonTotal, day_total=$newDayTotal, week_total=$newWeekTotal";
+					if($type == "run" or $type == "run_team") {
+						$newSeasonRun = $team_data['season_run'] + $value;
+						$newWeekRun = $team_data['week_run'] + $value;
+						$newDayRun = $team_data['day_run'] + $value;
+						$updater_q .= ", day_run=$newDayRun, week_run=$newWeekRun, season_run=$newSeasonRun";
+					}
+					$updater_q .= " WHERE user=$id AND team=$no";
+					$updater = @mysqli_query($db, $updater_q);
 				}
-				$updater_q .= " WHERE user=$id AND team=$team_no";
-				$updater = @mysqli_query($db, $updater_q);
 			}
 			setcookie('total',round($total,2),$now+10,'/','.ifantasyfitness.com');
 		}
@@ -107,9 +108,7 @@ if(isset($_POST['submitted'])) {
 		$data_fields = array();
 		$data_values = array();
 		$total = 0;
-		
-		# Stage an update
-		if($team_no > 0) $updater_q = "UPDATE tMembers SET flag=1";
+		$disp_id = $id.$now;
 		
 		# Grab altitude
 		$alt_fname = 'alt_'.filter_var($_POST['altitude'],FILTER_SANITIZE_SPECIAL_CHARS);
@@ -118,6 +117,7 @@ if(isset($_POST['submitted'])) {
 		$alt = $alt_info['value'];
 		$now = time();
 		$run_flag = false;
+		
 		foreach($types as $type) {
 			$mult_fname = 'mult_'.$type;
 			if(empty($_POST[$type])) {
@@ -181,39 +181,45 @@ if(isset($_POST['submitted'])) {
 			}
 		}
 		
-		if($run_flag and $team_no > 0) {
-			$newSeasonRun = $team_data['season_run'] + $run_total;
-			$newWeekRun = $team_data['week_run'] + $run_total;
-			$newDayRun = $team_data['day_run'] + $run_total;
-			$updater_q .= ", day_run=$newDayRun, week_run=$newWeekRun, season_run=$newSeasonRun";
+		# Stage an update
+		foreach($team_no as $no) {
+			if($no > 0) {
+				$updater_q = "UPDATE tMembers SET flag=1";
+				if($run_flag) {
+					$newSeasonRun = $team_data['season_run'] + $run_total;
+					$newWeekRun = $team_data['week_run'] + $run_total;
+					$newDayRun = $team_data['day_run'] + $run_total;
+					$updater_q .= ", day_run=$newDayRun, week_run=$newWeekRun, season_run=$newSeasonRun";
+				}
+				$newSeasonTotal = $team_data['season_total'] + $total;
+				$newWeekTotal = $team_data['week_total'] + $total;
+				$newDayTotal = $team_data['day_total'] + $total;
+				$updater_q .= ", season_total=$newSeasonTotal, day_total=$newDayTotal, week_total=$newWeekTotal WHERE user=$id AND team=$no";
+				$updater = @mysqli_query($db, $updater_q);
+			}
+			# Data collected and stored.
+			# Next - put the data into a query command
+			$add_query = "INSERT INTO records (";
+			foreach($data_fields as $type) {
+				$add_query .= $type.', ';
+			}
+			$add_query .= "user, timestamp, total, team, comments, source, altitude, disp_id) VALUES (";
+			foreach($data_values as $value) {
+				$add_query .= $value.', ';
+			}
+			
+			# grab and clean up things
+			$comments = filter_var($_POST['comments'],FILTER_SANITIZE_SPECIAL_CHARS);
+			if(strlen($comments) <= 3) $comments = "";
+			$add_query .= "$id, $now, $total, $no, '$comments', 'standard', $alt, $disp_id)";
+			if($total > 0) {
+				$add_cmd = @mysqli_query($db, $add_query);
+			}
 		}
-		if($team_no > 0) {
-			$newSeasonTotal = $team_data['season_total'] + $total;
-			$newWeekTotal = $team_data['week_total'] + $total;
-			$newDayTotal = $team_data['day_total'] + $total;
-			$updater_q .= ", season_total=$newSeasonTotal, day_total=$newDayTotal, week_total=$newWeekTotal WHERE user=$id AND team=$team_no";
-		}
-		
-		# Data collected and stored.
-		# Next - put the data into a query command
-		$add_query = "INSERT INTO records (";
-		foreach($data_fields as $type) {
-			$add_query .= $type.', ';
-		}
-		$add_query .= "user, timestamp, total, team, comments, source, altitude) VALUES (";
-		foreach($data_values as $value) {
-			$add_query .= $value.', ';
-		}
-		# grab and clean up things
-		$comments = filter_var($_POST['comments'],FILTER_SANITIZE_SPECIAL_CHARS);
-		if(strlen($comments) <= 3) $comments = "";
-		$add_query .= "$id, $now, $total, $team_no, '$comments', 'standard', $alt)";
 		if($total > 0) {
-			$add_cmd = @mysqli_query($db, $add_query);
-			if($team_no > 0) $updater = @mysqli_query($db, $updater_q);
 			setcookie('total',round($total,2),$now+10,'/','.ifantasyfitness.com');
+			header("Location: http://www.ifantasyfitness.com/home");
 		}
-		header("Location: http://www.ifantasyfitness.com/home");
 	}
 }
 
