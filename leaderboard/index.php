@@ -53,6 +53,46 @@ if(isset($_GET['season'])) {
 		}
 	}
 }
+
+# Function for printing stars
+function star($number, $level) {
+	$return = ' <abbr title="'.$level.' Distance Award recipient!">';
+	for ($i = 0; $i < $number; $i++) {
+		$return .= '<i class="fa fa-star"></i>';
+	}
+	$return .= "</abbr>";
+	return $return;
+}
+
+function stars($miles, $gender) {
+	# Women's awards
+	if($gender == 1) {
+		if($miles >= 400) {
+			return star(5, "Women's Diamond");
+		} elseif ($miles >= 300) {
+			return star(4, "Women's Platinum");
+		} elseif ($miles >= 250) {
+			return star(3, "Women's Gold");
+		} elseif ($miles >= 200) {
+			return star(2, "Women's Silver");
+		} elseif ($miles >= 150) {
+			return star(1, "Women's Bronze");
+		}
+	} else {
+		# Men's awards
+		if($miles >= 500) {
+			return star(5, "Men's Diamond");
+		} elseif ($miles >= 400) {
+			return star(4, "Men's Platinum");
+		} elseif ($miles >= 325) {
+			return star(3, "Men's Gold");
+		} elseif ($miles >= 250) {
+			return star(2, "Men's Silver");
+		} elseif ($miles >= 150) {
+			return star(1, "Men's Bronze");
+		}
+	}
+}
 ?>
 <div class="row">
 	<div class="col-xs-12">
@@ -152,9 +192,9 @@ if(isset($_GET['season'])) {
 						<thead>
 						<tr>
 						<th class="col-xs-2">Place</th>
-						<th class="col-xs-4">User</th>
+						<th class="col-xs-7 col-sm-4">User</th>
 						<th class="col-xs-3">Points</th>
-						<th class="col-xs-3">Running</th>
+						<th class="hidden-xs col-sm-3">Running</th>
 						</tr>
 						</thead>
 						<tbody>';
@@ -171,9 +211,11 @@ if(isset($_GET['season'])) {
 							$pid = $person['user'];
 							$the_user_fetcher = @mysqli_query($db, "SELECT * FROM users WHERE id=$pid");
 							$the_user = mysqli_fetch_array($the_user_fetcher);
-							echo $the_user['first'].' '.$the_user['last'].'</td>
+							echo $the_user['first'].' '.$the_user['last'];
+							if($person['season_run'] >= 150) echo stars($person['season_run'], $the_user['gender']);
+							echo '</td>
 							<td>'.round($person['season_total'],3).'</td>
-							<td>'.round($person['season_run'],3).'</td>
+							<td class="hidden-xs">'.round($person['season_run'],3).'</td>
 							</tr>';
 						}
 						echo '</tbody>
@@ -189,9 +231,9 @@ if(isset($_GET['season'])) {
 						<thead>
 						<tr>
 						<th class="col-xs-2">Place</th>
-						<th class="col-xs-4">Team</th>
+						<th class="col-xs-7 col-sm-4">Team</th>
 						<th class="col-xs-3">Points</th>
-						<th class="col-xs-3">Running</th>
+						<th class="hidden-xs col-sm-3">Running</th>
 						</tr>
 						</thead>
 						<tbody>';
@@ -202,7 +244,7 @@ if(isset($_GET['season'])) {
 							if($the_team['id'] == $team) echo ' class="success"';
 							echo '><td>'.$pl.'</td><td>'.$the_team['name'].'</td>
 							<td>'.round($the_team['total'],4).'</td>
-							<td>'.round($the_team['running'],4).'</td>
+							<td class="hidden-xs">'.round($the_team['running'],4).'</td>
 							</tr>';
 						}
 						echo '</tbody>
@@ -227,10 +269,16 @@ if(isset($_GET['season'])) {
 						<thead>
 						<tr>
 						<th class="col-xs-2">Place</th>
-						<th class="col-xs-4">User</th>
-						<th class="col-xs-3">Points</th>
-						<th class="col-xs-3">Running</th>
-						</tr>
+						<th class="col-xs-7 col-sm-4">User</th>';
+						if($mode == 'r') {
+							echo '<th class="col-xs-3">Running</th>
+							<th class="hidden-xs col-sm-3">Points</th>';
+						} else {
+							echo '<th class="col-xs-3">Points</th>
+							<th class="hidden-xs col-sm-3">Running</th>';
+						}
+						
+						echo '</tr>
 						</thead>
 						<tbody>';
 						$pl = 0;
@@ -246,10 +294,17 @@ if(isset($_GET['season'])) {
 							$pid = $person['user'];
 							$the_user_fetcher = @mysqli_query($db, "SELECT * FROM users WHERE id=$pid");
 							$the_user = mysqli_fetch_array($the_user_fetcher);
-							echo $the_user['first'].' '.$the_user['last'].'</td>
-							<td>'.round($person['season_total'],3).'</td>
-							<td>'.round($person['season_run'],3).'</td>
-							</tr>';
+							echo $the_user['first'].' '.$the_user['last'];
+							if($person['season_run'] >= 150) echo stars($person['season_run'], $the_user['gender']);
+							echo '</td>';
+							if($mode == 'r') {
+								echo '<td>'.round($person['season_run'],3).'</td>
+								<td class="hidden-xs">'.round($person['season_total'],3).'</td>';
+							} else {
+								echo '<td>'.round($person['season_total'],3).'</td>
+								<td class="hidden-xs">'.round($person['season_run'],3).'</td>';
+							}
+							echo '</tr>';
 						}
 						echo '</tbody>
 							</table>';
