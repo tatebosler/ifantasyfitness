@@ -28,9 +28,10 @@ if(mysqli_num_rows($record_fetcher) == 0) header('Location: http://www.ifantasyf
 # Make sure that the record does in fact belong to the user
 $record = mysqli_fetch_array($record_fetcher);
 if($record['user'] != $id) header('Location: http://www.ifantasyfitness.com/records'); # Nope.
+$true_id = $record['disp_id'];
 
 if(isset($_POST['go'])) {
-	$record_deleter = @mysqli_query($db, "DELETE FROM records WHERE id=$rid");
+	$record_deleter = @mysqli_query($db, "DELETE FROM records WHERE disp_id=$true_id");
 	if($record_deleter) {
 		setcookie('message','delete',time()+3,'/','.ifantasyfitness.com');
 		header('Location: http://www.ifantasyfitness.com/records');
