@@ -60,6 +60,13 @@ function settingsType($name, $link, $min_perm) {
 			?>
 		</ul>
 	</div>
+	<div class="col-sm-9 col-md-10">
+		<h2>Administrative settings</h2>
+		<div class="alert alert-warning">
+			<h4><i class="fa fa-warning"></i> Heads-up: These settings affect the entire site.</h4>
+			Please be careful with them.
+		</div>
+	</div>
 </div>
 <?php
 include('../../php/foot.php');
