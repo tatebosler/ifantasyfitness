@@ -97,6 +97,12 @@ if(isset($_POST['submitted'])) {
 					}
 					$updater_q .= " WHERE user=$id AND team=$no";
 					$updater = @mysqli_query($db, $updater_q);
+					
+					$team_info_grab = @mysqli_query($db, "SELECT * FROM tData WHERE id=$no");
+					$team_info = mysqli_fetch_array($team_info_grab);
+					$newTotal = $team_info['total'] + $total;
+					$newRTotal = $team_info['running'] + $run_total;
+					$team_update = @mysqli_query($db, "UPDATE tData SET total=$newTotal, running=$newRTotal WHERE id=$no");
 				}
 			}
 			setcookie('total',round($total,2),$now+10,'/','.ifantasyfitness.com');
@@ -196,6 +202,14 @@ if(isset($_POST['submitted'])) {
 				$newDayTotal = $team_data['day_total'] + $total;
 				$updater_q .= ", season_total=$newSeasonTotal, day_total=$newDayTotal, week_total=$newWeekTotal WHERE user=$id AND team=$no";
 				$updater = @mysqli_query($db, $updater_q);
+				
+				$team_info_grab = @mysqli_query($db, "SELECT * FROM tData WHERE id=$no");
+				$team_info = mysqli_fetch_array($team_info_grab);
+				$newTotal = $team_info['total'] + $total;
+				$newRTotal = $team_info['running'] + $run_total;
+				$team_update = @mysqli_query($db, "UPDATE tData SET total=$newTotal, running=$newRTotal WHERE id=$no");
+				
+				# If there are any oddities they will be resolved by cron each hour.
 			}
 			# Data collected and stored.
 			# Next - put the data into a query command
