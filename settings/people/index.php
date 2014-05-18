@@ -232,7 +232,7 @@ $divisions = array(1 => "Upperclassmen", 2 => "Underclassmen", 3 => "Middle scho
 		if($season != 'all') $people_fetcher_q .= "season='$season' AND ";
 		if($theTeam != 'all') $people_fetcher_q .= "team=$theTeam AND ";
 		if($div != 'all') $people_fetcher_q .= "division=$div AND ";
-		$people_fetcher_q .= "flag=0";
+		$people_fetcher_q .= "user > 0"; # because Flag changes by cron.
 		$people_fetcher = @mysqli_query($db, $people_fetcher_q);
 		if(mysqli_num_rows($people_fetcher) == 0) {
 			echo '<p class="lead">Looks like there isn\'t anyone that matches your search criteria.</p>';
@@ -251,7 +251,7 @@ $divisions = array(1 => "Upperclassmen", 2 => "Underclassmen", 3 => "Middle scho
 						$people[$person['name']] = $person;
 					}
 				} else {
-					$people[$person['name']] = $person;
+					$people[$person['name'].$person['season']] = $person;
 				}
 			}
 			
