@@ -36,7 +36,7 @@ include('../php/head-auth.php');
 		<?php
 		$record_types = array("run" => "Running", "run_team" => "Running at Monument", "rollerski" => "Rollerskiing", "walk" => "Walking", "hike" => "Hiking with packs", "bike" => "Biking", "swim" => "Swimming", "paddle" => "Paddling, Rowing or Kayaking", "strength" => "Strength or core training", "sports" => "Aerobic sports");
 		$use_minutes = array('paddle','strength','sports');
-		$record_fetcher = @mysqli_query($db, "SELECT * FROM records WHERE user=$id ORDER BY timestamp DESC");
+		$record_fetcher = @mysqli_query($db, "SELECT * FROM records WHERE team=0 AND user=$id ORDER BY timestamp DESC");
 		if(mysqli_num_rows($record_fetcher) == 0) {
 			# Does the user have a profile yet?
 			echo '<p class="lead">No records found!</p>
