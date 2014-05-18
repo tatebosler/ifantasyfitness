@@ -1,5 +1,5 @@
 <?php
-// header("Location: http://www.ifantasyfitness.com"); # No humans!
+header("Location: http://www.ifantasyfitness.com"); # No humans!
 require('php/db.php');
 
 # For teams with id > 1: Update the team score.
