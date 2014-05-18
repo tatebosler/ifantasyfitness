@@ -92,17 +92,17 @@ include('../php/head-auth.php');
 				<label class="col-xs-2 control-label">Graduation</label>
 				<div class="col-xs-10">
 					<input type="number" name="grad" min="<?=(date('Y')-120)?>" max="<?=date('Y')?>" class="form-control" value="<?=$user['grad']?>">
-					<span class="help-block">The year you graduated (or will graduate) from high school. <strong>Please enter the full year, for instance <?=date('Y')?>.</strong></span>
+					<span class="help-block">The year you graduated (or will graduate) from high school. <strong>Please enter the full year, for instance <?=date('Y')?>.</strong> We use this mainly for statistical purposes, and also to help you out for future season registrations. This data won't be shared!</span>
 				</div>
 			</div>
 			<div class="form-group">
 				<label class="col-xs-2 control-label">Gender</label>
 				<div class="col-xs-10">
 					<label class="radio-inline">
-						<input type="radio" name="gender" value="0" <?php if($user['gender'] == 0) echo 'checked' ?>> <i class="fa fa-male"></i> Male
+						<input type="radio" name="gender" value="0"> <i class="fa fa-male"></i> Male
 					</label>
 					<label class="radio-inline">
-						<input type="radio" name="gender" value="1" <?php if($user['gender'] == 1) echo 'checked' ?>> <i class="fa fa-female"></i> Female
+						<input type="radio" name="gender" value="1"> <i class="fa fa-female"></i> Female
 					</label>
 				</div>
 			</div>
