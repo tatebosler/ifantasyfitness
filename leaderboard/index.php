@@ -54,6 +54,21 @@ if(isset($_GET['season'])) {
 	}
 }
 
+# Get the star thresholds
+# Men's star thresholds
+$star_thresh_m = array(0 => 0);
+$star_data_grab = @mysqli_query($db, "SELECT * FROM globals WHERE name LIKE 'da\-m%'");
+while($sdata = mysqli_fetch_array($star_data_grab)) {
+	$star_thresh_m[$sdata['display']] = $sdata['value'];
+}
+# Women's star thresholds
+$star_thresh_f = array(0 => 0);
+$star_data_grab = @mysqli_query($db, "SELECT * FROM globals WHERE name LIKE 'da\-f%'");
+while($sdata = mysqli_fetch_array($star_data_grab)) {
+	$star_thresh_f[$sdata['display']] = $sdata['value'];
+}
+$stars = array("None", "Bronze", "Silver", "Gold", "Platinum", "Diamond");
+
 # Function for printing stars
 function star($number, $level) {
 	$return = ' <abbr title="'.$level.' Distance Award recipient!">';
@@ -65,31 +80,18 @@ function star($number, $level) {
 }
 
 function stars($miles, $gender) {
-	# Women's awards
-	if($gender == 1) {
-		if($miles >= 400) {
-			return star(5, "Women's Diamond");
-		} elseif ($miles >= 300) {
-			return star(4, "Women's Platinum");
-		} elseif ($miles >= 250) {
-			return star(3, "Women's Gold");
-		} elseif ($miles >= 200) {
-			return star(2, "Women's Silver");
-		} elseif ($miles >= 150) {
-			return star(1, "Women's Bronze");
-		}
-	} else {
-		# Men's awards
-		if($miles >= 500) {
-			return star(5, "Men's Diamond");
-		} elseif ($miles >= 400) {
-			return star(4, "Men's Platinum");
-		} elseif ($miles >= 325) {
-			return star(3, "Men's Gold");
-		} elseif ($miles >= 250) {
-			return star(2, "Men's Silver");
-		} elseif ($miles >= 150) {
-			return star(1, "Men's Bronze");
+	global $star_thresh_f, $star_thresh_m, $stars;
+	for($i = 5; $i >= 0; $i--) {
+		if($gender == 0) {
+			if ($miles >= $star_thresh_m[$i]) {
+				echo star($i, $stars[$i]);
+				break;
+			}
+		} elseif ($gender == 1) {
+			if($miles >= $star_thresh_f[$i]) {
+				echo star($i, $stars[$i]);
+				break;
+			}
 		}
 	}
 }

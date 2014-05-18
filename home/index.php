@@ -51,6 +51,18 @@ while($seasonData = mysqli_fetch_array($seasonDataQ)) {
 	}
 }
 
+$stars = array("None", "Bronze", "Silver", "Gold", "Platinum", "Diamond");
+if($user['gender'] == 0) {
+	$da_query = "SELECT * FROM globals WHERE name LIKE 'da\-m\-%'";
+} else {
+	$da_query = "SELECT * FROM globals WHERE name LIKE 'da\-f\-%'";
+}
+$da_fetch = @mysqli_query($db, $da_query);
+while($da_value = mysqli_fetch_array($da_fetch)) {
+	$star_values[$da_value['display']] = $da_value['value'];
+}
+$star_values[0] = 0;
+
 $title = 'Home';
 $connected = true;
 include('../php/head-auth.php');
@@ -70,6 +82,12 @@ include('../php/head-auth.php');
 			echo 'You can view your record below, and edit it on your <a href="/records" class="alert-link">record transcript</a>.';
 			if($day > 0) echo ' This record has been posted to the <a href="/leaderboard" class="alert-link">leaderboard</a>.';
 			echo '</div>';
+		}
+		if(isset($_COOKIE['star'])) {
+			echo '<div class="alert alert-success">
+			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+			<h4><i class="fa fa-star"></i> Hooray! You got a Distance Award star!</h4>
+			You are now at the '.$stars[$_COOKIE['star']].' level of Distance Awards. Keep going!';
 		}
 		if(isset($_COOKIE['reg-confirmed'])) echo '<div class="alert alert-success">
 			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
@@ -226,8 +244,58 @@ if(!empty($seasons)) {
 		}
 		?>
 		<hr>
-		<h2>Goals</h2>
+		<h2>Goals and Awards</h2>
 		<?php
+		function star($count) {
+			for($i=0; $i<$count; $i++) {
+				echo '<i class="fa fa-star"></i>';
+			}
+		}
+		function unstar($count) {
+			for($i=0; $i<$count; $i++) {
+				echo '<i class="fa fa-star-o"></i>';
+			}
+		}
+		echo '<p><strong>Distance Awards:</strong> ';
+		
+		for($i = 5; $i >= 0; $i--) {
+			if($team_data['season_run'] >= $star_values[$i]) {
+				star($i);
+				unstar(5 - $i);
+				$level = $i;
+				$full = $star_values[$i];
+				if($i < 5) $toNext = $star_values[$i + 1] - $team_data['season_run'];
+				break;
+			}
+		}
+		echo ' ('.$stars[$level].')';
+		if($team_data == $full) {
+			$aw_value = 100;
+		} else {
+			$aw_value = ($team_data['season_run'] / ($team_data['season_run'] + $toNext)) * 100;
+		}
+		echo '<br>'.$team_data['season_run'].' mile';
+		if($team_data['season_run'] != 1) echo 's';
+		echo ' ran.';
+		if($toNext > 0) echo ' '.round($toNext, 2).' mile';
+		if($toNext != 1 and $toNext > 0) echo 's'; # Silly grammar and pluralization.
+		if($toNext > 0) echo ' until '.$stars[$level + 1].'!';
+		echo '</p>
+		<div class="progress">
+			<div class="progress-bar ';
+		if($aw_value >= 100) {
+			echo ' progress-bar-warning';
+		} elseif ($aw_value >= 75) {
+			echo ' progress-bar-info';
+		} elseif ($aw_value >= 50) {
+			echo ' progress-bar-success';
+		} elseif ($aw_value >= 25) {
+			echo ' progress-bar-danger';
+		}
+		echo '" aria-valuenow="'.$aw_value.'" aria-valuemin="0" aria-valuemax="100" style="width: '.$aw_value.'%;"></div>
+		</div>';
+		
+		# Season prediction
 		if($team_data['prediction'] == 0) {
 			$prog_value = 0;
 			echo '<p><strong>Season goal:</strong> No prediction set!</p>';
@@ -236,16 +304,18 @@ if(!empty($seasons)) {
 			echo '<p><strong>Season goal:</strong> '.$team_data['season_total'].' of '.$team_data['prediction'].' points scored</p>';
 		}
 		echo '<div class="progress">
-			<div class="progress-bar';
+			<div class="progress-bar ';
 		if($team_data['season_total'] > $team_data['prediction']) {
 			echo ' progress-bar-info';
 		} elseif ($team_data['season_total'] > 0.9 * $team_data['prediction']) {
 			echo ' progress-bar-success';
-		} elseif ($team_data['season_total'] >= 0.5 * $$team_data['prediction']) {
+		} elseif ($team_data['season_total'] >= 0.5 * $team_data['prediction']) {
 			echo ' progress-bar-danger';
 		}
 		echo '" aria-valuenow="'.$prog_value.'" aria-valuemin="0" aria-valuemax="100" style="width: '.$prog_value.'%;"></div>
 		</div>';
+		
+		# Daily running goal
 		if($day > 0) {
 			$daily_goal_category = ($team_data['daily_goal']);
 			$daily_goal_fetcher = @mysqli_query($db, "SELECT * FROM dailygoals WHERE day=$day");
