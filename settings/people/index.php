@@ -148,13 +148,8 @@ $divisions = array(1 => "Upperclassmen", 2 => "Underclassmen", 3 => "Middle scho
 			</div>
 			<div class="panel-body">
 				<div class="row">
-					<label class="col-xs-6 col-md-3">Season</label>
-					<label class="col-xs-6 col-md-3">Team</label>
-					<label class="col-xs-6 col-md-3">Role</label>
-					<label class="col-xs-6 col-md-3">Division</label>
-				</div>
-				<div class="row">
 					<div class="col-xs-6 col-md-3">
+						<label>Season</label>
 						<form name="f_season">
 							<select name="season" onchange="document.location.href=document.f_season.season.options[document.f_season.season.selectedIndex].value" class="form-control">
 								<option value="/settings/people?season=all&role=<?=$role?>&team=<?=$theTeam?>&div=<?=$div?>">All seasons</option>
@@ -170,6 +165,7 @@ $divisions = array(1 => "Upperclassmen", 2 => "Underclassmen", 3 => "Middle scho
 						</form>
 					</div>
 					<div class="col-xs-6 col-md-3">
+						<label>Team</label>
 						<form name="f_team">
 							<select name="team" onchange="document.location.href=document.f_team.team.options[document.f_team.team.selectedIndex].value" class="form-control">
 								<option value="/settings/people?season=<?=$season?>&role=<?=$role?>&team=all&div=<?=$div?>">All teams</option>
@@ -186,6 +182,7 @@ $divisions = array(1 => "Upperclassmen", 2 => "Underclassmen", 3 => "Middle scho
 						</form>
 					</div>
 					<div class="col-xs-6 col-md-3">
+						<label>Role</label>
 						<form name="f_role">
 							<select name="role" onchange="document.location.href=document.f_role.role.options[document.f_role.role.selectedIndex].value" class="form-control">
 							<?php
@@ -200,6 +197,7 @@ $divisions = array(1 => "Upperclassmen", 2 => "Underclassmen", 3 => "Middle scho
 						</form>
 					</div>
 					<div class="col-xs-6 col-md-3">
+						<label>Division</label>
 						<form name="f_div">
 							<select name="div" onchange="document.location.href=document.f_div.div.options[document.f_div.div.selectedIndex].value" class="form-control">
 							<option value="/settings/people?season=<?=$season?>&role=<?=$role?>&team=<?=$theTeam?>&div=all">All divisions</option>
