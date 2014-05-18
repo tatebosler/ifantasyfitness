@@ -15,6 +15,11 @@ if(isset($_COOKIE['iff-id'])) {
 } else {
 	$valid = false;
 }
+
+$announce_grab = @mysqli_query($db, "SELECT * FROM globals WHERE name LIKE 'announcement\_%'");
+while($aData = mysqli_fetch_array($announce_grab)) {
+	$announcement[$aData['name']] = $aData['value'];
+}
 ?>
 
 <!DOCTYPE html>
@@ -49,24 +54,41 @@ if(isset($_COOKIE['iff-id'])) {
 						</ul>
 					</div>
 				</div>
-			<div class="inner cover">
-				<h1 class="cover-heading" style="color: #fff;">Welcome to iFantasyFitness.</h1>
-				<p class="lead">iFantasyFitness is Highland Park Cross Country's game of summer training. By competing, the team gets stronger.</p>
-				<p class="lead">
-					<?php
-					if($valid) {
-						echo '<a href="/home" class="btn btn-lg btn-custom">Go to dashboard</a>';
-					} else {
-						echo '<a href="/login" class="btn btn-lg btn-custom">Get started</a>';
+				<?php
+				if(!empty($announcement['announcement_text'])) {
+					echo '<div class="inner hidden-xs">
+						<i class="fa fa-bullhorn"></i> '.$announcement['announcement_text'];
+					if(!empty($announcement['announcement_link'])) {
+						echo ' <a href="'.$announcement['announcement_link'].'">';
+						if(!empty($announcement['announcement_link_text'])) {
+							echo $announcement['announcement_link_text'];
+						} else {
+							echo $announcement['announcement_link'];
+						}
+						echo '</a>';
 					}
-					?>
-				</p>
-			</div>
-			<div class="mastfoot">
-				<div class="inner">
-					<p class="hidden-xs">iFantasyFitness copyright &copy; 2012-<?=date('Y')?> Highland Park Cross Country. Developed by <a href="http://www.tatebosler.com">Tate Bosler</a>.</p>
-					<p class="hidden-xs"><a href="http://blog.ifantasyfitness.com">blog</a> - <a href="https://github.com/ichiefboz/ifantasyfitness">source code</a> - <a href="https://twitter.com/ifantasyfitness">twitter</a> - <a href="http://www.dreamhost.com/donate.cgi?id=17581">support us</a></p>
-					<p class="visible-xs">&copy; 2012-<?=date('Y')?> HP Cross Country</p>
+					echo '</div>';
+				}
+				?>
+				<div class="inner cover">
+					<h1 class="cover-heading" style="color: #fff;">Welcome to iFantasyFitness.</h1>
+					<p class="lead">iFantasyFitness is Highland Park Cross Country's game of summer training. By competing, the team gets stronger.</p>
+					<p class="lead">
+						<?php
+						if($valid) {
+							echo '<a href="/home" class="btn btn-lg btn-custom">Go to dashboard</a>';
+						} else {
+							echo '<a href="/login" class="btn btn-lg btn-custom">Get started</a>';
+						}
+						?>
+					</p>
+				</div>
+				<div class="mastfoot">
+					<div class="inner">
+						<p class="hidden-xs">iFantasyFitness copyright &copy; 2012-<?=date('Y')?> Highland Park Cross Country. Developed by <a href="http://www.tatebosler.com">Tate Bosler</a>.</p>
+						<p class="hidden-xs"><a href="http://blog.ifantasyfitness.com">blog</a> - <a href="https://github.com/ichiefboz/ifantasyfitness">source code</a> - <a href="https://twitter.com/ifantasyfitness">twitter</a> - <a href="http://www.dreamhost.com/donate.cgi?id=17581">support us</a></p>
+						<p class="visible-xs">&copy; 2012-<?=date('Y')?> HP Cross Country</p>
+					</div>
 				</div>
 			</div>
 		</div>
