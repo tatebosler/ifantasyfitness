@@ -48,8 +48,11 @@ if(isset($_POST['t-submit'])) {
 		$name = filter_var($_POST['name-0'], FILTER_SANITIZE_SPECIAL_CHARS);
 		$captain = filter_var($_POST['captain-0'], FILTER_SANITIZE_NUMBER_INT);
 		
-		$team_inserter = @mysqli_query($db, "INSERT INTO tData (name, season, captain) VALUES ('$name', '$slug', $captain)");
-		$team_assigner = @mysqli_query($db, "UPDATE tMembers SET team=$tid WHERE user=$captain AND season='$slug'");
+		if(strlen($name) > 0) {
+			$team_inserter = @mysqli_query($db, "INSERT INTO tData (name, season, captain) VALUES ('$name', '$slug', $captain)");
+			$tid = mysqli_insert_id($team_inserter);
+			$team_assigner = @mysqli_query($db, "UPDATE tMembers SET team=$tid WHERE user=$captain AND season='$slug'");
+		}
 	}
 }
 if($_POST['td-submit'] > 0) {
