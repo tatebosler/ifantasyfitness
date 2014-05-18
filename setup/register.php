@@ -48,8 +48,8 @@ if(isset($_POST['submitted'])) {
 	$query .= " WHERE id=$id";
 	$profile_updater = @mysqli_query($db, $query);
 	
-	# then process team registration ONLY IF profile is OK.
-	if($user['profile'] == 0 and $profile_updater) {
+	# then process team registration ONLY IF profile is OK and there are seasons for which to register.
+	if($user['profile'] == 0 and $profile_updater and isset($_POST['season'])) {
 		$slug = filter_var($_POST['season'], FILTER_SANITIZE_SPECIAL_CHARS);
 		if($_POST['prediction'] > 0) $predict = filter_var($_POST['prediction'], FILTER_SANITIZE_NUMBER_INT);
 		if($_POST['division'] >= 0) $division = filter_var($_POST['division'], FILTER_SANITIZE_NUMBER_INT);
@@ -63,6 +63,9 @@ if(isset($_POST['submitted'])) {
 		} elseif ($predict == 0) {
 			$no_goal = true;
 		}
+	} if ($user['profile'] == 0 and $profile_updater and !isset($_POST['season'])) {
+		setcookie('reg-welcome',$slug,$now+5,'/','.ifantasyfitness.com');
+		header("Location: http://www.ifantasyfitness.com/home");
 	}
 }
 $title = "Welcome";
@@ -88,8 +91,8 @@ include('../php/head-auth.php');
 			<div class="form-group">
 				<label class="col-xs-2 control-label">Graduation</label>
 				<div class="col-xs-10">
-					<input type="text" name="grad" class="form-control" value="<?=$user['grad']?>">
-					<span class="help-block">The year you graduated (or will graduate) from high school</span>
+					<input type="number" name="grad" min="<?=(date('Y')-120)?>" max="<?=date('Y')?>" class="form-control" value="<?=$user['grad']?>">
+					<span class="help-block">The year you graduated (or will graduate) from high school. <strong>Please enter the full year, for instance <?=date('Y')?>.</strong></span>
 				</div>
 			</div>
 			<div class="form-group">
