@@ -19,6 +19,7 @@ if(mysqli_num_rows($check_q) > 0) {
 	$now = time();
 	$team_grabber = @mysqli_query($db, "SELECT * FROM tMembers WHERE user=$id ORDER BY team DESC");
 	$team_no = array(0 => 0);
+	$teamstuff = array();
 	while($team_data = mysqli_fetch_array($team_grabber)) {
 		$team_no_temp = $team_data['team'];
 		# Let's check that the season *is* in competition mode.
@@ -30,7 +31,10 @@ if(mysqli_num_rows($check_q) > 0) {
 		
 		# If the season is not in competition mode do not include it for records.
 		if(mysqli_num_rows($the_season_checker) == 0) $team_no_temp = 0;
-		if($team_no_temp != 0) $team_no[] = $team_no_temp;
+		if($team_no_temp != 0) {
+			$team_no[] = $team_no_temp;
+			$teamstuff[$team_data['team']] = $team_data;
+		}
 	}
 } else {
 	setcookie('iff-id',0,4,'/','.ifantasyfitness.com');
@@ -85,14 +89,14 @@ if(isset($_POST['submitted'])) {
 			foreach($team_no as $no) {
 				$inserter = @mysqli_query($db, "INSERT INTO records (user, team, timestamp, `$type`, `$type".'_p'."`, total, comments, source, disp_id) VALUES ($id, $no, $now, $value, $total, $total, '$comments', 'quick', $disp_id)");
 				if($no > 0) {
-					$newSeasonTotal = $team_data['season_total'] + $total;
-					$newWeekTotal = $team_data['week_total'] + $total;
-					$newDayTotal = $team_data['day_total'] + $total;
+					$newSeasonTotal = $teamstuff[$no]['season_total'] + $total;
+					$newWeekTotal = $teamstuff[$no]['week_total'] + $total;
+					$newDayTotal = $teamstuff[$no]['day_total'] + $total;
 					$updater_q = "UPDATE tMembers SET season_total=$newSeasonTotal, day_total=$newDayTotal, week_total=$newWeekTotal";
 					if($type == "run" or $type == "run_team") {
-						$newSeasonRun = $team_data['season_run'] + $value;
-						$newWeekRun = $team_data['week_run'] + $value;
-						$newDayRun = $team_data['day_run'] + $value;
+						$newSeasonRun = $teamstuff[$no]['season_run'] + $value;
+						$newWeekRun = $teamstuff[$no]['week_run'] + $value;
+						$newDayRun = $teamstuff[$no]['day_run'] + $value;
 						$updater_q .= ", day_run=$newDayRun, week_run=$newWeekRun, season_run=$newSeasonRun";
 					}
 					$updater_q .= " WHERE user=$id AND team=$no";
@@ -123,6 +127,7 @@ if(isset($_POST['submitted'])) {
 		$alt = $alt_info['value'];
 		$now = time();
 		$run_flag = false;
+		$update_data = array();
 		
 		foreach($types as $type) {
 			$mult_fname = 'mult_'.$type;
@@ -181,8 +186,8 @@ if(isset($_POST['submitted'])) {
 					$run_flag = true;
 				}
 				if($type != "run") {
-					$update_value = $team_data['week_'.$type] + $points;
-					$updater_q .= ", week_$type=$update_value";
+					$update_value = $teamstuff[$no]['week_'.$type] + $points;
+					$update_data[$type] = $update_value;
 				}
 			}
 		}
@@ -191,6 +196,9 @@ if(isset($_POST['submitted'])) {
 		foreach($team_no as $no) {
 			if($no > 0) {
 				$updater_q = "UPDATE tMembers SET flag=1";
+				foreach($update_data as $type => $value) {
+					$updater_q .= ", week_$type=$value";
+				}
 				if($run_flag) {
 					$newSeasonRun = $team_data['season_run'] + $run_total;
 					$newWeekRun = $team_data['week_run'] + $run_total;
