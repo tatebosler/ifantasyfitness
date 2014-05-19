@@ -274,7 +274,7 @@ if(!empty($seasons)) {
 		} else {
 			$aw_value = ($team_data['season_run'] / ($team_data['season_run'] + $toNext)) * 100;
 		}
-		echo '<br>'.$team_data['season_run'].' mile';
+		echo '<br>'.round($team_data['season_run'],2).' mile';
 		if($team_data['season_run'] != 1) echo 's';
 		echo ' ran.';
 		if($toNext > 0) echo ' '.round($toNext, 2).' mile';
