@@ -116,37 +116,37 @@ include('../php/head-auth.php');
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="col-xs-2 control-label">Daily Goals</label>
+				<label class="col-xs-2 control-label">Running Goal</label>
 				<div class="col-xs-10">
 					<p class="form-control-static">Please select a Daily Running Goal program. This will appear under your season points goal, and give you an idea of what to do to improve your running ability.</p>
 					<div class="radio">
 						<label>
 							<input type="radio" name="goal" value="0">
-							<strong>Rookie</strong> - Choose if you are new to the team, or have been on for one year or less. (100-150 miles)
+							<strong>BRONZE</strong> - 150 miles. Recommended for freshmen, middle schoolers, and athletes brand new to the team.
 						</label>
 					</div>
 					<div class="radio">
 						<label>
 							<input type="radio" name="goal" value="1">
-							<strong>JV</strong> - Choose if you have been on the team for more than one year, or are recovering from an injury preventing you from training at Varsity. (225-250 miles)
+							<strong>SILVER</strong> - 250 miles (men), 200 miles (women). Recommended for sophomores and athletes recovering from an injury.
 						</label>
 					</div>
 					<div class="radio">
 						<label>
 							<input type="radio" name="goal" value="2">
-							<strong>Varsity</strong> - Choose if you have been running varsity for more than one year, or have been on the team for more than two years. (300-350 miles)
+							<strong>GOLD</strong> - 325 miles (men), 250 miles (women). Recommended for juniors and athletes who have historically run JV.
 						</label>
 					</div>
 					<div class="radio">
 						<label>
 							<input type="radio" name="goal" value="3">
-							<strong>Elite</strong> - Choose if you want to run at State. Warning: requires serious motivation. (Gold Distance - 400 miles)
+							<strong>PLATINUM</strong> - 400 miles (men), 300 miles (women) Recommended for seniors and determined varsity athletes.
 						</label>
 					</div>
 					<div class="radio">
 						<label>
-							<input type="radio" name="goal" value="3">
-							<strong>Ultra</strong> - Choose if you want to go for the Platinum Distance Award - that\'s <strong>500 miles</strong>.
+							<input type="radio" name="goal" value="4">
+							<strong>DIAMOND</strong> - 500 miles (men), 400 miles (women). For experienced varsity runners only. Requires serious motivation.
 						</label>
 					</div>
 					<br>
