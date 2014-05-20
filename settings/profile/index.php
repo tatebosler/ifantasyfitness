@@ -40,22 +40,12 @@ function settingsType($name, $link, $min_perm) {
 if($_POST['submitted'] == 'profile') {
 	# process profile update requests
 	$query = "UPDATE users SET ";
-	if($_POST['first'] != $user['first']) {
-		$first = filter_var($_POST['first'], FILTER_SANITIZE_SPECIAL_CHARS);
-		$user['first'] = filter_var($_POST['first'], FILTER_SANITIZE_SPECIAL_CHARS);
-		$query .= "first='$first', ";
-	}
-	if($_POST['last'] != $user['last']) {
-		$last = filter_var($_POST['last'], FILTER_SANITIZE_SPECIAL_CHARS);
-		$user['last'] = filter_var($_POST['last'], FILTER_SANITIZE_SPECIAL_CHARS);
-		$query .= "last='$last', ";
-	}
 	if($_POST['gender'] != $user['gender']) {
 		$gender = filter_var($_POST['gender'], FILTER_SANITIZE_NUMBER_INT);
 		$user['gender'] = filter_var($_POST['gender'], FILTER_SANITIZE_NUMBER_INT);
 		$query .= "gender=$gender, ";
 	}
-	if(!empty($user['first']) and !empty($user['last']) and ($user['gender'] <= 1)) {
+	if($user['gender'] <= 1) {
 		# Profile is complete.
 		$user['profile'] = 0;
 		$query .= "profile=0";
