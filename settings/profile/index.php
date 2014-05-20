@@ -100,14 +100,17 @@ if($_POST['submitted'] == 'profile') {
 			<div class="form-group">
 				<label class="col-xs-2 control-label">First name</label>
 				<div class="col-xs-10">
-					<input type="text" name="first" class="form-control" value="<?=$user['first']?>">
+					<input type="text" name="first" class="form-control" value="<?=$user['first']?>" disabled>
 				</div>
 			</div>
 			<div class="form-group">
 				<label class="col-xs-2 control-label">Last name</label>
 				<div class="col-xs-10">
-					<input type="text" name="last" class="form-control" value="<?=$user['last']?>">
+					<input type="text" name="last" class="form-control" value="<?=$user['last']?>" disabled>
 				</div>
+			</div>
+			<div class="alert alert-info">
+				If your name is misspelled or incorrect, please let a coach know.
 			</div>
 			<div class="form-group">
 				<label class="col-xs-2 control-label">Gender</label>
