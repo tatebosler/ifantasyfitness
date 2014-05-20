@@ -232,8 +232,8 @@ $divisions = array(1 => "Upperclassmen", 2 => "Underclassmen", 3 => "Middle scho
 		$people_fetcher = @mysqli_query($db, $people_fetcher_q);
 		if(mysqli_num_rows($people_fetcher) == 0) {
 			echo '<div class="hidden-print alert alert-danger">
-				<h4><i class="fa fa-question"></i> Sorry! We couldn\'t find anyone.</h4>
-				It doesn\'t look like anyone matches your search criteria. Try broadening your search by changing the filters above, or <a href="/settings/people">click here</a> to remove them.
+				<h4><i class="fa fa-users"></i> Sorry! We couldn\'t find anyone.</h4>
+				It doesn\'t look like anyone matches your search criteria. Try <a class="alert-link" href="/settings/people">removing</a> your filters.
 			</div>';
 		} else {
 			# At least one person is listed in the season, now check all returned ranks.
@@ -256,8 +256,8 @@ $divisions = array(1 => "Upperclassmen", 2 => "Underclassmen", 3 => "Middle scho
 			
 			if(empty($people)) {
 				echo '<div class="hidden-print alert alert-danger">
-					<h4><i class="fa fa-question"></i> Sorry! We couldn\'t find anyone.</h4>
-					It doesn\'t look like anyone matches your search criteria. Try broadening your search by changing the filters above, or <a href="/settings/people">click here</a> to remove them.
+					<h4><i class="fa fa-users"></i> Sorry! We couldn\'t find anyone.</h4>
+					It doesn\'t look like anyone matches your search criteria. Try <a class="alert-link" href="/settings/people">removing</a> your filters.
 				</div>';
 			} else {
 				ksort($people);
