@@ -307,15 +307,17 @@ if(!empty($seasons)) {
 			echo '<p><strong>Season goal:</strong> No prediction set!</p>';
 		} else {
 			$prog_value = ($team_data['season_total'] / $team_data['prediction']) * 100;
-			echo '<p><strong>Season goal:</strong> '.$team_data['season_total'].' of '.$team_data['prediction'].' points scored</p>';
+			echo '<p><strong>Season goal:</strong> '.round($team_data['season_total'],2).' of '.$team_data['prediction'].' points scored</p>';
 		}
 		echo '<div class="progress">
 			<div class="progress-bar ';
-		if($team_data['season_total'] > $team_data['prediction']) {
+		if($prog_value >= 100) {
+			echo ' progress-bar-warning';
+		} elseif ($prog_value >= 75) {
 			echo ' progress-bar-info';
-		} elseif ($team_data['season_total'] > 0.9 * $team_data['prediction']) {
+		} elseif ($prog_value >= 50) {
 			echo ' progress-bar-success';
-		} elseif ($team_data['season_total'] >= 0.5 * $team_data['prediction']) {
+		} elseif ($prog_value >= 25) {
 			echo ' progress-bar-danger';
 		}
 		echo '" aria-valuenow="'.$prog_value.'" aria-valuemin="0" aria-valuemax="100" style="width: '.$prog_value.'%;"></div>
@@ -339,11 +341,13 @@ if(!empty($seasons)) {
 		}
 		echo '<div class="progress">
 			<div class="progress-bar';
-		if($team_data['day_run'] > $daily_goal) {
+		if($dg_value >= 100) {
+			echo ' progress-bar-warning';
+		} elseif ($dg_value >= 75) {
 			echo ' progress-bar-info';
-		} elseif ($team_data['day_run'] > 0.9 * $daily_goal) {
+		} elseif ($dg_value >= 50) {
 			echo ' progress-bar-success';
-		} elseif ($team_data['day_run'] >= 0.5 * $daily_goal) {
+		} elseif ($dg_value >= 25) {
 			echo ' progress-bar-danger';
 		}
 		echo '" aria-valuenow="'.$dg_value.'" aria-valuemin="0" aria-valuemax="100" style="width: '.$dg_value.'%;"></div>
