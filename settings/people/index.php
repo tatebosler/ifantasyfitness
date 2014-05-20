@@ -223,10 +223,6 @@ $divisions = array(1 => "Upperclassmen", 2 => "Underclassmen", 3 => "Middle scho
 				</div>
 			</div>
 		</div>
-		<div class="hidden-print alert alert-info">
-			<h4><i class="fa fa-print"></i> This page is printer friendly</h4>
-			Not all elements of this page will be printed - just the important ones.
-		</div>
 		<?php
 		$people_fetcher_q = "SELECT * FROM tMembers WHERE ";
 		if($season != 'all') $people_fetcher_q .= "season='$season' AND ";
@@ -235,7 +231,10 @@ $divisions = array(1 => "Upperclassmen", 2 => "Underclassmen", 3 => "Middle scho
 		$people_fetcher_q .= "user > 0"; # because Flag changes by cron.
 		$people_fetcher = @mysqli_query($db, $people_fetcher_q);
 		if(mysqli_num_rows($people_fetcher) == 0) {
-			echo '<p class="lead">Looks like there isn\'t anyone that matches your search criteria.</p>';
+			echo '<div class="hidden-print alert alert-danger">
+				<h4><i class="fa fa-question"></i> Sorry! We couldn\'t find anyone.</h4>
+				It doesn\'t look like anyone matches your search criteria. Try broadening your search by changing the filters above, or <a href="/settings/people">click here</a> to remove them.
+			</div>';
 		} else {
 			# At least one person is listed in the season, now check all returned ranks.
 			$people = array(); # an array of people to be displayed
@@ -256,9 +255,17 @@ $divisions = array(1 => "Upperclassmen", 2 => "Underclassmen", 3 => "Middle scho
 			}
 			
 			if(empty($people)) {
-				echo '<p class="lead">Looks like there isn\'t anyone that matches your search criteria.</p>';
+				echo '<div class="hidden-print alert alert-danger">
+					<h4><i class="fa fa-question"></i> Sorry! We couldn\'t find anyone.</h4>
+					It doesn\'t look like anyone matches your search criteria. Try broadening your search by changing the filters above, or <a href="/settings/people">click here</a> to remove them.
+				</div>';
 			} else {
 				ksort($people);
+				echo '<div class="hidden-print alert alert-info">
+					<h4><i class="fa fa-users"></i> Hooray! We found '.count($people).' people.</h4>
+					If you would like to refine your search, you can use the filters above. Once you\'ve got the right list, you can print this page, and only the table below will be printed.
+				</div>
+				<h2 class="visible-print">iFantasyFitness People List: '.count($people).' people</h2>';
 				echo '<table class="table table-striped table-hover">
 				<thead>
 				<tr>
