@@ -359,10 +359,9 @@ if(!empty($seasons)) {
 			<li><a href="/add">Add points</a></li>
 			<li><a href="/leaderboard">View leaderboard</a></li>
 			<li><a href="/records">View records</a></li>
-			<li><a href="/print">Print reports</a></li>
-			<li><a href="/import">Import records</a></li>
-			<li><a href="/rules/ask">Message Rules Committee</a></li>
-			<li><a href="/settings">Account settings</a></li>
+			<li><a href="/records/print">Print reports</a></li>
+			<li><a href="/add/import">Import records</a></li>
+			<li><a href="http://dft.ba/-iFFRules">Message Rules Committee</a></li>
 			<li><a href="/settings/profile">Add/remove social networks</a></li>
 			<li><a href="http://www.dreamhost.com/donate.cgi?id=17581">Support us</a> (Help offset our hosting bill)</li>
 			<li><a href="/logout">Sign out</a></li>
