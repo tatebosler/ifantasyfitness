@@ -50,17 +50,12 @@ if($_POST['submitted'] == 'profile') {
 		$user['last'] = filter_var($_POST['last'], FILTER_SANITIZE_SPECIAL_CHARS);
 		$query .= "last='$last', ";
 	}
-	if($_POST['grad'] != $user['grad']) {
-		$grad = filter_var($_POST['grad'], FILTER_SANITIZE_NUMBER_INT);
-		$user['grad'] = filter_var($_POST['grad'], FILTER_SANITIZE_NUMBER_INT);
-		$query .= "grad=$grad, ";
-	}
 	if($_POST['gender'] != $user['gender']) {
 		$gender = filter_var($_POST['gender'], FILTER_SANITIZE_NUMBER_INT);
 		$user['gender'] = filter_var($_POST['gender'], FILTER_SANITIZE_NUMBER_INT);
 		$query .= "gender=$gender, ";
 	}
-	if(!empty($user['first']) and !empty($user['last']) and ($user['gender'] <= 1) and ($user['grad'] >= 1900)) {
+	if(!empty($user['first']) and !empty($user['last']) and ($user['gender'] <= 1)) {
 		# Profile is complete.
 		$user['profile'] = 0;
 		$query .= "profile=0";
@@ -112,13 +107,6 @@ if($_POST['submitted'] == 'profile') {
 				<label class="col-xs-2 control-label">Last name</label>
 				<div class="col-xs-10">
 					<input type="text" name="last" class="form-control" value="<?=$user['last']?>">
-				</div>
-			</div>
-			<div class="form-group">
-				<label class="col-xs-2 control-label">Graduation</label>
-				<div class="col-xs-10">
-					<input type="text" name="grad" class="form-control" value="<?=$user['grad']?>">
-					<span class="help-block">The year you graduated (or will graduate) from high school</span>
 				</div>
 			</div>
 			<div class="form-group">
