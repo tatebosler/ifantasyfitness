@@ -42,10 +42,10 @@ if($provider == "twitter") {
 		} else {
 			$ue_grab = mysqli_fetch_array($ue_name_check);
 			
+			$id = $ue_grab['id'];
+			
 			# Let's update the database
 			$user_updater = @mysqli_query($db, "UPDATE users SET $provider=$uid WHERE id=$id");
-			
-			$id = $ue_grab['id'];
 			if(!empty($ue_grab['facebook'])) setcookie('iff-facebook',$ue_grab['facebook'],$exp,'/','.ifantasyfitness.com');
 			if(!empty($ue_grab['twitter'])) setcookie('iff-twitter',$ue_grab['twitter'],$exp,'/','.ifantasyfitness.com');
 			if(!empty($ue_grab['google'])) setcookie('iff-google',$ue_grab['google'],$exp,'/','.ifantasyfitness.com');
