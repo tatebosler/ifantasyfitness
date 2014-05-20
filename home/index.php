@@ -135,10 +135,16 @@ if(!empty($seasons)) {
 	<div class="col-xs-12 col-sm-7 col-md-8">
 		<h2>Activity</h2>
 		<?php
-		$activities = @mysqli_query($db, "SELECT * FROM records WHERE team=0 ORDER BY timestamp DESC LIMIT 25");
+		$activities = @mysqli_query($db, "SELECT * FROM records ORDER BY timestamp DESC, team DESC LIMIT 30");
+		$current_disp_id = 0;
 		$record_types = array("run" => "Running", "run_team" => "Running at Monument", "rollerski" => "Rollerskiing", "walk" => "Walking", "hike" => "Hiking with packs", "bike" => "Biking", "swim" => "Swimming", "paddle" => "Paddling, Rowing or Kayaking", "strength" => "Strength or core training", "sports" => "Aerobic sports");
 		$use_minutes = array('paddle','strength','sports');
 		while($record = mysqli_fetch_array($activities)) {
+			if($record['disp_id'] == $current_disp_id) {
+				continue;
+			} else {
+				$current_disp_id = $record['disp_id'];
+			}
 			echo '<div class="panel';
 			if($record['user'] == $id) { # this is your record
 				echo ' panel-success';

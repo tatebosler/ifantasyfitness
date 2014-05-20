@@ -20,7 +20,7 @@ $connected = true;
 include('../php/head-auth.php');
 ?>
 <div class="row">
-	<div class="col-xs-12 col-sm-9">
+	<div class="col-xs-12">
 		<?php
 		if($_COOKIE['message'] == 'delete') {
 			echo '<div class="alert alert-success">
@@ -36,7 +36,7 @@ include('../php/head-auth.php');
 		<?php
 		$record_types = array("run" => "Running", "run_team" => "Running at Monument", "rollerski" => "Rollerskiing", "walk" => "Walking", "hike" => "Hiking with packs", "bike" => "Biking", "swim" => "Swimming", "paddle" => "Paddling, Rowing or Kayaking", "strength" => "Strength or core training", "sports" => "Aerobic sports");
 		$use_minutes = array('paddle','strength','sports');
-		$record_fetcher = @mysqli_query($db, "SELECT * FROM records WHERE team=0 AND user=$id ORDER BY timestamp DESC");
+		$record_fetcher = @mysqli_query($db, "SELECT * FROM records WHERE user=$id ORDER BY disp_id DESC");
 		if(mysqli_num_rows($record_fetcher) == 0) {
 			# Does the user have a profile yet?
 			echo '<p class="lead">No records found!</p>
@@ -51,7 +51,13 @@ include('../php/head-auth.php');
 		} else {
 			$i = 0;
 			$life_total = 0;
+			$current_disp_id = 0;
 			while($record = mysqli_fetch_array($record_fetcher)) {
+				if($record['disp_id'] == $current_disp_id) {
+					continue;
+				} else {
+					$current_disp_id = $record['disp_id'];
+				}
 				$i++;
 				echo '<div class="panel panel-default">';
 				if($i <= 6) {
@@ -104,24 +110,6 @@ include('../php/head-auth.php');
 		}
 		?>
 	</div>
-	<div class="col-sm-3">
-		<h2>Statistics</h2>
-		<?php
-		if(mysqli_num_rows($record_fetcher) == 0) {
-			echo '<p class="lead">Statistics Unavailable</p>
-			<p>Record workouts to learn about your performance.</p>';
-		} else {
-			echo '<dl>
-			<dt>Lifetime record count</dt>
-			<dd>'.$i.' records</dd>
-			<dt>Total points scored</dt>
-			<dd>'.round($life_total, 2).' points</dd>
-			<dt>Average per record</dt>
-			<dd>'.round($life_total/$i, 2).' points per record</dd>
-			</dl>';
-		}
-		?>
-</div>
 <?php
 include('../php/foot.php');
 ?>
