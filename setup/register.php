@@ -27,17 +27,12 @@ if(isset($_POST['submitted'])) {
 		$user['last'] = filter_var($_POST['last'], FILTER_SANITIZE_SPECIAL_CHARS);
 		$query .= "last='$last', ";
 	}
-	if($_POST['grad'] != $user['grad']) {
-		$grad = filter_var($_POST['grad'], FILTER_SANITIZE_NUMBER_INT);
-		$user['grad'] = filter_var($_POST['grad'], FILTER_SANITIZE_NUMBER_INT);
-		$query .= "grad=$grad, ";
-	}
 	if($_POST['gender'] != $user['gender']) {
 		$gender = filter_var($_POST['gender'], FILTER_SANITIZE_NUMBER_INT);
 		$user['gender'] = filter_var($_POST['gender'], FILTER_SANITIZE_NUMBER_INT);
 		$query .= "gender=$gender, ";
 	}
-	if(!empty($user['first']) and !empty($user['last']) and ($user['gender'] <= 1) and ($user['grad'] >= 1900)) {
+	if(!empty($user['first']) and !empty($user['last']) and ($user['gender'] <= 1)) {
 		# Profile is complete.
 		$user['profile'] = 0;
 		$query .= "profile=0";
@@ -53,9 +48,8 @@ if(isset($_POST['submitted'])) {
 		$slug = filter_var($_POST['season'], FILTER_SANITIZE_SPECIAL_CHARS);
 		if($_POST['prediction'] > 0) $predict = filter_var($_POST['prediction'], FILTER_SANITIZE_NUMBER_INT);
 		if($_POST['division'] >= 0) $division = filter_var($_POST['division'], FILTER_SANITIZE_NUMBER_INT);
-		if($_POST['goal'] >= 0) $goal = filter_var($_POST['goal'], FILTER_SANITIZE_NUMBER_INT);
 		if($predict > 0 and $division >= 0 and $goal >= 0) {
-			$registerer = @mysqli_query($db, "INSERT INTO tMembers (user, team, season, prediction, division, daily_goal) VALUES ($id, 1, '$slug', $predict, $division, $goal)");
+			$registerer = @mysqli_query($db, "INSERT INTO tMembers (user, team, season, prediction, division) VALUES ($id, 1, '$slug', $predict, $division)");
 			if($registerer) {
 				setcookie('reg-welcome',$slug,$now+5,'/','.ifantasyfitness.com');
 				header("Location: http://www.ifantasyfitness.com/home");
@@ -86,13 +80,6 @@ include('../php/head-auth.php');
 				<label class="col-xs-2 control-label">Last name</label>
 				<div class="col-xs-10">
 					<input type="text" name="last" class="form-control" value="<?=$user['last']?>">
-				</div>
-			</div>
-			<div class="form-group">
-				<label class="col-xs-2 control-label">Graduation</label>
-				<div class="col-xs-10">
-					<input type="number" name="grad" min="<?=(date('Y')-120)?>" max="<?=date('Y')?>" class="form-control" value="<?=$user['grad']?>">
-					<span class="help-block">The year you graduated (or will graduate) from high school. <strong>Please enter the full year, for instance <?=date('Y')?>.</strong> We use this mainly for statistical purposes, and also to help you out for future season registrations. This data won't be shared!</span>
 				</div>
 			</div>
 			<div class="form-group">
@@ -172,42 +159,6 @@ include('../php/head-auth.php');
 						<label>
 							<input type="radio" name="division" value="6" >
 							<strong>Alumni</strong> of Highland (who don\'t fall into a division above)
-						</label>
-					</div>
-				</div>
-			</div>
-			<div class="form-group">
-				<label class="col-xs-2 control-label">Running Goal</label>
-				<div class="col-xs-10">
-					<p class="form-control-static">Please select a Daily Running Goal program. This will appear under your season points goal, and give you an idea of what to do to improve your running ability.</p>
-					<div class="radio">
-						<label>
-							<input type="radio" name="goal" value="0">
-							<strong>BRONZE</strong> - 150 miles. Recommended for freshmen, middle schoolers, and athletes brand new to the team.
-						</label>
-					</div>
-					<div class="radio">
-						<label>
-							<input type="radio" name="goal" value="1">
-							<strong>SILVER</strong> - 250 miles (men), 200 miles (women). Recommended for sophomores and athletes recovering from an injury.
-						</label>
-					</div>
-					<div class="radio">
-						<label>
-							<input type="radio" name="goal" value="2">
-							<strong>GOLD</strong> - 325 miles (men), 250 miles (women). Recommended for juniors and athletes who have historically run JV.
-						</label>
-					</div>
-					<div class="radio">
-						<label>
-							<input type="radio" name="goal" value="3">
-							<strong>PLATINUM</strong> - 400 miles (men), 300 miles (women) Recommended for seniors and determined varsity athletes.
-						</label>
-					</div>
-					<div class="radio">
-						<label>
-							<input type="radio" name="goal" value="4">
-							<strong>DIAMOND</strong> - 500 miles (men), 400 miles (women). For experienced varsity runners only. Requires serious motivation.
 						</label>
 					</div>
 					<br>
