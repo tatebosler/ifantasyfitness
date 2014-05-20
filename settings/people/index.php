@@ -125,7 +125,7 @@ while($team = mysqli_fetch_array($team_lister)) {
 	$teamDisp[$team['id']] = $team['season']; # Useful for filtering
 }
 
-$divisions = array(1 => "Upperclassmen", 2 => "Underclassmen", 3 => "Middle school", 4 => "Staff", 5 => "Parents", 6 => "Alumni");
+$divisions = array(1 => "Upperclassmen", 2 => "Underclassmen", 3 => "Middle school", 4 => "Staff / VIP", 5 => "Parents", 6 => "Alumni");
 ?>
 <div class="row hidden-print">
 	<div class="col-xs-12">

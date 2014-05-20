@@ -118,7 +118,7 @@ function stars($miles, $gender) {
 		<h4 class="hidden-xs hidden-sm">Select Division</h4>
 		<div class="hidden-xs hidden-sm list-group">
 			<?php
-			$divisions = array('a' => "All Individuals", 'r' => "Running", 't' => "Teams", 1 => "Upperclassmen", 2 => "Underclassmen", 3 => "Middle School", 4 => "Staff", 5 => "Parents", 6 => "Alumni");
+			$divisions = array('a' => "All Individuals", 'r' => "Running", 't' => "Teams", 1 => "Upperclassmen", 2 => "Underclassmen", 3 => "Middle School", 4 => "Staff / VIP", 5 => "Parents", 6 => "Alumni");
 			foreach($divisions as $key => $value) {
 				echo '<a href="?season='.$season.'&disp='.$key.'" class="list-group-item';
 				if($mode == $key) echo ' active';
@@ -147,7 +147,7 @@ function stars($miles, $gender) {
 				<form name="sel_disp">
 					<select name="SelDisp" onchange="document.location.href=document.sel_disp.SelDisp.options[document.sel_disp.SelDisp.selectedIndex].value" class="form-control">
 					<?php
-					$divisions = array('a' => "All Individuals", 'r' => "Running", 't' => "Teams", 1 => "Upperclassmen", 2 => "Underclassmen", 3 => "Middle School", 4 => "Staff", 5 => "Parents", 6 => "Alumni");
+					$divisions = array('a' => "All Individuals", 'r' => "Running", 't' => "Teams", 1 => "Upperclassmen", 2 => "Underclassmen", 3 => "Middle School", 4 => "Staff / VIP", 5 => "Parents", 6 => "Alumni");
 					foreach($divisions as $key => $value) {
 						echo '<option value="/leaderboard?season='.$season.'&disp='.$key.'"';
 						if($mode == $key) echo ' selected';

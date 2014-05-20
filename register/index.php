@@ -97,7 +97,7 @@ include('../php/head-auth.php');
 					<div class="radio">
 						<label>
 							<input type="radio" name="division" value="4">
-							<strong>Staff</strong> - all SPPS staff, including coaches
+							<strong>Staff &amp; VIPs</strong> - Coaches, teachers, and VIPs
 						</label>
 					</div>
 					<div class="radio">
