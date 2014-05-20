@@ -59,51 +59,45 @@ include('../php/head-auth.php');
 					$current_disp_id = $record['disp_id'];
 				}
 				$i++;
-				echo '<div class="panel panel-default">';
-				if($i <= 6) {
-					echo '<div class="panel-heading">
-						<h3 class="panel-title">'.date('F j, Y g:i:s a',$record['timestamp']).'<span class="pull-right">'.round($record['total'], 2).'</span></h3>
-					</div>
-					<div class="panel-body">
-					<table class="table">
-						<thead>
-							<tr>
-								<th class="col-xs-6">Activity</th>
-								<th class="col-xs-3">Duration</th>
-								<th class="col-xs-3">Points</th>
-							</tr>
-						</thead>
-						<tbody>';
-					# Record Data
-					foreach($record_types as $data=>$disp) {
-						$points = $data . '_p';
-						if($record[$data] != 0) {
-							echo '<tr>
-							<td>'.$disp.'</td>
-							<td>'.round($record[$data],2);
-							if(in_array($data, $use_minutes)) {
-								echo ' minute';
-							} else {
-								echo ' mile';
-							}
-							if($record[$data] != 1) echo 's';
-							echo '</td>
-							<td>'.round($record[$points],2).'</td>
-							</tr>';
+				echo '<div class="panel panel-default">
+				<div class="panel-heading">
+					<h3 class="panel-title">'.date('F j, Y g:i:s a',$record['timestamp']).'<span class="pull-right">'.round($record['total'], 2).'</span></h3>
+				</div>
+				<div class="panel-body">
+				<table class="table">
+					<thead>
+						<tr>
+							<th class="col-xs-6">Activity</th>
+							<th class="col-xs-3">Duration</th>
+							<th class="col-xs-3">Points</th>
+						</tr>
+					</thead>
+					<tbody>';
+				# Record Data
+				foreach($record_types as $data=>$disp) {
+					$points = $data . '_p';
+					if($record[$data] != 0) {
+						echo '<tr>
+						<td>'.$disp.'</td>
+						<td>'.round($record[$data],2);
+						if(in_array($data, $use_minutes)) {
+							echo ' minute';
+						} else {
+							echo ' mile';
 						}
+						if($record[$data] != 1) echo 's';
+						echo '</td>
+						<td>'.round($record[$points],2).'</td>
+						</tr>';
 					}
-					echo '</tbody>
-					</table>';
-					if($record['altitude'] != 1) echo '<p><strong>Altitude bonus awarded:</strong> x'.$record['altitude'].'</p>';
-					if(!empty($record['comments'])) echo '<p><strong>Comment:</strong> '.$record['comments'].'</p>';
-					echo 'Total: '.round($record['total'],2).' point';
-					if($record['total'] != 1) echo 's';
-					echo '<span class="pull-right"><i class="fa fa-edit"></i> <a href="/records/edit?id='.$record['id'].'">edit</a> - <i class="fa fa-trash-o"></i> <a href="/records/delete?id='.$record['id'].'">delete</a></span></div>';
-				} else {
-					echo '<div class="panel-heading">
-						<h3 class="panel-title">'.date('F j, Y g:i:s a',$record['timestamp']).'<span class="pull-right">'.round($record['total'], 2).' - <i class="fa fa-eye"></i> <a href="/records/view?id='.$record['id'].'">view</a> - <i class="fa fa-edit"></i> <a href="/records/edit?id='.$record['id'].'">edit</a> - <i class="fa fa-trash-o"></i> <a href="/records/delete?id='.$record['id'].'">delete</a></span></h3>
-					</div>';
 				}
+				echo '</tbody>
+				</table>';
+				if($record['altitude'] != 1) echo '<p><strong>Altitude bonus awarded:</strong> x'.$record['altitude'].'</p>';
+				if(!empty($record['comments'])) echo '<p><strong>Comment:</strong> '.$record['comments'].'</p>';
+				echo 'Total: '.round($record['total'],2).' point';
+				if($record['total'] != 1) echo 's';
+				echo '<span class="pull-right"><i class="fa fa-edit"></i> <a href="/records/edit?id='.$record['id'].'">edit</a> - <i class="fa fa-trash-o"></i> <a href="/records/delete?id='.$record['id'].'">delete</a></span></div>';
 				$life_total += $record['total'];
 				echo '</div>';
 			}
