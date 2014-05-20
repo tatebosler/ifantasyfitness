@@ -33,10 +33,6 @@ if(isset($_POST['submitted'])) {
 	$compStart = strtotime($_POST['comp_start']);
 	$compEnd = strtotime($_POST['comp_end']);
 	
-	# Process to find the first day of daily Goals
-	$goalStartStr = substr($_POST['comp_start'], 0, 10).' 12:00 AM';
-	$goalStart = strtotime($goalStartStr);
-	
 	# Escape name
 	$name = filter_var($_POST['name'], FILTER_SANITIZE_SPECIAL_CHARS);
 	$slug = filter_var($_POST['slug'], FILTER_SANITIZE_SPECIAL_CHARS);
@@ -55,7 +51,7 @@ if(isset($_POST['submitted'])) {
 		# Verify that the slug doesn't exist
 		$slug_unique = @mysqli_query($db, "SELECT * FROM seasons WHERE name='$slug'");
 		if(mysqli_num_rows($slug_unique) == 0) {
-			$season_creator = @mysqli_query($db, "INSERT INTO seasons (name, reg_start, reg_end, comp_start, comp_end, display_name, dailygoal_start) VALUES ('$slug', $regStart, $regEnd, $compStart, $compEnd, '$name', $goalStart)");
+			$season_creator = @mysqli_query($db, "INSERT INTO seasons (name, reg_start, reg_end, comp_start, comp_end, display_name) VALUES ('$slug', $regStart, $regEnd, $compStart, $compEnd, '$name')");
 			if($season_creator) {
 				setcookie('confirm_message','create',time()+3,'/','.ifantasyfitness.com');
 				header("Location: http://www.ifantasyfitness.com/settings/seasons");

@@ -322,36 +322,6 @@ if(!empty($seasons)) {
 		}
 		echo '" aria-valuenow="'.$prog_value.'" aria-valuemin="0" aria-valuemax="100" style="width: '.$prog_value.'%;"></div>
 		</div>';
-		
-		# Daily running goal
-		if($day > 0) {
-			$daily_goal_category = ($team_data['daily_goal']);
-			$daily_goal_fetcher = @mysqli_query($db, "SELECT * FROM dailygoals WHERE day=$day");
-			$daily_goal_data = mysqli_fetch_array($daily_goal_fetcher);
-			$daily_goal = $daily_goal_data[$daily_goal_category];
-		} else {
-			$daily_goal = 0;
-		}
-		if($daily_goal == 0) {
-			$dg_value = 0;
-			echo '<p><strong>Daily goal:</strong> No daily goal today!';
-		} else {
-			$dg_value = ($team_data['day_run'] / $daily_goal) * 100;
-			echo '<p><strong>Daily goal:</strong> '.$team_data['day_run'].' of '.$daily_goal.' miles ran';
-		}
-		echo '<div class="progress">
-			<div class="progress-bar';
-		if($dg_value >= 100) {
-			echo ' progress-bar-warning';
-		} elseif ($dg_value >= 75) {
-			echo ' progress-bar-info';
-		} elseif ($dg_value >= 50) {
-			echo ' progress-bar-success';
-		} elseif ($dg_value >= 25) {
-			echo ' progress-bar-danger';
-		}
-		echo '" aria-valuenow="'.$dg_value.'" aria-valuemin="0" aria-valuemax="100" style="width: '.$dg_value.'%;"></div>
-		</div>';
 		?>
 		<hr>
 		<h2>Quick Links</h2>

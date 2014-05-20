@@ -83,9 +83,6 @@ if ($_POST['other-submitted'] == 1) {
 	$compStart = strtotime($_POST['comp_start']);
 	$compEnd = strtotime($_POST['comp_end']);
 	
-	# Process to find the first day of daily Goals
-	$goalStartStr = substr($_POST['comp_start'], 0, 10).' 12:00 AM';
-	$goalStart = strtotime($goalStartStr);
 	$fields = array('reg_start','reg_end','comp_start','comp_end','name');
 	foreach($fields as $value) {
 		if(empty($_POST[$value])) {
@@ -98,7 +95,7 @@ if ($_POST['other-submitted'] == 1) {
 	if($compStart >= $compEnd) $ok = false;
 	
 	if($ok) {
-		$season_updater = @mysqli_query($db, "UPDATE seasons SET display_name='$name', reg_start=$regStart, reg_end=$regEnd, comp_start=$compStart, comp_end=$compEnd, dailygoal_start=$goalStart WHERE name='$slug'");
+		$season_updater = @mysqli_query($db, "UPDATE seasons SET display_name='$name', reg_start=$regStart, reg_end=$regEnd, comp_start=$compStart, comp_end=$compEnd WHERE name='$slug'");
 	}
 }
 
