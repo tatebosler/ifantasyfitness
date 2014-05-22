@@ -55,7 +55,7 @@ echo '<!DOCTYPE html>
 						<li><a href="/add"><i class="hidden-sm fa fa-plus"></i> Add points <span class="badge">'.$points.'</span></a></li>
 						<li><a href="/records"><i class="hidden-sm fa fa-th-list"></i> My records</a></li>
 						<li><a href="/leaderboard"><i class="hidden-sm fa fa-bar-chart-o"></i> Leaderboard</a></li>
-						<li><a href="/rules"><i class="hidden-sm fa fa-bullhorn"></i> Rules</a></li>
+						<li class="hidden-sm"><a href="/rules"><i class="hidden-sm fa fa-bullhorn"></i> Rules</a></li>
 					</ul>
 					<ul class="nav navbar-nav navbar-right">
 						<li class="hidden-sm"><a href="/settings"><i class="fa fa-cog"></i> Settings</a></li>
