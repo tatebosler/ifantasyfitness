@@ -357,20 +357,25 @@ include('../php/head-auth.php');
 			$data_str = "week_".$type;
 			$name_fetcher = @mysqli_query($db, "SELECT * FROM globals WHERE name='mult_$type'");
 			$name_data = mysqli_fetch_array($name_fetcher);
+			if(empty($team_data[$data_str])) {
+				$current = 0;
+			} else {
+				$current = $team_data[$data_str];
+			}
 			echo '<h4>'.$name_data['display'].'</h4>
-			<p>The cap is <strong>'.$cap.'</strong> points per week. In the last 7 days, you have logged <strong>'.$team_data[$data_str].' point';
-			if($team_data[$data_str] != 1) echo 's';
+			<p>The cap is <strong>'.$cap.'</strong> points per week. In the last 7 days, you have logged <strong>'.$current.' point';
+			if($current != 1) echo 's';
 			echo '</strong>.</p>
 			<div class="progress">
 				<div class="progress-bar';
-			if((100 * $team_data[$data_str] / $cap) >= 90) {
-				echo '"';
-			} elseif ((100 * $team_data[$data_str] / $cap) >= 80) {
+			if($current / $cap >= 0.9) {
+				echo '"'; # Keep it red if you're in danger of hitting the cap
+			} elseif ($current / $cap >= 0.75) {
 				echo ' progress-bar-danger"';
 			} else {
 				echo ' progress-bar-success"';
 			}
-			echo ' style="width: '.(100 * $team_data[$data_str] / $cap).'%;"></div>
+			echo ' style="width: '.(100 * $current / $cap).'%;"></div>
 			</div>';
 		}
 		?>
