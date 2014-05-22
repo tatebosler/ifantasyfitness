@@ -1,4 +1,32 @@
 <?php
+if(!$connected) include('db.php');
+# Assume the user is valid. Now, what season are we in?
+$now = time();
+$season_count = @mysqli_query($db, "SELECT * FROM seasons");
+if(mysqli_num_rows($season_count) == 1) {
+	$season_data = mysqli_fetch_array($season_count);
+	$season = $season_data['name'];
+	$s = true;
+} elseif (mysqli_num_rows($season_count) == 0) {
+	$s = false;
+} else {
+	$season_finder = @mysqli_query($db, "SELECT * FROM seasons WHERE comp_start <= $now ORDER BY comp_start DESC");
+	if(mysqli_num_rows($season_finder) == 0) {
+		$s = false;
+	} else {
+		$season_data = mysqli_fetch_array($season_finder);
+		$season = $season_data['name'];
+		$s = true;
+	}
+}
+
+if($s) {
+	$point_fetch = @mysqli_query($db, "SELECT * FROM tMembers WHERE user=$id AND season='$season'");
+	$point_data = mysqli_fetch_array($point_fetch);
+	$points = round($point_data['season_total'], 2);
+} else {
+	$points = 0;
+}
 echo '<!DOCTYPE html>
 	<head>
 		<meta charset="utf-8">
@@ -24,7 +52,7 @@ echo '<!DOCTYPE html>
 				<div class="collapse navbar-collapse">
 					<ul class="nav navbar-nav">
 						<li><a href="/home"><i class="hidden-sm fa fa-home"></i> Home</a></li>
-						<li><a href="/add"><i class="hidden-sm fa fa-plus"></i> Add points</a></li>
+						<li><a href="/add"><i class="hidden-sm fa fa-plus"></i> Add points <span class="badge">'.$points.'</span></a></li>
 						<li><a href="/records"><i class="hidden-sm fa fa-th-list"></i> My records</a></li>
 						<li><a href="/leaderboard"><i class="hidden-sm fa fa-bar-chart-o"></i> Leaderboard</a></li>
 						<li><a href="/rules"><i class="hidden-sm fa fa-bullhorn"></i> Rules</a></li>
@@ -39,7 +67,6 @@ echo '<!DOCTYPE html>
 			</div>
 		</div>
 		<div class="container">';
-if(!$connected) include('db.php');
 $announce_data = array();
 $announcement_grab = @mysqli_query($db, "SELECT * FROM globals WHERE name LIKE 'announcement\_%'");
 while($announcement_info = mysqli_fetch_array($announcement_grab)) {
