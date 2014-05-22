@@ -75,7 +75,6 @@ if($valid) {
 		?>
 		</ul>
 		<p><strong>Note:</strong> coaches may ask you for verification of your altitude, so we suggest taking photos or using a GPS watch while you're up there.</p>
-		<h2>Point Limits</h2>
 	</div>
 </div>
 <?php
