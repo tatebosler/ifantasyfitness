@@ -33,7 +33,7 @@ echo '<!DOCTYPE html>
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title>'.$title.' - iFantasyFitness - Train Competitively</title>
-	    <link href="//ifantasyfitness.com/css/main.css" rel="stylesheet">
+	    <link href="//netdna.bootstrapcdn.com/bootswatch/3.1.1/simplex/bootstrap.min.css" rel="stylesheet">
 	    <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.css" rel="stylesheet">
 	    <link href="//ifantasyfitness.com/css/bootstrap-datetimepicker.css" rel="stylesheet">
 	</head>
