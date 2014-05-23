@@ -95,16 +95,16 @@ if ($_POST['other-submitted'] == 1) {
 	if($compStart >= $compEnd) $ok = false;
 	
 	if($ok) {
-		$season_updater = @mysqli_query($db, "UPDATE seasons SET display_name='$name', reg_start=$regStart, reg_end=$regEnd, comp_start=$compStart, comp_end=$compEnd WHERE name='$slug'");
+		$the_season_updater = @mysqli_query($db, "UPDATE seasons SET display_name='$name', reg_start=$regStart, reg_end=$regEnd, comp_start=$compStart, comp_end=$compEnd, WHERE name='$slug'");
 	}
 }
 
 # Validate the season
-$season_fetcher = @mysqli_query($db, "SELECT * FROM seasons WHERE name='$slug'");
-if(mysqli_num_rows($season_fetcher) == 0) {
+$the_season_fetcher = @mysqli_query($db, "SELECT * FROM seasons WHERE name='$slug'");
+if(mysqli_num_rows($the_season_fetcher) == 0) {
 	header('Location: http://www.ifantasyfitness.com/settings/seasons');
 } else {
-	$season = mysqli_fetch_array($season_fetcher);
+	$the_season = mysqli_fetch_array($the_season_fetcher);
 }
 
 # User is valid, and has proper permissions.
@@ -133,7 +133,7 @@ asort($captains);
 <div class="row">
 	<div class="col-xs-12">
 		<?php
-		if($season_updater) echo '<div class="alert alert-success">
+		if($the_season_updater) echo '<div class="alert alert-success">
 			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 			<i class="fa fa-check"></i> The season has been updated.</div>';
 		if($team_inserter) echo '<div class="alert alert-success">
@@ -198,14 +198,14 @@ asort($captains);
 			<div class="form-group">
 				<label class="col-xs-2 control-label">Name</label>
 				<div class="col-xs-10">
-					<input type="text" name="name" class="form-control" maxlength="255" value="<?=$season['display_name']?>">
+					<input type="text" name="name" class="form-control" maxlength="255" value="<?=$the_season['display_name']?>">
 				</div>
 			</div>
 			<div class="form-group">
 				<label class="col-xs-2 control-label">Registration start</label>
 				<div class='col-xs-10'>
 			        <div class="input-group date" id="reg_start">
-			            <input type="text" class="form-control" name="reg_start" readonly placeholder="Use the calendar on the right to select start date and time" value="<?php echo date('m/d/Y g:i A', $season['reg_start']); ?>">
+			            <input type="text" class="form-control" name="reg_start" readonly placeholder="Use the calendar on the right to select start date and time" value="<?php echo date('m/d/Y g:i A', $the_season['reg_start']); ?>">
 			            <span class="input-group-addon"><span class="fa fa-calendar"></span>
 			            </span>
 			        </div>
@@ -215,7 +215,7 @@ asort($captains);
 				<label class="col-xs-2 control-label">Registration end</label>
 				<div class="col-xs-10">
 			        <div class="input-group date" id="reg_end">
-			            <input type="text" class="form-control" name="reg_end" readonly placeholder="Use the calendar on the right to select end date and time" value="<?php echo date('m/d/Y g:i A', $season['reg_end']); ?>">
+			            <input type="text" class="form-control" name="reg_end" readonly placeholder="Use the calendar on the right to select end date and time" value="<?php echo date('m/d/Y g:i A', $the_season['reg_end']); ?>">
 			            <span class="input-group-addon"><span class="fa fa-calendar"></span>
 			            </span>
 				    </div>
@@ -225,7 +225,7 @@ asort($captains);
 				<label class="col-xs-2 control-label">Competition start</label>
 				<div class='col-xs-10'>
 			        <div class="input-group date" id="comp_start">
-			            <input type="text" class="form-control" name="comp_start" readonly placeholder="Use the calendar on the right to select start date and time" value="<?php echo date('m/d/Y g:i A', $season['comp_start']); ?>">
+			            <input type="text" class="form-control" name="comp_start" readonly placeholder="Use the calendar on the right to select start date and time" value="<?php echo date('m/d/Y g:i A', $the_season['comp_start']); ?>">
 			            <span class="input-group-addon"><span class="fa fa-calendar"></span>
 			            </span>
 			        </div>
@@ -235,7 +235,7 @@ asort($captains);
 				<label class="col-xs-2 control-label">Competition end</label>
 				<div class="col-xs-10">
 			        <div class="input-group date" id="comp_end">
-			            <input type="text" class="form-control" name="comp_end" readonly placeholder="Use the calendar on the right to select end date and time" value="<?php echo date('m/d/Y g:i A', $season['comp_end']); ?>">
+			            <input type="text" class="form-control" name="comp_end" readonly placeholder="Use the calendar on the right to select end date and time" value="<?php echo date('m/d/Y g:i A', $the_season['comp_end']); ?>">
 			            <span class="input-group-addon"><span class="fa fa-calendar"></span>
 			            </span>
 				    </div>
