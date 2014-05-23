@@ -53,7 +53,7 @@ if(isset($_GET['div'])) {
 }
 
 $theTeam = 'all';
-if(isset($_GET['season'])) {
+if(isset($_GET['team'])) {
 	$theTeam = filter_var($_GET['team'],FILTER_SANITIZE_SPECIAL_CHARS);
 }
 
