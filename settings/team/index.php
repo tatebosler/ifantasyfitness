@@ -42,11 +42,13 @@ if(isset($_POST['team'])) {
 	$teamNo = filter_var($_POST['team'], FILTER_SANITIZE_NUMBER_INT);
 	$teamName = filter_var($_POST['name-'.$teamNo], FILTER_SANITIZE_SPECIAL_CHARS);
 	$oldTeamName = filter_var($_POST['old-name-'.$teamNo], FILTER_SANITIZE_SPECIAL_CHARS);
-	if(strlen($teamName) > 0 and strlen($teamName) < 255) {
+	if(strlen($teamName) > 0 and strlen($teamName) <= 40) {
 		$team_updater = @mysqli_query($db, "UPDATE tData SET name='$teamName' WHERE id=$teamNo");
 		if($team_updater) {
 			$message = "$oldTeamName has been updated and is now known as $teamName.";
 		}
+	} elseif (strlen($teamName) > 40) {
+		$error_msg = "$teamName is too long! It must be 32 characters or less.";
 	}
 }
 
@@ -96,13 +98,14 @@ while($team = mysqli_fetch_array($team_grab)) {
 					<label class="col-xs-2 control-label">Team name</label>
 					<div class="col-xs-10">
 						<div class="input-group">
-							<input type="text" name="name-'.$tid.'" class="form-control" maxlength="255" value="'.$team['name'].'">
+							<input type="text" name="name-'.$tid.'" class="form-control" maxlength="32" value="'.$team['name'].'">
 							<span class="input-group-btn">
 								<input class="btn btn-primary" type="submit" value="Save">
 								<input type="hidden" name="team" value="'.$tid.'">
 								<input type="hidden" name="old-name-'.$tid.'" value="'.$team['name'].'">
 							</span>
 						</div>
+						<p class="help-block">Team names are limited to 40 characters - be creative, but succinct.</p>
 					</div>
 				</div>
 				<div class="form-group">
