@@ -54,7 +54,7 @@ echo '<!DOCTYPE html>
 				<div class="collapse navbar-collapse">
 					<ul class="nav navbar-nav">
 						<li><a href="/home"><i class="hidden-sm fa fa-home"></i> Home</a></li>
-						<li><a href="/add"><i class="hidden-sm fa fa-plus"></i> Add points <span class="badge">'.$points.'</span></a></li>
+						<li><a href="/add"><i class="hidden-sm fa fa-plus"></i> Add points <span class="badge" style="color: #d9230f; background-color: #ffffff;">'.$points.'</span></a></li>
 						<li><a href="/records"><i class="hidden-sm fa fa-th-list"></i> My records</a></li>
 						<li><a href="/leaderboard"><i class="hidden-sm fa fa-bar-chart-o"></i> Leaderboard</a></li>
 						<li class="hidden-sm"><a href="/rules"><i class="hidden-sm fa fa-bullhorn"></i> Rules</a></li>
