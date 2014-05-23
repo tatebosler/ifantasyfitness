@@ -1,4 +1,6 @@
 <?php
+date_default_timezone_set ("America/Chicago");
+
 if(!$connected) include('db.php');
 # Assume the user is valid. Now, what season are we in?
 $now = time();
