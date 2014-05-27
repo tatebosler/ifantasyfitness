@@ -315,9 +315,11 @@ asort($captains);
 				if($key == 0) echo ' active in';
 				echo '" id="'.$value.'">
 				<form name="distance-'.$value.'" class="form-horizontal" method="post">
-				<input type="hidden" name="num-types" value="'.count($levels[$value]).'">';
+				<input type="submit" value="Save '.$value.'-mile Goals" class="btn btn-primary btn-block">
+				<input type="hidden" name="distance-submit" value="'.$value.'">
+				<input type="hidden" name="num-types-'.$value.'" value="'.count($levels[$value]).'">';
 				for($i = 1; $i < (count($levels[$value]) + 1); $i++) {
-					echo '<input type="hidden" name="type-'.$i.'" value="'.$levels[$value][$i-1].'">';
+					echo '<input type="hidden" name="type-'.$value.'-'.$i.'" value="'.$levels[$value][$i-1].'">';
 				}
 				foreach($day_times as $day => $time) {
 					if($day % 7 == 0) echo '<div class="form-group">
@@ -328,14 +330,16 @@ asort($captains);
 					echo '<div class="form-group">
 						<label class="col-xs-3 col-md-2 control-label" style="text-align: center;">'.date('D F j', $time).'</label>
 						<div class="col-xs-3 col-md-2">
-							<input type="number" class="form-control" value="'.$goal_data[$day][$type].'">
+							<input type="number" name="miles-'.$value.'-'.$day.'" class="form-control" value="'.$goal_data[$day][$type].'">
 						</div>
 						<div class="col-xs-6 col-md-8">
-							<input type="text" class="form-control" value="'.$goal_data[$day][$notesType].'">
+							<input type="text" name="notes-'.$value.'-'.$day.'" class="form-control" value="'.$goal_data[$day][$notesType].'">
 						</div>
 					</div>';
 				}
 				echo '
+				<input type="submit" value="Save '.$value.'-mile Goals" class="btn btn-primary btn-block">
+				<p>You must save before you can edit the goals of another section.</p>
 				</form>
 				</div>';
 			}
