@@ -70,6 +70,18 @@ include('../php/head-auth.php');
 <div class="row">
 	<div class="col-xs-12">
 		<?php
+		# Display Distance Running Goals, if any.
+		echo '<div class="panel panel-info">
+			<div class="panel-heading">
+				<h3 class="panel-title">Today\'s running plans</h3>
+			</div>
+			<div class="panel-body">
+				<p>This box is still being filled with things - its contents change all the time and mean very little at the moment. Check back in a couple days for things that actually mean something. :)</p>
+				Once it\'s done, you\'ll see your goal and workout plan for the day.
+			</div>
+		</div>';
+		
+		# Display messages depending on actions of other pages.
 		if(isset($_COOKIE['total']) and $_COOKIE['total'] > 0) {
 			echo '<div class="alert alert-success">
 			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
@@ -336,6 +348,16 @@ if(!empty($seasons)) {
 			<li><a href="http://www.dreamhost.com/donate.cgi?id=17581">Support us</a> (Help offset our hosting bill)</li>
 			<li><a href="/logout">Sign out</a></li>
 		</ul>
+		<hr>
+		<h2>No Ads Here!</h2>
+		<p>We could put an ad here, but we didn't, and we won't. :)</p>
+		<p>There are two main reasons for this:
+			<ul>
+				<li>we don't like ads, and</li>
+				<li>there's a better way for us to keep the site online: <a href="http://www.dreamhost.com/donate.cgi?id=17581">voluntary donations</a>.</li>
+			</ul>
+		</p>
+		<p>More details are <a href="http://blog.ifantasyfitness.com/2014/05/advertisements-donations-and-financial-transparency/">on the blog</a>.</p>
 	</div>
 </div>
 <?php
