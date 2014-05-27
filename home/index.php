@@ -85,7 +85,7 @@ include('../php/head-auth.php');
 		echo '<div class="panel panel-info">
 			<div class="panel-heading">
 				<h3 class="panel-title">Today\'s running plans
-				<a class="btn btn-small btn-default pull-right" id="toggle-daily-goals">Toggle plans</a>
+				<a class="pull-right" id="toggle-daily-goals">Toggle plans</a>
 				</h3>
 			</div>
 			<div class="panel-body" id="daily-goal-data">';
