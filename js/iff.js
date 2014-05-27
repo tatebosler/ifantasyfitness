@@ -1,11 +1,10 @@
 // A JavaScript file for various random things around iFF.
 
 $("#toggle-daily-goals").click(function() {
-	$("#daily-goal-data").toggle(function() {
-		// Toggles visibility of the daily goals data.
-	});
+	$("#daily-goal-data").toggle();
 });
 
-$(".populate-form").click(function () {
-	// Populates the quick-add with workout data.
+$(".populate").click(function () {
+	$("#miles").val($(this).data("value"));
+	$("#notes").val($(this).data("notes"));
 });

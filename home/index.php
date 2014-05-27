@@ -95,7 +95,8 @@ include('../php/head-auth.php');
 				<tr>
 					<th class="col-xs-3 col-md-2">Stars</th>
 					<th class="col-xs-3 col-md-2">Miles</th>
-					<th class="col-xs-6 col-md-8">Workout notes</th>
+					<th class="col-xs-4 col-md-6">Workout notes</th>
+					<th class="col-xs-2">Quick add</th>
 				</tr>
 			</thead>
 			<tbody>';
@@ -110,6 +111,7 @@ include('../php/head-auth.php');
 				$field .= '-'.strtolower($stars[$j]);
 				echo $goal[$field].'</td>
 				<td>'.$goal[$field.'Notes'].'</td>
+				<td><a class="populate" data-value="'.$goal[$field].'" data-notes="'.$goal[$field.'Notes'].' (for '.$stars[$j].' Distance)">Quick Add</a></td>
 				</tr>';
 			}
 			echo '</tbody></table></div>
@@ -273,7 +275,7 @@ if(!empty($seasons)) {
 				</div>
 				<div class="col-xs-6">
 					<div class="input-group">
-						<input type="text" class="form-control" name="distance">
+						<input type="text" class="form-control" name="distance" id="miles">
 						<span class="input-group-addon">miles</span>
 					</div>
 					<br>
@@ -281,7 +283,7 @@ if(!empty($seasons)) {
 			</div>
 			<div class="row">
 				<div class="col-xs-12">
-					<input type="text" name="comments" placeholder="Comments (will be shared)" class="form-control"><br>
+					<input type="text" name="comments" placeholder="Comments (will be shared)" id="notes" class="form-control"><br>
 				</div>
 			</div>
 			<div class="row">
