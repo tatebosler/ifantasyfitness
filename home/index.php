@@ -84,9 +84,11 @@ include('../php/head-auth.php');
 		# Display Distance Running Goals, if any.
 		echo '<div class="panel panel-info">
 			<div class="panel-heading">
-				<h3 class="panel-title">Today\'s running plans</h3>
+				<h3 class="panel-title">Today\'s running plans
+				<a class="btn btn-small btn-default pull-right" id="toggle-daily-goals">Toggle plans</a>
+				</h3>
 			</div>
-			<div class="panel-body">';
+			<div class="panel-body" id="daily-goal-data">';
 			$goals_query = @mysqli_query($db, "SELECT * FROM dailygoals WHERE start>$now ORDER BY start ASC");
 			echo '<table class="table table-striped table-hover">
 			<thead>
