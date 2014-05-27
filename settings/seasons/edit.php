@@ -167,7 +167,7 @@ asort($captains);
 		<p><a href="/settings/seasons">&larr; Back to season list</a></p>
 		<hr>
 		<h4>Teams <a data-toggle="modal" data-target="#edit-0" class="btn btn-primary pull-right">Create new team</a></h4>
-		<table class="table" id="teams">
+		<table class="table table-striped" id="teams">
 			<thead>
 				<tr>
 					<th>Team Name</th>
@@ -193,7 +193,9 @@ asort($captains);
 				?>
 			</tbody>
 		</table>
-		<h4>Other season settings</h4>
+		<hr>
+		<h4>Basic season settings</h4>
+		<div class="well">
 		<form name="other" class="form-horizontal" method="post" action="/settings/seasons/edit.php?id=<?=$slug?>">
 			<div class="form-group">
 				<label class="col-xs-2 control-label">Name</label>
@@ -241,9 +243,10 @@ asort($captains);
 				    </div>
 				</div>
 			</div>
-			<input type="submit" class="btn btn-primary btn-block" value="Save changes">
+			<input type="submit" class="btn btn-primary btn-block" value="Save basic settings">
 			<input type="hidden" name="other-submitted" value="1">
 		</form>
+		</div>
 	</div>
 </div>
 <?php
