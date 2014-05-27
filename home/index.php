@@ -28,6 +28,17 @@ if(mysqli_num_rows($check_q) > 0) {
 	header('Location: http://www.ifantasyfitness.com');
 }
 
+function star($count) {
+	for($i=0; $i<$count; $i++) {
+		echo '<i class="fa fa-star"></i>';
+	}
+}
+function unstar($count) {
+	for($i=0; $i<$count; $i++) {
+		echo '<i class="fa fa-star-o"></i>';
+	}
+}
+
 $now = time();
 $season_start = $now + (7*24*60*60);
 $season_end = $now - (14*24*60*60);
@@ -75,10 +86,33 @@ include('../php/head-auth.php');
 			<div class="panel-heading">
 				<h3 class="panel-title">Today\'s running plans</h3>
 			</div>
-			<div class="panel-body">
-				<p>This box is still being filled with things - its contents change all the time and mean very little at the moment. Check back in a couple days for things that actually mean something. :)</p>
-				Once it\'s done, you\'ll see your goal and workout plan for the day.
-			</div>
+			<div class="panel-body">';
+			$goals_query = @mysqli_query($db, "SELECT * FROM dailygoals WHERE start ")
+			echo '<table class="table table-striped table-hover">
+			<thead>
+				<tr>
+					<th class="col-xs-3 col-md-2">Stars</th>
+					<th class="col-xs-3 col-md-2">Miles</th>
+					<th class="col-xs-6 col-md-8">Workout notes</th>
+				</tr>
+			</thead>
+			<tbody>'
+			$goal = mysqli_fetch_array($goals_query);
+			for($j = 1; $j < 6; $j++) {
+				echo '<tr><td>'.$stars[$j].' ';
+				star($j);
+				echo '</td><td>';
+				if($user['gender'] == 0) {
+					$field = 'f';
+				} else {
+					$field = 'm';
+				}
+				$field .= '-'.strtolower($stars[$j]);
+				echo $goal[$field].'</td>
+				<td>'.$goal[$field.'Notes'].'</td>
+				</tr>';
+			}
+			echo '</tbody></table></div>
 		</div>';
 		
 		# Display messages depending on actions of other pages.
@@ -264,16 +298,6 @@ if(!empty($seasons)) {
 		<hr>
 		<h2>Goals and Awards</h2>
 		<?php
-		function star($count) {
-			for($i=0; $i<$count; $i++) {
-				echo '<i class="fa fa-star"></i>';
-			}
-		}
-		function unstar($count) {
-			for($i=0; $i<$count; $i++) {
-				echo '<i class="fa fa-star-o"></i>';
-			}
-		}
 		echo '<p><strong>Distance Awards:</strong> ';
 		
 		for($i = 5; $i >= 0; $i--) {
