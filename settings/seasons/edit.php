@@ -99,6 +99,58 @@ if ($_POST['other-submitted'] == 1) {
 	}
 }
 
+if(isset($_POST['distance-submit'])) {
+	# Update the goals in the database.
+	# This will take a bit.
+	
+	# Grab the mileage threshold we're dealing with
+	$dValue = filter_var($_POST['distance-submit'], FILTER_SANITIZE_NUMBER_INT);
+	
+	# Grab what distance stars that corresponds to
+	$count_stars = filter_var($_POST['num-types-'.$dValue]);
+	$types = array();
+	for($i = 1; $i <= $count_stars; $i++) {
+		$types[] = filter_var($_POST['type-'.$dValue.'-'.$i], FILTER_SANITIZE_SPECIAL_CHARS);
+	}
+	
+	# Grab the new data
+	$data = array();
+	$max_day = filter_var($_POST['max-day-'.$dValue], FILTER_SANITIZE_NUMBER_INT);
+	for($i = 0; $i < $max_day; $i++) {
+		if(!empty($_POST['miles-'.$dValue.'-'.$i]) and !empty($_POST['notes-'.$dValue.'-'.$i])) {
+			$data[$i] = array('time' => filter_var($_POST['time-'.$dValue.'-'.$i], FILTER_SANITIZE_NUMBER_INT),
+				'miles' => filter_var($_POST['miles-'.$dValue.'-'.$i], FILTER_SANITIZE_NUMBER_INT),
+				'notes' => filter_var($_POST['notes-'.$dValue.'-'.$i], FILTER_SANITIZE_SPECIAL_CHARS));
+		}
+	}
+	
+	foreach($data as $entry) {
+		$check_data = @mysqli_query($db, "SELECT * FROM dailygoals WHERE start=".$entry['time']);
+		if(mysqli_num_rows($check_data) == 0) {
+			$query = "INSERT INTO dailygoals (start";
+			foreach($types as $type) {
+				$notesType = $type.'Notes';
+				$query .= ", `$type`, `$notesType`";
+			}
+			$query .= ") VALUES (".$entry['time'];
+			foreach($types as $type) {
+				$query .= ", ".$entry['miles'].", '".$entry['notes']."'";
+			}
+			$query .= ")";
+			$go = @mysqli_query($db, $query);
+		} else {
+			$query = "UPDATE dailygoals SET ";
+			foreach($types as $type) {
+				$notesType = $type.'Notes';
+				$query .= "`$type`=".$entry['miles'].", `$notesType`='".$entry['notes']."', ";
+			}
+			$query .= "flag=0 WHERE start=".$entry['time'];
+			$go = @mysqli_query($db, $query);
+			if($go) $goal = $dValue;
+		}
+	}
+}
+
 # Validate the season
 $the_season_fetcher = @mysqli_query($db, "SELECT * FROM seasons WHERE name='$slug'");
 if(mysqli_num_rows($the_season_fetcher) == 0) {
@@ -145,6 +197,9 @@ asort($captains);
 		if($deletion) echo '<div class="alert alert-success">
 			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 			<i class="fa fa-check"></i> The team has been successfully deleted.</div>';
+		if($goal > 0) echo '<div class="alert alert-success">
+			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+			<i class="fa fa-check"></i> Running goals for '.$goal.' miles have been updated.</div>';
 		?>
 		<h2>Settings</h2>
 	</div>
@@ -329,6 +384,7 @@ asort($captains);
 					</div>';
 					echo '<div class="form-group">
 						<label class="col-xs-3 col-md-2 control-label" style="text-align: center;">'.date('D F j', $time).'</label>
+						<input type="hidden" value="'.$time.'" name="time-'.$value.'-'.$day.'">
 						<div class="col-xs-3 col-md-2">
 							<input type="number" name="miles-'.$value.'-'.$day.'" class="form-control" value="'.$goal_data[$day][$type].'">
 						</div>
@@ -338,6 +394,7 @@ asort($captains);
 					</div>';
 				}
 				echo '
+				<input type="hidden" value="'.$day.'" name="max-day-'.$value.'">
 				<input type="submit" value="Save '.$value.'-mile Goals" class="btn btn-primary btn-block">
 				<p>You must save before you can edit the goals of another section.</p>
 				</form>
