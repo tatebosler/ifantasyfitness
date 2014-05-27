@@ -96,7 +96,7 @@ include('../php/head-auth.php');
 					<th class="col-xs-6 col-md-8">Workout notes</th>
 				</tr>
 			</thead>
-			<tbody>'
+			<tbody>';
 			$goal = mysqli_fetch_array($goals_query);
 			for($j = 1; $j < 6; $j++) {
 				echo '<tr><td>'.$stars[$j].' ';
