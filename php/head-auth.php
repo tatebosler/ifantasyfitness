@@ -25,7 +25,8 @@ if(mysqli_num_rows($season_count) == 1) {
 if($s) {
 	$point_fetch = @mysqli_query($db, "SELECT * FROM tMembers WHERE user=$id AND season='$season'");
 	$point_data = mysqli_fetch_array($point_fetch);
-	$points = round($point_data['season_total'], 2);
+	$points = round($point_data['season_total'], 1);
+	$place = $point_data['place'];
 } else {
 	$points = 0;
 }
