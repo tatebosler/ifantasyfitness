@@ -249,7 +249,7 @@ asort($captains);
 		</div>
 		<hr>
 		<h4>Daily Goals</h4>
-		<p>These give athletes an idea of what to do to get more running points. <strong>Note: The save button is at the bottom of the page.</strong> If you plan on changing multiple tiers, you must save each section individually (sorry!)</p>
+		<p>These give athletes an idea of what to do to get more running points. If you plan on changing multiple tiers, you must save each section individually (sorry!)</p>
 		<ul class="nav nav-tabs" style="margin-bottom: 15px;">
 			<?php
 			$star_fetcher = @mysqli_query($db, "SELECT * FROM globals WHERE name LIKE 'da\-%'");
