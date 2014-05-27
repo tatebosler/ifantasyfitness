@@ -82,13 +82,13 @@ include('../php/head-auth.php');
 	<div class="col-xs-12">
 		<?php
 		# Display Distance Running Goals, if any.
-		echo '<div class="panel panel-info">
-			<div class="panel-heading">
+		echo '<div class="panel panel-default">
+			<div class="panel-heading" id="toggle-daily-goals">
 				<h3 class="panel-title">Today\'s running plans
-				<a class="pull-right" id="toggle-daily-goals">Toggle plans</a>
+				<a class="pull-right">Toggle plans</a>
 				</h3>
 			</div>
-			<div class="panel-body" id="daily-goal-data">';
+			<div class="panel-body" id="daily-goal-data" style="display: none;">';
 			$goals_query = @mysqli_query($db, "SELECT * FROM dailygoals WHERE start>$now ORDER BY start ASC");
 			echo '<table class="table table-striped table-hover">
 			<thead>
