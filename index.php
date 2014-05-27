@@ -76,9 +76,9 @@ while($aData = mysqli_fetch_array($announce_grab)) {
 					<p class="lead">
 						<?php
 						if($valid) {
-							echo '<a href="/home" class="btn btn-lg btn-default">Go to dashboard</a>';
+							echo '<a href="/home" class="btn btn-lg btn-primary">Go to dashboard</a>';
 						} else {
-							echo '<a href="/login" class="btn btn-lg btn-default">Get started</a>';
+							echo '<a href="/login" class="btn btn-lg btn-primary">Get started</a>';
 						}
 						?>
 					</p>
