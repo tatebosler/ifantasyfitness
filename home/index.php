@@ -87,7 +87,7 @@ include('../php/head-auth.php');
 				<h3 class="panel-title">Today\'s running plans</h3>
 			</div>
 			<div class="panel-body">';
-			$goals_query = @mysqli_query($db, "SELECT * FROM dailygoals WHERE start ")
+			$goals_query = @mysqli_query($db, "SELECT * FROM dailygoals WHERE start<$now ORDER BY start DESC");
 			echo '<table class="table table-striped table-hover">
 			<thead>
 				<tr>
