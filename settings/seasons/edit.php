@@ -247,6 +247,100 @@ asort($captains);
 			<input type="hidden" name="other-submitted" value="1">
 		</form>
 		</div>
+		<hr>
+		<h4>Daily Goals</h4>
+		<p>These give athletes an idea of what to do to get more running points. <strong>Note: The save button is at the bottom of the page.</strong> If you plan on changing multiple tiers, you must save each section individually (sorry!)</p>
+		<ul class="nav nav-tabs" style="margin-bottom: 15px;">
+			<?php
+			$star_fetcher = @mysqli_query($db, "SELECT * FROM globals WHERE name LIKE 'da\-%'");
+			echo mysqli_error($db);
+			$stars = array(); # Contains star values (150, 200, 250, 300, 325, 400, 500).
+			$levels = array(); # Contains database links (i.e. male bronze = 150, female gold = 300).
+			while($star = mysqli_fetch_array($star_fetcher)) {
+				if(in_array($star['value'], $stars)) {
+					$levels[$star['value']][] = substr($star['name'], 3);
+				} else {
+					$stars[] = $star['value'];
+					$levels[$star['value']] = array(substr($star['name'], 3));
+				}
+			}
+			asort($stars);
+			foreach($stars as $key=>$value) {
+				echo '<li';
+				if($key == 0) echo ' class="active"';
+				echo '><a href="#'.$value.'" data-toggle="tab">'.$value;
+				if($key == 0) echo ' miles';
+				echo '</a></li>';
+			}
+			
+			# Grab when the daily goal thing starts and ends. Let's leave them not in arrays
+			$start_year = date('Y', $the_season['comp_start']);
+			$start_month = date('F', $the_season['comp_start']);
+			$start_day = date('j', $the_season['comp_start']);
+			$end_time = $the_season['comp_end'];
+			
+			# ok. Now comes the fun part.
+			# PHP will take care of fake dates for us, so 6/42/2014 (using American dates) = 7/12/2014.
+			$goal_time = strtotime($start_month.' '.$start_day.', '.$start_year);
+			$days = 0;
+			$day_times = array();
+			while($goal_time < $end_time) {
+				$day_times[$days] = $goal_time;
+				$days += 1;
+				$goal_time = strtotime($start_month.' '.$start_day.', '.$start_year.' +'.$days.' days');
+			}
+			
+			# Let's try to be a little efficient with data queries ;)
+			$goal_data = array();
+			foreach($day_times as $day => $time) {
+				$goal_data_fetch = mysqli_query($db, "SELECT * FROM dailygoals WHERE start=$time");
+				if(mysqli_num_rows($goal_data_fetch) == 0) {
+					$goal_data[$day] = array('m-bronze'=>0,'m-silver'=>0,'m-gold'=>0,'m-platinum'=>0,'m-diamond'=>0,
+					'f-bronze'=>0,'f-silver'=>0,'f-gold'=>0,'f-platinum'=>0,'f-diamond'=>0,
+					'm-bronzeNotes'=>'Rest day','m-silverNotes'=>'Rest day','m-goldNotes'=>'Rest day','m-platinumNotes'=>'Rest day','m-diamondNotes'=>'Rest day',
+					'f-bronzeNotes'=>'Rest day','f-silverNotes'=>'Rest day','f-goldNotes'=>'Rest day','f-platinumNotes'=>'Rest day','f-diamondNotes'=>'Rest day');
+				} else {
+					$goal_data[$day] = mysqli_fetch_array($goal_data_fetch);
+				}
+			}
+			?>
+		</ul>
+		<div id="myTabContent" class="tab-content">
+			<?php
+			foreach($stars as $key => $value) {
+				# Figure out what database link we're dealing with
+				$type = $levels[$value][0];
+				$notesType = $type.'Notes';
+				echo '<div class="tab-pane fade';
+				if($key == 0) echo ' active in';
+				echo '" id="'.$value.'">
+				<form name="distance-'.$value.'" class="form-horizontal" method="post">
+				<input type="hidden" name="num-types" value="'.count($levels[$value]).'">';
+				for($i = 1; $i < (count($levels[$value]) + 1); $i++) {
+					echo '<input type="hidden" name="type-'.$i.'" value="'.$levels[$value][$i-1].'">';
+				}
+				foreach($day_times as $day => $time) {
+					if($day % 7 == 0) echo '<div class="form-group">
+						<label class="col-xs-3 col-md-2 control-label" style="text-align: center;">Date</label>
+						<label class="col-xs-3 col-md-2 control-label" style="text-align: center;">Miles</label>
+						<label class="col-xs-6 col-md-8 control-label" style="text-align: center;">Workout notes/description</label>
+					</div>';
+					echo '<div class="form-group">
+						<label class="col-xs-3 col-md-2 control-label" style="text-align: center;">'.date('D F j', $time).'</label>
+						<div class="col-xs-3 col-md-2">
+							<input type="number" class="form-control" value="'.$goal_data[$day][$type].'">
+						</div>
+						<div class="col-xs-6 col-md-8">
+							<input type="text" class="form-control" value="'.$goal_data[$day][$notesType].'">
+						</div>
+					</div>';
+				}
+				echo '
+				</form>
+				</div>';
+			}
+			?>
+		</div>
 	</div>
 </div>
 <?php
