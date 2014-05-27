@@ -102,7 +102,7 @@ include('../php/head-auth.php');
 				echo '<tr><td>'.$stars[$j].' ';
 				star($j);
 				echo '</td><td>';
-				if($user['gender'] == 0) {
+				if($user['gender'] == 1) {
 					$field = 'f';
 				} else {
 					$field = 'm';
