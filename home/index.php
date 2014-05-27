@@ -82,7 +82,7 @@ include('../php/head-auth.php');
 	<div class="col-xs-12">
 		<?php
 		# Display Distance Running Goals, if any.
-		echo '<div class="panel panel-default">
+		echo '<div class="panel panel-success">
 			<div class="panel-heading" id="toggle-daily-goals">
 				<h3 class="panel-title">Today\'s running plans
 				<a class="pull-right">Toggle plans</a>
@@ -101,9 +101,7 @@ include('../php/head-auth.php');
 			<tbody>';
 			$goal = mysqli_fetch_array($goals_query);
 			for($j = 1; $j < 6; $j++) {
-				echo '<tr><td>'.$stars[$j].' ';
-				star($j);
-				echo '</td><td>';
+				echo '<tr><td>'.$stars[$j].'</td><td>';
 				if($user['gender'] == 1) {
 					$field = 'f';
 				} else {
