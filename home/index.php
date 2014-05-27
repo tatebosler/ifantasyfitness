@@ -89,32 +89,38 @@ include('../php/head-auth.php');
 				</h3>
 			</div>
 			<div class="panel-body" id="daily-goal-data" style="display: none;">';
-			$goals_query = @mysqli_query($db, "SELECT * FROM dailygoals WHERE start>$now ORDER BY start ASC");
-			echo '<table class="table table-striped table-hover">
-			<thead>
-				<tr>
-					<th class="col-xs-3 col-md-2">Stars</th>
-					<th class="col-xs-3 col-md-2">Miles</th>
-					<th class="col-xs-4 col-md-6">Workout notes</th>
-					<th class="col-xs-2">Quick add</th>
-				</tr>
-			</thead>
-			<tbody>';
-			$goal = mysqli_fetch_array($goals_query);
-			for($j = 1; $j < 6; $j++) {
-				echo '<tr><td>'.$stars[$j].'</td><td>';
-				if($user['gender'] == 1) {
-					$field = 'f';
-				} else {
-					$field = 'm';
+			$goals_query = @mysqli_query($db, "SELECT * FROM dailygoals WHERE start<$now ORDER BY start DESC");
+			if(mysqli_num_rows($goals_query) == 0) {
+				echo '<h4>No daily running goals today!</h4>
+				Take a day off, or make up your own running goal!';
+			} else {
+				echo '<table class="table table-striped table-hover">
+				<thead>
+					<tr>
+						<th class="col-xs-3 col-md-2">Stars</th>
+						<th class="col-xs-3 col-md-2">Miles</th>
+						<th class="col-xs-4 col-md-6">Workout notes</th>
+						<th class="col-xs-2">Quick add</th>
+					</tr>
+				</thead>
+				<tbody>';
+				$goal = mysqli_fetch_array($goals_query);
+				for($j = 1; $j < 6; $j++) {
+					echo '<tr><td>'.$stars[$j].'</td><td>';
+					if($user['gender'] == 1) {
+						$field = 'f';
+					} else {
+						$field = 'm';
+					}
+					$field .= '-'.strtolower($stars[$j]);
+					echo $goal[$field].'</td>
+					<td>'.$goal[$field.'Notes'].'</td>
+					<td><a class="populate" data-value="'.$goal[$field].'" data-notes="'.$goal[$field.'Notes'].' (for '.$stars[$j].' Distance)">Quick Add</a></td>
+					</tr>';
 				}
-				$field .= '-'.strtolower($stars[$j]);
-				echo $goal[$field].'</td>
-				<td>'.$goal[$field.'Notes'].'</td>
-				<td><a class="populate" data-value="'.$goal[$field].'" data-notes="'.$goal[$field.'Notes'].' (for '.$stars[$j].' Distance)">Quick Add</a></td>
-				</tr>';
+				echo '</tbody></table>';
 			}
-			echo '</tbody></table></div>
+			echo '</div>
 		</div>';
 		
 		# Display messages depending on actions of other pages.
