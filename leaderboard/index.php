@@ -193,11 +193,18 @@ function stars($miles, $gender) {
 						echo '<table class="table table-striped table-hover">
 						<thead>
 						<tr>
-						<th class="col-xs-2">Place</th>
-						<th class="col-xs-7 col-sm-4">User</th>
-						<th class="col-xs-3">Points</th>
-						<th class="hidden-xs col-sm-3">Running</th>
-						</tr>
+						<th class="col-xs-1">Place</th>
+						<th class="col-xs-3">User</th>
+						<th class="col-xs-4">Team</th>';
+						if($mode == 'r') {
+							echo '<th class="col-xs-4 col-sm-2">Running</th>
+							<th class="hidden-xs col-sm-2">Points</th>';
+						} else {
+							echo '<th class="col-xs-4 col-sm-2">Points</th>
+							<th class="hidden-xs col-sm-2">Running</th>';
+						}
+						
+						echo '</tr>
 						</thead>
 						<tbody>';
 						$pl = 0;
@@ -215,13 +222,23 @@ function stars($miles, $gender) {
 							$the_user = mysqli_fetch_array($the_user_fetcher);
 							echo $the_user['first'].' '.$the_user['last'];
 							if($person['season_run'] >= 150) echo stars($person['season_run'], $the_user['gender']);
-							echo '</td>
-							<td>'.round($person['season_total'],3).'</td>
-							<td class="hidden-xs">'.round($person['season_run'],3).'</td>
-							</tr>';
+							
+							# Figure out their team!
+							$team_no = $person['team'];
+							$team_fetcher = @mysqli_query($db, "SELECT * FROM tData WHERE id=$team_no");
+							$team_data = mysqli_fetch_array($team_fetcher);
+							echo '</td><td>'.$team_data['name'].'</td>';
+							if($mode == 'r') {
+								echo '<td>'.round($person['season_run'],3).'</td>
+								<td class="hidden-xs">'.round($person['season_total'],3).'</td>';
+							} else {
+								echo '<td>'.round($person['season_total'],3).'</td>
+								<td class="hidden-xs">'.round($person['season_run'],3).'</td>';
+							}
+							echo '</tr>';
 						}
 						echo '</tbody>
-							</table>';
+						</table>';
 					}
 					break;
 				case 't': # Display team scores
@@ -276,14 +293,15 @@ function stars($miles, $gender) {
 						echo '<table class="table table-striped table-hover">
 						<thead>
 						<tr>
-						<th class="col-xs-2">Place</th>
-						<th class="col-xs-7 col-sm-4">User</th>';
+						<th class="col-xs-1">Place</th>
+						<th class="col-xs-3">User</th>
+						<th class="col-xs-4">Team</th>';
 						if($mode == 'r') {
-							echo '<th class="col-xs-3">Running</th>
-							<th class="hidden-xs col-sm-3">Points</th>';
+							echo '<th class="col-xs-4 col-sm-2">Running</th>
+							<th class="hidden-xs col-sm-2">Points</th>';
 						} else {
-							echo '<th class="col-xs-3">Points</th>
-							<th class="hidden-xs col-sm-3">Running</th>';
+							echo '<th class="col-xs-4 col-sm-2">Points</th>
+							<th class="hidden-xs col-sm-2">Running</th>';
 						}
 						
 						echo '</tr>
@@ -304,7 +322,12 @@ function stars($miles, $gender) {
 							$the_user = mysqli_fetch_array($the_user_fetcher);
 							echo $the_user['first'].' '.$the_user['last'];
 							if($person['season_run'] >= 150) echo stars($person['season_run'], $the_user['gender']);
-							echo '</td>';
+							
+							# Figure out their team!
+							$team_no = $person['team'];
+							$team_fetcher = @mysqli_query($db, "SELECT * FROM tData WHERE id=$team_no");
+							$team_data = mysqli_fetch_array($team_fetcher);
+							echo '</td><td>'.$team_data['name'].'</td>';
 							if($mode == 'r') {
 								echo '<td>'.round($person['season_run'],3).'</td>
 								<td class="hidden-xs">'.round($person['season_total'],3).'</td>';
@@ -315,7 +338,7 @@ function stars($miles, $gender) {
 							echo '</tr>';
 						}
 						echo '</tbody>
-							</table>';
+						</table>';
 					}
 			}
 		} else {
