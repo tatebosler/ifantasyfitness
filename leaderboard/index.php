@@ -232,10 +232,11 @@ function stars($miles, $gender) {
 						echo '<table class="table table-striped table-hover">
 						<thead>
 						<tr>
-						<th class="col-xs-2">Place</th>
-						<th class="col-xs-7 col-sm-4">Team</th>
-						<th class="col-xs-3">Points</th>
-						<th class="hidden-xs col-sm-3">Running</th>
+						<th class="col-xs-1">Place</th>
+						<th class="col-xs-6 col-sm-4">Team</th>
+						<th class="col-xs-3">Leader</th>
+						<th class="col-xs-2">Points</th>
+						<th class="hidden-xs col-sm-2">Running</th>
 						</tr>
 						</thead>
 						<tbody>';
@@ -245,6 +246,11 @@ function stars($miles, $gender) {
 							echo '<tr';
 							if($the_team['id'] == $team) echo ' class="success"';
 							echo '><td>'.$pl.'</td><td>'.$the_team['name'].'</td>
+							<td>';
+							$leader_id = $the_team['captain'];
+							$leader_fetch = @mysqli_query($db, "SELECT * FROM users WHERE id=$leader_id");
+							$leader = mysqli_fetch_array($leader_fetch);
+							echo $leader['first'].' '.$leader['last'].'</td>
 							<td>'.round($the_team['total'],4).'</td>
 							<td class="hidden-xs">'.round($the_team['running'],4).'</td>
 							</tr>';
