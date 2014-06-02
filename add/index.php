@@ -99,7 +99,7 @@ if(isset($_POST['submitted'])) {
 						$newDayRun = $teamstuff[$no]['day_run'] + $value;
 						$updater_q .= ", day_run=$newDayRun, week_run=$newWeekRun, season_run=$newSeasonRun";
 					}
-					$updater_q .= " WHERE user=$id AND team=$no";
+					$updater_q .= ", flag=1 WHERE user=$id AND team=$no";
 					$updater = @mysqli_query($db, $updater_q);
 					
 					$team_info_grab = @mysqli_query($db, "SELECT * FROM tData WHERE id=$no");
