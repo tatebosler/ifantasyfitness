@@ -66,6 +66,31 @@ function settingsType($name, $link, $min_perm) {
 			<h4><i class="fa fa-warning"></i> Heads-up: These settings affect the entire site.</h4>
 			Please be careful with them.
 		</div>
+		<form name="multipliers" class="form-horizontal">
+			<div class="well">
+				<h3>Point Multipliers</h3>
+			</div>
+		</form>
+		<form name="multipliers" class="form-horizontal">
+			<div class="well">
+				<h3>Point Caps</h3>
+			</div>
+		</form>
+		<form name="multipliers" class="form-horizontal">
+			<div class="well">
+				<h3>Altitude Settings</h3>
+			</div>
+		</form>
+		<form name="multipliers" class="form-horizontal">
+			<div class="well">
+				<h3>Announcement</h3>
+			</div>
+		</form>
+		<form name="multipliers" class="form-horizontal">
+			<div class="well">
+				<h3>Database maintenance</h3>
+			</div>
+		</form>
 	</div>
 </div>
 <?php
