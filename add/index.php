@@ -274,7 +274,7 @@ include('../php/head-auth.php');
 				echo '<div class="form-group">
 				<label class="col-xs-3 control-label">'.$mult_data['display'].'</label>
 				<div class="col-xs-9 col-md-8 input-group">
-					<input type="text" class="form-control" name="'.substr($mult_data['name'],5).'">
+					<input type="number" min="0" max="10000" step="0.01 class="form-control" name="'.substr($mult_data['name'],5).'">
 					<span class="input-group-addon">';
 				if($mult_data['special'] < 2 and $mult_data['name'] != 'mult_swim') {
 					echo 'miles';
