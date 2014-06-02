@@ -242,7 +242,7 @@ function stars($miles, $gender) {
 					}
 					break;
 				case 't': # Display team scores
-					$data_fetcher = @mysqli_query($db, "SELECT * FROM tData WHERE season='$season' ORDER BY total DESC");
+					$data_fetcher = @mysqli_query($db, "SELECT * FROM tData WHERE season='$season' ORDER BY total DESC, running DESC");
 					if(mysqli_num_rows($data_fetcher) == 0) {
 						echo '<h4>No teams have been configured for this season!</h4>';
 					} else {
