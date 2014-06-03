@@ -4,15 +4,15 @@ require('php/db.php');
 
 # For records with flag: Update the individual score
 $user_grab = @mysqli_query($db, "SELECT * FROM records WHERE flag=1");
-$checked_users = array(); #Performance
+$checked_users = array(); #Performance - we'll only check each user once.
 while($record = mysqli_fetch_array($user_grab)) {
 	$uid = $record['user'];
 	$rt = $record['team'];
-	if(!in_array($uid, $checked_users)) {
-		$checked_users[] = $uid;
+	if(!in_array($uid.'-'.$rt, $checked_users)) { # If the user/team combo hasn't been checked yet, let's process them
+		$checked_users[] = $uid.'-'.$rt; # Lock it from future checks
 		$total = 0;
 		$run = 0;
-		$record_grab = @mysqli_query($db, "SELECT * FROM records WHERE user=$uid");
+		$record_grab = @mysqli_query($db, "SELECT * FROM records WHERE user=$uid AND team=$rt");
 		while($record = mysqli_fetch_array($record_grab)) {
 			$total += $record['total'];
 			$run += $record['run_p'] + $record['run_team_p']; 
