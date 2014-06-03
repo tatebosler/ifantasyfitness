@@ -18,8 +18,10 @@ if(mysqli_num_rows($check_q) > 0) {
 	# If season is not in competition mode, use 0 (even if user has been assigned to a team).
 	$now = time();
 	$team_grabber = @mysqli_query($db, "SELECT * FROM tMembers WHERE user=$id ORDER BY team DESC");
-	$team_no = array(0 => 0);
-	$teamstuff = array();
+	$team_no = array(0 => 0); # This will store the list of team id numbers the user is a member of.
+	$teamstuff = array(); # This will store the list of team bits of data the user is currently a member of.
+	
+	# Populate $teamstuff
 	while($team_data = mysqli_fetch_array($team_grabber)) {
 		$team_no_temp = $team_data['team'];
 		# Let's check that the season *is* in competition mode.
@@ -30,10 +32,9 @@ if(mysqli_num_rows($check_q) > 0) {
 		$the_season_checker = @mysqli_query($db, "SELECT * FROM seasons WHERE name='$the_season_name' AND $now > comp_start AND $now < comp_end");
 		
 		# If the season is not in competition mode do not include it for records.
-		if(mysqli_num_rows($the_season_checker) == 0) $team_no_temp = 0;
-		if($team_no_temp != 0) {
-			$team_no[] = $team_no_temp;
-			$teamstuff[$team_data['team']] = $team_data;
+		if(mysqli_num_rows($the_season_checker) != 0) {
+			$team_no[] = $team_data['team'];
+			$teamstuff[$team_data['team']] = $team_data; # Save to $teamstuff for future reference as $teamstuff[id][field]
 		}
 	}
 } else {
@@ -67,26 +68,26 @@ if(isset($_POST['submitted'])) {
 			$total = $value / $mult;
 		}
 		
-		if(array_key_exists($type, $capped_types) and $team_no > 0) {
-			# This record is capped.
-			$cap_start = $team_data['week_'.$type];
-			if($cap_start + $total > $capped_types[$type]) {
-				# This record exceeds the cap.
-				$total = $capped_types[$type] - $cap_start;
-				# Update value accordingly
-				if($mult_info['special'] == 0) {
-					$value = $total / $mult;
-				} else {
-					$value = $total * $mult;
+		foreach($team_no as $no) {
+			if(array_key_exists($type, $capped_types) and $no > 0) {
+				# This record is capped.
+				$cap_start = $teamstuff[$no]['week_'.$type];
+				if($cap_start + $total > $capped_types[$type]) {
+					# This record exceeds the cap.
+					$total = $capped_types[$type] - $cap_start;
+					# Update value accordingly
+					if($mult_info['special'] == 0) {
+						$value = $total / $mult;
+					} else {
+						$value = $total * $mult;
+					}
+					setcookie('cap',$type,$now+10,'/','.ifantasyfitness.com');
 				}
-				setcookie('cap',$type,$now+10,'/','.ifantasyfitness.com');
 			}
-		}
-		
-		if(strlen($comments) <= 3) $comments = "";
-		if($total > 0) {
-			$disp_id = $id.$now;
-			foreach($team_no as $no) {
+			
+			if(strlen($comments) <= 3) $comments = "";
+			if($total > 0) {
+				$disp_id = $id.$now;
 				$inserter = @mysqli_query($db, "INSERT INTO records (user, team, timestamp, `$type`, `$type".'_p'."`, total, comments, source, disp_id) VALUES ($id, $no, $now, $value, $total, $total, '$comments', 'quick', $disp_id)");
 				if($no > 0) {
 					$newSeasonTotal = $teamstuff[$no]['season_total'] + $total;
@@ -113,8 +114,8 @@ if(isset($_POST['submitted'])) {
 					$team_update = @mysqli_query($db, "UPDATE tData SET total=$newTotal, running=$newRTotal WHERE id=$no");
 				}
 			}
-			setcookie('total',round($total,2),$now+10,'/','.ifantasyfitness.com');
 		}
+		setcookie('total',round($total,2),$now+10,'/','.ifantasyfitness.com');
 		header("Location: http://www.ifantasyfitness.com/home");
 	} elseif ($_POST['submitted'] == 'standard') {
 		# Data is coming from full add
