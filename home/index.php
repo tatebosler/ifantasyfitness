@@ -189,7 +189,7 @@ if(!empty($seasons)) {
 	<div class="col-xs-12 col-sm-7 col-md-8">
 		<h2>Activity</h2>
 		<?php
-		$activities = @mysqli_query($db, "SELECT * FROM records ORDER BY timestamp DESC, team DESC LIMIT 30");
+		$activities = @mysqli_query($db, "SELECT * FROM records ORDER BY timestamp DESC, team DESC LIMIT 100");
 		$current_disp_id = 0;
 		$record_types = array("run" => "Running", "run_team" => "Running at Monument", "rollerski" => "Rollerskiing", "walk" => "Walking", "hike" => "Hiking with packs", "bike" => "Biking", "swim" => "Swimming", "paddle" => "Paddling, Rowing or Kayaking", "strength" => "Strength or core training", "sports" => "Aerobic sports");
 		$use_minutes = array('paddle','strength','sports');
