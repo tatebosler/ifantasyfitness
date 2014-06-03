@@ -134,85 +134,84 @@ if(isset($_POST['submitted'])) {
 		$run_flag = false;
 		$update_data = array();
 		
-		foreach($types as $type) {
-			$mult_fname = 'mult_'.$type;
-			if(empty($_POST[$type])) {
-				$value = 0;
-			} else {
-				$value = filter_var($_POST[$type], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-			}
-			$mult_fname = 'mult_'.$type;
-			$mult_grabber = @mysqli_query($db, "SELECT * FROM globals WHERE name='$mult_fname'");
-			$mult_info = mysqli_fetch_array($mult_grabber);
-			$mult = $mult_info['value'];
-			$data_fields[] = $type;
-			$data_fields[] = $type . '_p';
-			if ($type == 'swim' and $_POST['swim_unit'] != 'miles') { # Swimming can have its own units, so treat it first
-				switch($_POST['swim_unit']) {
-					case 'meters':
-						$value /= 1609.344;
-						break;
-					case 'yards':
-						$value /= 1760;
-						break;
-					default: # assume feet as default case
-						$value /= 5280;
-				}
-				$points = $value * $mult * $alt;
-			} elseif($mult_info['special'] == 0) {
-				$points = $value * $mult * $alt;
-			} else {
-				$points = $value / $mult * $alt;
-			}
-			
-			# Quick - Is the record capped?
-			if(array_key_exists($type, $capped_types) and $team_no > 0) {
-				# Yes.
-				$cap_start = $team_data['week_'.$type];
-				if($cap_start + $points > $capped_types[$type]) {
-					# Record has exceeded cap.
-					$points = $capped_types[$type] - $cap_start;
-					# Update value accordingly
-					if($mult_info['special'] == 0) {
-						$value = $points / $mult / $alt;
-					} else {
-						$value = $points * $mult / $alt;
-					}
-					setcookie('cap',$type,$now+10,'/','.ifantasyfitness.com');
-				}
-			}
-			
-			$total += $points;
-			$data_values[] = $value;
-			$data_values[] = $points;
-			if($team_no > 0) {
-				if($type == "run" or $type == "run_team") {
-					$run_total += $value;
-					$run_flag = true;
-				}
-				if($type != "run") {
-					$update_value = $teamstuff[$no]['week_'.$type] + $points;
-					$update_data[$type] = $update_value;
-				}
-			}
-		}
-		
-		# Stage an update
 		foreach($team_no as $no) {
+			foreach($types as $type) {
+				$mult_fname = 'mult_'.$type;
+				if(empty($_POST[$type])) {
+					$value = 0;
+				} else {
+					$value = filter_var($_POST[$type], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+				}
+				$mult_fname = 'mult_'.$type;
+				$mult_grabber = @mysqli_query($db, "SELECT * FROM globals WHERE name='$mult_fname'");
+				$mult_info = mysqli_fetch_array($mult_grabber);
+				$mult = $mult_info['value'];
+				$data_fields[] = $type;
+				$data_fields[] = $type . '_p';
+				if ($type == 'swim' and $_POST['swim_unit'] != 'miles') { # Swimming can have its own units, so treat it first
+					switch($_POST['swim_unit']) {
+						case 'meters':
+							$value /= 1609.344;
+							break;
+						case 'yards':
+							$value /= 1760;
+							break;
+						default: # assume feet as default case
+							$value /= 5280;
+					}
+					$points = $value * $mult * $alt;
+				} elseif($mult_info['special'] == 0) {
+					$points = $value * $mult * $alt;
+				} else {
+					$points = $value / $mult * $alt;
+				}
+				
+				# Quick - Is the record capped?
+				if(array_key_exists($type, $capped_types) and $no > 0) {
+					# Yes.
+					$cap_start = $teamstuff[$no]['week_'.$type];
+					if($cap_start + $points > $capped_types[$type]) {
+						# Record has exceeded cap.
+						$points = $capped_types[$type] - $cap_start;
+						# Update value accordingly
+						if($mult_info['special'] == 0) {
+							$value = $points / $mult / $alt;
+						} else {
+							$value = $points * $mult / $alt;
+						}
+						setcookie('cap',$type,$now+10,'/','.ifantasyfitness.com');
+					}
+				}
+				
+				$total += $points;
+				$data_values[] = $value;
+				$data_values[] = $points;
+				if($team_no > 0) {
+					if($type == "run" or $type == "run_team") {
+						$run_total += $value;
+						$run_flag = true;
+					}
+					if($type != "run") {
+						$update_value = $teamstuff[$no]['week_'.$type] + $points;
+						$update_data[$type] = $update_value;
+					}
+				}
+			}	
+			
 			if($no > 0) {
 				$updater_q = "UPDATE tMembers SET flag=1";
 				foreach($update_data as $type => $value) {
 					$updater_q .= ", week_$type=$value";
 				}
 				if($run_flag) {
-					$newSeasonRun = $team_data['season_run'] + $run_total;
-					$newWeekRun = $team_data['week_run'] + $run_total;
-					$newDayRun = $team_data['day_run'] + $run_total;
+					$newSeasonRun = $teamstuff[$no]['season_run'] + $run_total;
+					$newWeekRun = $teamstuff[$no]['week_run'] + $run_total;
+					$newDayRun = $teamstuff[$no]['day_run'] + $run_total;
 					$updater_q .= ", day_run=$newDayRun, week_run=$newWeekRun, season_run=$newSeasonRun";
 				}
-				$newSeasonTotal = $team_data['season_total'] + $total;
-				$newWeekTotal = $team_data['week_total'] + $total;
-				$newDayTotal = $team_data['day_total'] + $total;
+				$newSeasonTotal = $teamstuff[$no]['season_total'] + $total;
+				$newWeekTotal = $teamstuff[$no]['week_total'] + $total;
+				$newDayTotal = $teamstuff[$no]['day_total'] + $total;
 				$updater_q .= ", season_total=$newSeasonTotal, day_total=$newDayTotal, week_total=$newWeekTotal WHERE user=$id AND team=$no";
 				$updater = @mysqli_query($db, $updater_q);
 				
@@ -242,6 +241,11 @@ if(isset($_POST['submitted'])) {
 			if($total > 0) {
 				$add_cmd = @mysqli_query($db, $add_query);
 			}
+		}
+		
+		# Stage an update
+		foreach($team_no as $no) {
+			
 		}
 		if($total > 0) {
 			setcookie('total',round($total,2),$now+10,'/','.ifantasyfitness.com');
