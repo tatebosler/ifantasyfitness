@@ -98,6 +98,10 @@ if(isset($_POST['submitted'])) {
 						$newWeekRun = $teamstuff[$no]['week_run'] + $value;
 						$newDayRun = $teamstuff[$no]['day_run'] + $value;
 						$updater_q .= ", day_run=$newDayRun, week_run=$newWeekRun, season_run=$newSeasonRun";
+					} else {
+						$weekCurrent = $teamstuff[$no]["week_$type"];
+						$newWeekValue = $weekCurrent + $value;
+						$updater_q .= ", `week_$type`=$value";
 					}
 					$updater_q .= ", flag=1 WHERE user=$id AND team=$no";
 					$updater = @mysqli_query($db, $updater_q);
@@ -357,10 +361,12 @@ include('../php/head-auth.php');
 			$data_str = "week_".$type;
 			$name_fetcher = @mysqli_query($db, "SELECT * FROM globals WHERE name='mult_$type'");
 			$name_data = mysqli_fetch_array($name_fetcher);
-			if(empty($team_data[$data_str])) {
-				$current = 0;
-			} else {
-				$current = $team_data[$data_str];
+			foreach($team_no as $no) {
+				if(empty($teamstuff[$no][$data_str])) {
+					$current = 0;
+				} else {
+					$current = $teamstuff[$no][$data_str];
+				}
 			}
 			echo '<h4>'.$name_data['display'].'</h4>
 			<p>The cap is <strong>'.$cap.'</strong> points per week. In the last 7 days, you have logged <strong>'.$current.' point';
