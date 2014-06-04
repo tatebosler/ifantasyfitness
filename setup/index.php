@@ -26,12 +26,36 @@ if($provider == "twitter") {
 	}
 	setcookie('iff-twitter',$uid,$exp,'/','.ifantasyfitness.com');
 } else {
-	$first = $_GET['first'];
-	$last = $_GET['last'];
+	$first = filter_var($_GET['first'], FILTER_SANITIZE_SPECIAL_CHARS);
+	$last = filter_var($_GET['last'], FILTER_SANITIZE_SPECIAL_CHARS);
 	$ue_check = @mysqli_query($db, "SELECT * FROM users WHERE $provider=$uid");
 	if(mysqli_num_rows($ue_check) == 0) {
-		# check names, they might not have linked accounts yet.
-		$ue_name_check = @mysqli_query($db, "SELECT * FROM users WHERE LOWER(first)=LOWER('$first') AND LOWER(last)=LOWER('$last')");
+		# The account doesn't exist.
+		# Rather than create the account, let's figure out what's going on by printing words to the user.
+		$connected = true;
+		$title = "Whoops! Something went wrong.";
+		include('../php/head.php');
+		echo "<h2>Hello, $first!</h2>
+		<p>Well this is unfortunate. It doesn't look like you have an account. We could be wrong, so for now, account creation is disabled. Please copy and paste the contents of this page into an email to admin@ifantasyfitness.com, and we will try to get you hooked up as quickly as possible.</p>
+		<pre>Provided account data looks good. (9)<br>
+		First name: $first<br>
+		Last name: $last<br>
+		User ID from provider: $uid<br>
+		Provider: $provider<br>
+		Request time: ".date("F j, Y h:i:s A", $time)."<br>
+		<br>
+		----------------------
+		BEGIN DATABASE QUERIES
+		----------------------
+		UE CHECK (31) -> \"SELECT * FROM users WHERE $provider=$uid\"<br>
+		UE CHECK ROW COUNT: 0<br>
+		MYSQL ERROR DATA: ".mysqli_error($db)."<br>
+		
+		------------------------
+		ACCOUNT FETCH TERMINATED
+		</pre>
+		<p><strong>Please email the contents of the box to us!</strong> We'll help you as quickly as we can.</p>";
+		/* $ue_name_check = @mysqli_query($db, "SELECT * FROM users WHERE LOWER(first)=LOWER('$first') AND LOWER(last)=LOWER('$last')");
 		if(mysqli_num_rows($ue_name_check) == 0) {
 			# Welcome
 			$ue_insert = @mysqli_query($db, "INSERT INTO users (first, last, $provider) VALUES ('$first', '$last', $uid)");
@@ -50,6 +74,7 @@ if($provider == "twitter") {
 			if(!empty($ue_grab['twitter'])) setcookie('iff-twitter',$ue_grab['twitter'],$exp,'/','.ifantasyfitness.com');
 			if(!empty($ue_grab['google'])) setcookie('iff-google',$ue_grab['google'],$exp,'/','.ifantasyfitness.com');
 		}
+		*/
 	} else {
 		$ue_grab = mysqli_fetch_array($ue_check);
 		$id = $ue_grab['id'];
