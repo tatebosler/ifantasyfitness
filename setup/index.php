@@ -30,33 +30,7 @@ if($provider == "twitter") {
 	$last = filter_var($_GET['last'], FILTER_SANITIZE_SPECIAL_CHARS);
 	$ue_check = @mysqli_query($db, "SELECT * FROM users WHERE `$provider` LIKE $uid");
 	if(mysqli_num_rows($ue_check) == 0) {
-		# The account doesn't exist.
-		# Rather than create the account, let's figure out what's going on by printing words to the user.
-		$connected = true;
-		$title = "Whoops! Something went wrong.";
-		include('../php/head.php');
-		echo "<h2>Hello, $first!</h2>
-		<p>Well this is unfortunate. It doesn't look like you have an account. We could be wrong, so for now, account creation is disabled. Please copy and paste the contents of this page into an email to admin@ifantasyfitness.com, and we will try to get you hooked up as quickly as possible.</p>
-		<pre>Provided account data looks good. (9)
-First name: $first
-Last name: $last
-User ID from provider: $uid
-Provider: $provider
-Request time: ".date("F j, Y h:i:s A", $time)."
-
-----------------------
-BEGIN DATABASE QUERIES
-----------------------
-UE CHECK (31) -> \"SELECT * FROM users WHERE `$provider` LIKE $uid\"
-UE CHECK ROW COUNT: 0
-MYSQL ERROR DATA: ".mysqli_error($db)."
-
-------------------------
-ACCOUNT FETCH TERMINATED</pre>
-		<p><strong>Please email the contents of the box to us!</strong> We'll help you as quickly as we can.</p>";
-		include('../php/foot.php');
-		exit;
-		/* $ue_name_check = @mysqli_query($db, "SELECT * FROM users WHERE LOWER(first)=LOWER('$first') AND LOWER(last)=LOWER('$last')");
+		$ue_name_check = @mysqli_query($db, "SELECT * FROM users WHERE LOWER(first)=LOWER('$first') AND LOWER(last)=LOWER('$last')");
 		if(mysqli_num_rows($ue_name_check) == 0) {
 			# Welcome
 			$ue_insert = @mysqli_query($db, "INSERT INTO users (first, last, $provider) VALUES ('$first', '$last', $uid)");
@@ -75,7 +49,6 @@ ACCOUNT FETCH TERMINATED</pre>
 			if(!empty($ue_grab['twitter'])) setcookie('iff-twitter',$ue_grab['twitter'],$exp,'/','.ifantasyfitness.com');
 			if(!empty($ue_grab['google'])) setcookie('iff-google',$ue_grab['google'],$exp,'/','.ifantasyfitness.com');
 		}
-		*/
 	} else {
 		$ue_grab = mysqli_fetch_array($ue_check);
 		$id = $ue_grab['id'];
