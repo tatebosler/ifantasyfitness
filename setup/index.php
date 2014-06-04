@@ -28,7 +28,7 @@ if($provider == "twitter") {
 } else {
 	$first = filter_var($_GET['first'], FILTER_SANITIZE_SPECIAL_CHARS);
 	$last = filter_var($_GET['last'], FILTER_SANITIZE_SPECIAL_CHARS);
-	$ue_check = @mysqli_query($db, "SELECT * FROM users WHERE $provider=$uid");
+	$ue_check = @mysqli_query($db, "SELECT * FROM users WHERE `$provider` LIKE $uid");
 	if(mysqli_num_rows($ue_check) == 0) {
 		# The account doesn't exist.
 		# Rather than create the account, let's figure out what's going on by printing words to the user.
@@ -47,7 +47,7 @@ if($provider == "twitter") {
 		----------------------
 		BEGIN DATABASE QUERIES
 		----------------------
-		UE CHECK (31) -> \"SELECT * FROM users WHERE $provider=$uid\"<br>
+		UE CHECK (31) -> \"SELECT * FROM users WHERE `$provider` LIKE $uid\"<br>
 		UE CHECK ROW COUNT: 0<br>
 		MYSQL ERROR DATA: ".mysqli_error($db)."<br>
 		
