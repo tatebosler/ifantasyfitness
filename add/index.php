@@ -49,6 +49,19 @@ while($type = mysqli_fetch_array($cap_fetcher)) {
 	$capped_types[substr($type['name'], 9)] = $type['value'];
 }
 
+# Grab STARS!
+$star_values = array(0 => 0);
+$stars = array("None", "Bronze", "Silver", "Gold", "Platinum", "Diamond");
+if($user['gender'] == 0) {
+	$da_query = "SELECT * FROM globals WHERE name LIKE 'da\-m\-%'";
+} else {
+	$da_query = "SELECT * FROM globals WHERE name LIKE 'da\-f\-%'";
+}
+$da_fetch = @mysqli_query($db, $da_query);
+while($da_value = mysqli_fetch_array($da_fetch)) {
+	$star_values[$da_value['display']] = $da_value['value'];
+}
+
 if(isset($_POST['submitted'])) {
 	$record_types = array('run','run_team','rollerski','walk','hike','bike','swim','paddle','strength','sports');
 	if($_POST['submitted'] == 'quick') {
@@ -96,6 +109,18 @@ if(isset($_POST['submitted'])) {
 					$updater_q = "UPDATE tMembers SET season_total=$newSeasonTotal, day_total=$newDayTotal, week_total=$newWeekTotal";
 					if($type == "run" or $type == "run_team") {
 						$newSeasonRun = $teamstuff[$no]['season_run'] + $value;
+						# Figure out if you get a star! :D
+						for($i = 5; $i > 0; $i--) {
+							if($newSeasonRun >= $star_values[$i]) {
+								$level = $stars[$i];
+								# Were you there before? If not... no star for you.
+								if($teamstuff[$no]['season_run'] < $star_values[$i]) {
+									# Yes - this is a valid Star award.
+									setcookie("star",$level,time()+5,'/','.ifantasyfitness.com'); # Display a message on /home.
+								}
+								break;
+							}
+						}
 						$newWeekRun = $teamstuff[$no]['week_run'] + $value;
 						$newDayRun = $teamstuff[$no]['day_run'] + $value;
 						$updater_q .= ", day_run=$newDayRun, week_run=$newWeekRun, season_run=$newSeasonRun";
@@ -226,6 +251,20 @@ if(isset($_POST['submitted'])) {
 				}
 				if($run_flag) {
 					$newSeasonRun = $teamstuff[$no]['season_run'] + RUN_TOTAL;
+					
+					# Figure out if you get a star! :D
+					for($i = 5; $i > 0; $i--) {
+						if($newSeasonRun >= $star_values[$i]) {
+							$level = $stars[$i];
+							# Were you there before? If not... no star for you.
+							if($teamstuff[$no]['season_run'] < $star_values[$i]) {
+								# Yes - this is a valid Star award.
+								setcookie("star",$level,time()+5,'/','.ifantasyfitness.com'); # Display a message on /home.
+							}
+							break;
+						}
+					}
+					
 					$newWeekRun = $teamstuff[$no]['week_run'] + RUN_TOTAL;
 					$newDayRun = $teamstuff[$no]['day_run'] + RUN_TOTAL;
 					$updater_q .= ", day_run=$newDayRun, week_run=$newWeekRun, season_run=$newSeasonRun";
