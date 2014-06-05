@@ -84,7 +84,7 @@ include('../php/head-auth.php');
 		# Display Distance Running Goals, if any.
 		echo '<div class="panel panel-success">
 			<div class="panel-heading" id="toggle-daily-goals">
-				<h3 class="panel-title">Today\'s running plans
+				<h3 class="panel-title">Today\'s running plans - '.date("F j, Y").'
 				<a class="pull-right">Toggle plans</a>
 				</h3>
 			</div>
@@ -113,8 +113,13 @@ include('../php/head-auth.php');
 						$field = 'm';
 					}
 					$field .= '-'.strtolower($stars[$j]);
-					echo $goal[$field].'</td>
-					<td>'.$goal[$field.'Notes'].'</td>
+					echo $goal[$field].'</td><td>';
+					if($goal[$field] == 0) {
+						echo "Rest day (or make your own goal!)";
+					} else {
+						echo $goal[$field . 'Notes'];
+					}
+					echo '</td>
 					<td><a class="populate" data-value="'.$goal[$field].'" data-notes="'.$goal[$field.'Notes'].' (for '.$stars[$j].' Distance)">Quick Add</a></td>
 					</tr>';
 				}
