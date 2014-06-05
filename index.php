@@ -12,6 +12,34 @@ if(isset($_COOKIE['iff-id'])) {
 		if(isset($_COOKIE['iff-google']) and $_COOKIE['iff-google'] === $user['google']) $valid = true;
 		if(isset($_COOKIE['iff-facebook']) and $_COOKIE['iff-facebook'] === $user['facebook']) $valid = true;
 	}
+	
+	$now = time();
+	$season_count = @mysqli_query($db, "SELECT * FROM seasons");
+	if(mysqli_num_rows($season_count) == 1) {
+		$season_data = mysqli_fetch_array($season_count);
+		$season = $season_data['name'];
+		$s = true;
+	} elseif (mysqli_num_rows($season_count) == 0) {
+		$s = false;
+	} else {
+		$season_finder = @mysqli_query($db, "SELECT * FROM seasons WHERE comp_start <= $now ORDER BY comp_start DESC");
+		if(mysqli_num_rows($season_finder) == 0) {
+			$s = false;
+		} else {
+			$season_data = mysqli_fetch_array($season_finder);
+			$season = $season_data['name'];
+			$s = true;
+		}
+	}
+	
+	if($s) {
+		$point_fetch = @mysqli_query($db, "SELECT * FROM tMembers WHERE user=$id AND season='$season'");
+		$point_data = mysqli_fetch_array($point_fetch);
+		$points = round($point_data['season_total'], 1);
+		$place = $point_data['place'];
+	} else {
+		$points = 0;
+	}
 } else {
 	$valid = false;
 }
@@ -43,7 +71,7 @@ while($aData = mysqli_fetch_array($announce_grab)) {
 						<ul class="nav masthead-nav">
 						<?php
 						if($valid) {
-							echo '<li><a href="/add">Add points</a></li>
+							echo '<li><a href="/add">Add points <span class="badge">'.$points.'</span></a></li>
 							<li><a href="/leaderboard">Leaderboard</a></li>';
 						} else {
 							echo '<li><a href="/leaderboard">Leaderboard</a></li>
