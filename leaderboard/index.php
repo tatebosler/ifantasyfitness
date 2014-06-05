@@ -309,7 +309,8 @@ function stars($miles, $gender) {
 					if(mysqli_num_rows($data_fetcher) == 0) {
 						echo '<h4>No teams have been configured for this season!</h4>';
 					} else {
-						echo '<table class="table  table-hover">
+						echo '<h4>Hover over a team to see its members, and the Mini-Boards!</h4><p>If you\'re visiting iFantasyFitness.com from your phone, just tap on the teams to toggle the visibility of the Mini-Boards.</p>
+						<table class="table  table-hover">
 						<thead>
 						<tr>
 						<th class="col-xs-1">Place</th>
@@ -355,9 +356,12 @@ function stars($miles, $gender) {
 								$person_id = $team_member['user'];
 								$name_fetch = @mysqli_query($db, "SELECT id, first, last FROM users WHERE id=$person_id");
 								$the_name = mysqli_fetch_array($name_fetch);
-								echo '<td colspan="2" style="padding: 1px 8px">'.$the_name['first'].' '.$the_name['last'].'</td>
-								<td class="col-xs-2" style="padding: 1px 8px">'.round($team_member['season_total'], 2).'</td>
-								<td class="col-sm-2 hidden-xs" style="padding: 1px 8px">'.round($team_member['season_run'], 2).'</td>';
+								echo '<td style="padding: 1px 8px">'.$the_name['first'].' '.$the_name['last'];
+								if($team_member['user'] == $leader_id) echo ' <strong>Team Leader</strong>';
+								echo '</td>
+								<td style="padding: 1px 8px">'.$divisions[$team_member['division']].'</td>
+								<td style="padding: 1px 8px">'.round($team_member['season_total'], 2).'</td>
+								<td class="hidden-xs" style="padding: 1px 8px">'.round($team_member['season_run'], 2).'</td>';
 								echo '</tr>';
 							}
 						}
