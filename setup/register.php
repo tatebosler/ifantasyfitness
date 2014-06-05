@@ -82,6 +82,7 @@ include('../php/head-auth.php');
 					<input type="text" name="last" class="form-control" value="<?=$user['last']?>">
 				</div>
 			</div>
+			<h5><strong>Note:</strong> You need to use your real name, so please make sure it is correct. If you don't, your account may be blocked.</h5>
 			<div class="form-group">
 				<label class="col-xs-2 control-label">Gender</label>
 				<div class="col-xs-10">
