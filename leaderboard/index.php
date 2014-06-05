@@ -118,7 +118,7 @@ function stars($miles, $gender) {
 		<h4 class="hidden-xs hidden-sm">Select Division</h4>
 		<div class="hidden-xs hidden-sm list-group">
 			<?php
-			$divisions = array('a' => "All Individuals", 'r' => "Running", 't' => "Teams", 1 => "Upperclassmen", 2 => "Underclassmen", 3 => "Middle School", 4 => "Staff / VIP", 5 => "Parents", 6 => "Alumni");
+			$divisions = array('a' => "All Individuals", 'r' => "Running", 't' => "Teams", 'm' => "Men", 'w' => "Women", 1 => "Upperclassmen", 2 => "Underclassmen", 3 => "Middle School", 4 => "Staff / VIP", 5 => "Parents", 6 => "Alumni");
 			foreach($divisions as $key => $value) {
 				echo '<a href="?season='.$season.'&disp='.$key.'" class="list-group-item';
 				if($mode == $key) echo ' active';
@@ -147,7 +147,7 @@ function stars($miles, $gender) {
 				<form name="sel_disp">
 					<select name="SelDisp" onchange="document.location.href=document.sel_disp.SelDisp.options[document.sel_disp.SelDisp.selectedIndex].value" class="form-control">
 					<?php
-					$divisions = array('a' => "All Individuals", 'r' => "Running", 't' => "Teams", 1 => "Upperclassmen", 2 => "Underclassmen", 3 => "Middle School", 4 => "Staff / VIP", 5 => "Parents", 6 => "Alumni");
+					$divisions = array('a' => "All Individuals", 'r' => "Running", 't' => "Teams", 'm' => "Men", 'w' => "Women", 1 => "Upperclassmen", 2 => "Underclassmen", 3 => "Middle School", 4 => "Staff / VIP", 5 => "Parents", 6 => "Alumni");
 					foreach($divisions as $key => $value) {
 						echo '<option value="/leaderboard?season='.$season.'&disp='.$key.'"';
 						if($mode == $key) echo ' selected';
@@ -236,6 +236,69 @@ function stars($miles, $gender) {
 								<td class="hidden-xs">'.round($person['season_run'],3).'</td>';
 							}
 							echo '</tr>';
+						}
+						echo '</tbody>
+						</table>';
+					}
+					break;
+				case 'm':
+				case 'w':
+					if($mode == 'm') {
+						$gNumber = 0;
+					} else {
+						$gNumber = 1;
+					}
+					$data_fetcher = @mysqli_query($db, "SELECT * FROM tMembers WHERE season='$season' ORDER BY season_total DESC, season_run DESC, user ASC");
+					if(mysqli_num_rows($data_fetcher) == 0) {
+						echo '<h4>Nobody has registered for this division!</h4>';
+					} else {
+						echo '<table class="table table-striped table-hover">
+						<thead>
+						<tr>
+						<th class="col-xs-1">Place</th>
+						<th class="col-xs-3">User</th>
+						<th class="col-xs-4">Team</th>';
+						if($mode == 'r') {
+							echo '<th class="col-xs-4 col-sm-2">Running</th>
+							<th class="hidden-xs col-sm-2">Points</th>';
+						} else {
+							echo '<th class="col-xs-4 col-sm-2">Points</th>
+							<th class="hidden-xs col-sm-2">Running</th>';
+						}
+						
+						echo '</tr>
+						</thead>
+						<tbody>';
+						$pl = 0;
+						while($person = mysqli_fetch_array($data_fetcher)) {
+							$pid = $person['user'];
+							$the_user_fetcher = @mysqli_query($db, "SELECT * FROM users WHERE id=$pid");
+							$the_user = mysqli_fetch_array($the_user_fetcher);
+							if($the_user['gender'] == $gNumber) {
+								$pl++;
+								echo '<tr';
+								if($person['user'] == $id) echo ' class="success"';
+								if($person['team'] == $team and $team > 1 and $person['user'] != $id) echo ' class="info"';
+								echo '><td>'.$pl.'</td><td>';
+								if($person['user'] == $id) echo '<abbr title="This is you!"><i class="fa fa-user"></i></abbr> ';
+								if($person['team'] == $team and $team > 1 and $person['user'] != $id) echo '<abbr title="This is a teammate!"><i class="fa fa-users"></i></abbr> ';
+								echo $the_user['first'].' '.$the_user['last'];
+								if($person['season_run'] >= 150) echo stars($person['season_run'], $the_user['gender']);
+								
+								# Figure out their team!
+								$team_no = $person['team'];
+								$team_fetcher = @mysqli_query($db, "SELECT * FROM tData WHERE id=$team_no");
+								$team_data = mysqli_fetch_array($team_fetcher);
+								echo '</td><td>'.$team_data['name'].'</td>';
+								if($mode == 'r') {
+									echo '<td>'.round($person['season_run'],3).'</td>
+									<td class="hidden-xs">'.round($person['season_total'],3).'</td>';
+								} else {
+									echo '<td>'.round($person['season_total'],3).'</td>
+									<td class="hidden-xs">'.round($person['season_run'],3).'</td>';
+								}
+								echo '</tr>';
+							}
 						}
 						echo '</tbody>
 						</table>';
