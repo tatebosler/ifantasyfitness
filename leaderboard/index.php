@@ -190,7 +190,7 @@ function stars($miles, $gender) {
 					if(mysqli_num_rows($data_fetcher) == 0) {
 						echo '<h4>Nobody has registered for this division!</h4>';
 					} else {
-						echo '<table class="table table-striped table-hover">
+						echo '<table class="table  table-hover">
 						<thead>
 						<tr>
 						<th class="col-xs-1">Place</th>
@@ -252,7 +252,7 @@ function stars($miles, $gender) {
 					if(mysqli_num_rows($data_fetcher) == 0) {
 						echo '<h4>Nobody has registered for this division!</h4>';
 					} else {
-						echo '<table class="table table-striped table-hover">
+						echo '<table class="table  table-hover">
 						<thead>
 						<tr>
 						<th class="col-xs-1">Place</th>
@@ -309,7 +309,7 @@ function stars($miles, $gender) {
 					if(mysqli_num_rows($data_fetcher) == 0) {
 						echo '<h4>No teams have been configured for this season!</h4>';
 					} else {
-						echo '<table class="table table-striped table-hover">
+						echo '<table class="table  table-hover">
 						<thead>
 						<tr>
 						<th class="col-xs-1">Place</th>
@@ -323,9 +323,10 @@ function stars($miles, $gender) {
 						$pl = 0;
 						while($the_team = mysqli_fetch_array($data_fetcher)) {
 							$pl++;
-							echo '<tr';
-							if($the_team['id'] == $team) echo ' class="success"';
-							echo '><td>'.$pl.'</td><td>'.$the_team['name'].'</td>
+							$team_id = $the_team['id'];
+							echo '<tr class="show-team-members ';
+							if($team_id == $team) echo ' success';
+							echo '" data-target=".team-'.$team_id.'"><td>'.$pl.'</td><td>'.$the_team['name'].'</td>
 							<td>';
 							$leader_id = $the_team['captain'];
 							$leader_fetch = @mysqli_query($db, "SELECT * FROM users WHERE id=$leader_id");
@@ -334,6 +335,31 @@ function stars($miles, $gender) {
 							<td>'.round($the_team['total'],4).'</td>
 							<td class="hidden-xs">'.round($the_team['running'],4).'</td>
 							</tr>';
+							
+							# And now for something completely different.
+							# Show mini-boards for the teams :D
+							
+							# Grab members of the team
+							$mpl = 0; # Member place - will be incremented
+							$team_members = @mysqli_query($db, "SELECT * FROM tMembers WHERE team=$team_id ORDER BY season_total DESC, season_run DESC, user ASC");
+							while($team_member = mysqli_fetch_array($team_members)) {
+								$mpl++;
+								echo '<tr class="show-team-members team-'.$team_id;
+								if($team_member['user'] == $id) {
+									echo ' success';
+								} elseif ($team_member['user'] == $leader_id) {
+									echo ' info';
+								}
+								echo '" data-target=".team-'.$team_id.'" style="display: none; font-size:12px;">
+								<td class="col-xs-1" style="padding: 1px 8px">'.$mpl.'</td>';
+								$person_id = $team_member['user'];
+								$name_fetch = @mysqli_query($db, "SELECT id, first, last FROM users WHERE id=$person_id");
+								$the_name = mysqli_fetch_array($name_fetch);
+								echo '<td colspan="2" style="padding: 1px 8px">'.$the_name['first'].' '.$the_name['last'].'</td>
+								<td class="col-xs-2" style="padding: 1px 8px">'.round($team_member['season_total'], 2).'</td>
+								<td class="col-sm-2 hidden-xs" style="padding: 1px 8px">'.round($team_member['season_run'], 2).'</td>';
+								echo '</tr>';
+							}
 						}
 						echo '</tbody>
 							</table>';
@@ -353,7 +379,7 @@ function stars($miles, $gender) {
 					if(mysqli_num_rows($data_fetcher) == 0) {
 						echo '<h4>Nobody has registered for this season!</h4>';
 					} else {
-						echo '<table class="table table-striped table-hover">
+						echo '<table class="table  table-hover">
 						<thead>
 						<tr>
 						<th class="col-xs-1">Place</th>
@@ -414,3 +440,8 @@ function stars($miles, $gender) {
 <?php
 include('../php/foot.php');
 ?>
+<script>
+$(".show-team-members").hover(function() {
+	$($(this).data("target")).toggle();
+})
+</script>
