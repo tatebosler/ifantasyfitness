@@ -444,8 +444,3 @@ function stars($miles, $gender) {
 <?php
 include('../php/foot.php');
 ?>
-<script>
-$(".show-team-members").hover(function() {
-	$($(this).data("target")).toggle();
-})
-</script>
