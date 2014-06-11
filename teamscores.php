@@ -15,7 +15,7 @@ while($record = mysqli_fetch_array($user_grab)) {
 		$record_grab = @mysqli_query($db, "SELECT * FROM records WHERE user=$uid AND team=$rt");
 		while($record = mysqli_fetch_array($record_grab)) {
 			$total += $record['total'];
-			$run += $record['run_p'] + $record['run_team_p']; 
+			$run += $record['run'] + $record['run_team']; 
 		}
 		$user_update = @mysqli_query($db, "UPDATE tMembers SET flag=1, season_total=$total, season_run=$run WHERE user=$uid AND team=$rt");
 	}
