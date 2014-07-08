@@ -33,5 +33,4 @@
 <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 <script src="//ifantasyfitness.com/js/moment.min.js"></script>
 <script src="//ifantasyfitness.com/js/dates.min.js"></script>
-<script src="//ifantasyfitness.com/js/home.js"></script>
 </body>
