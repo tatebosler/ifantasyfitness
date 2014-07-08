@@ -401,3 +401,13 @@ if(!empty($seasons)) {
 <?php
 include('../php/foot.php');
 ?>
+<script>
+$("#toggle-daily-goals").click(function() {
+	$("#daily-goal-data").toggle();
+});
+
+$(".populate").click(function () {
+	$("#miles").val($(this).data("value"));
+	$("#notes").val($(this).data("notes"));
+});
+</script>
