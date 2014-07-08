@@ -127,9 +127,10 @@ if(isset($_POST['submitted'])) {
 					} else {
 						$weekCurrent = $teamstuff[$no]["week_$type"];
 						$newWeekValue = $weekCurrent + $value;
-						$updater_q .= ", `week_$type`=$value";
+						$updater_q .= ", `week_$type`=$newWeekValue";
 					}
-					$updater_q .= ", flag=1 WHERE user=$id AND team=$no";
+					$newStatValue = $teamstuff[$no]["stat_$type"] + $value;
+					$updater_q .= ", `stat_$type`=$newStatValue, flag=1 WHERE user=$id AND team=$no";
 					$updater = @mysqli_query($db, $updater_q);
 					
 					$team_info_grab = @mysqli_query($db, "SELECT * FROM tData WHERE id=$no");
@@ -247,7 +248,8 @@ if(isset($_POST['submitted'])) {
 			if($no > 1) {
 				$updater_q = "UPDATE tMembers SET flag=1";
 				foreach($update_data as $type => $value) {
-					$updater_q .= ", week_$type=$value";
+					$statValue = $teamstuff[$no]["stat_$type"] + ($value * $alt);
+					$updater_q .= ", week_$type=$value, stat_$type=$statValue";
 				}
 				if($run_flag) {
 					$newSeasonRun = $teamstuff[$no]['season_run'] + RUN_TOTAL;

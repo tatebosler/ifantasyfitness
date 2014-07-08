@@ -68,6 +68,14 @@ while($sdata = mysqli_fetch_array($star_data_grab)) {
 	$star_thresh_f[$sdata['display']] = $sdata['value'];
 }
 $stars = array("None", "Bronze", "Silver", "Gold", "Platinum", "Diamond");
+$distrib_colors = array(
+	'run' => 'warning', 'run_team' => 'warning',
+	'rollerski' => 'info', 'bike' => 'info',
+	'walk' => 'success', 'hike' => 'success',
+	'paddle' => 'danger', 'swim' => 'danger',
+	'strength' => 'default', 'sports' => 'default');
+$distrib_stripes = array('run_team', 'bike','hike','swim','sports');
+$display_names = array("run" => "running", "run_team" => "team running", "rollerski" => "rollerskiing", "walk" => "walking", "hike" => "hiking with packs", "bike" => "biking", "swim" => "swimming", "paddle" => "paddling, rowing or kayaking", "strength" => "strength or core training", "sports" => "aerobic sports");
 
 # Function for printing stars
 function star($number, $level) {
@@ -190,7 +198,7 @@ function stars($miles, $gender) {
 					if(mysqli_num_rows($data_fetcher) == 0) {
 						echo '<h4>Nobody has registered for this division!</h4>';
 					} else {
-						echo '<table class="table  table-hover">
+						echo '<table class="table table-hover">
 						<thead>
 						<tr>
 						<th class="col-xs-1">Place</th>
@@ -210,10 +218,10 @@ function stars($miles, $gender) {
 						$pl = 0;
 						while($person = mysqli_fetch_array($data_fetcher)) {
 							$pl++;
-							echo '<tr';
-							if($person['user'] == $id) echo ' class="success"';
-							if($person['team'] == $team and $team > 1 and $person['user'] != $id) echo ' class="info"';
-							echo '><td>'.$pl.'</td><td>';
+							echo '<tr class="show-team-members ';
+							if($person['user'] == $id) echo ' success';
+							if($person['team'] == $team and $team > 1 and $person['user'] != $id) echo ' info';
+							echo '" data-target=".distrib-'.$person['user'].'"><td>'.$pl.'</td><td>';
 							if($person['user'] == $id) echo '<abbr title="This is you!"><i class="fa fa-user"></i></abbr> ';
 							if($person['team'] == $team and $team > 1 and $person['user'] != $id) echo '<abbr title="This is a teammate!"><i class="fa fa-users"></i></abbr> ';
 							# Figure out their name!
@@ -236,6 +244,29 @@ function stars($miles, $gender) {
 								<td class="hidden-xs">'.round($person['season_run'],3).'</td>';
 							}
 							echo '</tr>';
+							
+							# Now display a progres bar of their points distribution. This is displayed on hover.
+							if($person['season_total'] > 0) {
+								echo '<tr class="show-team-members distrib-'.$person['user'].'" data-target=".distrib-'.$person['user'].'" style="display: none;">
+								<td colspan="4">
+								<div class="progress">';
+								$progress_total = 0;
+								foreach($distrib_colors as $type => $context) {
+									if($person['stat_'.$type] > 0) {
+										echo '<abbr title="'.round($person['stat_'.$type], 2).' points ('.floor(($person['stat_'.$type] / $person['season_total']) * 100).'% of total) for '.$display_names[$type].'"><div class="progress-bar progress-bar-'.$context.'" style="';
+										echo 'width:'.floor(($person['stat_'.$type] / $person['season_total']) * 100).'%"></div></abbr>';
+										$progress_total += floor(($person['stat_'.$type] / $person['season_total']) * 100);
+									}
+								}
+								if($progress_total < 100) {
+									echo '<div class="progress-bar progress-bar-'.$context.'" style="width:'.(100 - $progress_total).'%"></div>';
+								}
+								echo '
+								</div>
+								</td>
+								<td class="hidden-xs"></td>
+								</tr>';
+							}
 						}
 						echo '</tbody>
 						</table>';
@@ -252,7 +283,7 @@ function stars($miles, $gender) {
 					if(mysqli_num_rows($data_fetcher) == 0) {
 						echo '<h4>Nobody has registered for this division!</h4>';
 					} else {
-						echo '<table class="table  table-hover">
+						echo '<table class="table table-hover">
 						<thead>
 						<tr>
 						<th class="col-xs-1">Place</th>
@@ -276,10 +307,10 @@ function stars($miles, $gender) {
 							$the_user = mysqli_fetch_array($the_user_fetcher);
 							if($the_user['gender'] == $gNumber) {
 								$pl++;
-								echo '<tr';
-								if($person['user'] == $id) echo ' class="success"';
-								if($person['team'] == $team and $team > 1 and $person['user'] != $id) echo ' class="info"';
-								echo '><td>'.$pl.'</td><td>';
+								echo '<tr class="show-team-members';
+								if($person['user'] == $id) echo ' success';
+								if($person['team'] == $team and $team > 1 and $person['user'] != $id) echo ' info';
+								echo '" data-target=".distrib-'.$person['user'].'"><td>'.$pl.'</td><td>';
 								if($person['user'] == $id) echo '<abbr title="This is you!"><i class="fa fa-user"></i></abbr> ';
 								if($person['team'] == $team and $team > 1 and $person['user'] != $id) echo '<abbr title="This is a teammate!"><i class="fa fa-users"></i></abbr> ';
 								echo $the_user['first'].' '.$the_user['last'];
@@ -290,14 +321,31 @@ function stars($miles, $gender) {
 								$team_fetcher = @mysqli_query($db, "SELECT * FROM tData WHERE id=$team_no");
 								$team_data = mysqli_fetch_array($team_fetcher);
 								echo '</td><td>'.$team_data['name'].'</td>';
-								if($mode == 'r') {
-									echo '<td>'.round($person['season_run'],3).'</td>
-									<td class="hidden-xs">'.round($person['season_total'],3).'</td>';
-								} else {
-									echo '<td>'.round($person['season_total'],3).'</td>
-									<td class="hidden-xs">'.round($person['season_run'],3).'</td>';
-								}
+								echo '<td>'.round($person['season_total'],3).'</td>
+								<td class="hidden-xs">'.round($person['season_run'],3).'</td>';
 								echo '</tr>';
+								
+								if($person['season_total'] > 0) {
+									echo '<tr class="show-team-members distrib-'.$person['user'].'" data-target=".distrib-'.$person['user'].'" style="display: none;">
+									<td colspan="4">
+									<div class="progress">';
+									$progress_total = 0;
+									foreach($distrib_colors as $type => $context) {
+										if($person['stat_'.$type] > 0) {
+											echo '<abbr title="'.round($person['stat_'.$type], 2).' points ('.floor(($person['stat_'.$type] / $person['season_total']) * 100).'% of total) for '.$display_names[$type].'"><div class="progress-bar progress-bar-'.$context.'" style="';
+											echo 'width:'.floor(($person['stat_'.$type] / $person['season_total']) * 100).'%"></div></abbr>';
+											$progress_total += floor(($person['stat_'.$type] / $person['season_total']) * 100);
+										}
+									}
+									if($progress_total < 100) {
+										echo '<div class="progress-bar progress-bar-'.$context.'" style="width:'.(100 - $progress_total).'%"></div>';
+									}
+									echo '
+									</div>
+									</td>
+									<td class="hidden-xs"></td>
+									</tr>';
+								}
 							}
 						}
 						echo '</tbody>
@@ -310,7 +358,7 @@ function stars($miles, $gender) {
 						echo '<h4>No teams have been configured for this season!</h4>';
 					} else {
 						echo '<h4>Hover over a team to see its members, and the Mini-Boards!</h4><p>If you\'re visiting iFantasyFitness.com from your phone, just tap on the teams to toggle the visibility of the Mini-Boards.</p>
-						<table class="table  table-hover">
+						<table class="table table-hover">
 						<thead>
 						<tr>
 						<th class="col-xs-1">Place</th>
@@ -403,10 +451,10 @@ function stars($miles, $gender) {
 						$pl = 0;
 						while($person = mysqli_fetch_array($data_fetcher)) {
 							$pl++;
-							echo '<tr';
-							if($person['user'] == $id) echo ' class="success"';
-							if($person['team'] == $team and $team > 1 and $person['user'] != $id) echo ' class="info"';
-							echo '><td>'.$pl.'</td><td>';
+							echo '<tr class="show-team-members';
+							if($person['user'] == $id) echo ' success';
+							if($person['team'] == $team and $team > 1 and $person['user'] != $id) echo ' info';
+							echo '" data-target=".distrib-'.$person['user'].'"><td>'.$pl.'</td><td>';
 							if($person['user'] == $id) echo '<abbr title="This is you!"><i class="fa fa-user"></i></abbr> ';
 							if($person['team'] == $team and $team > 1 and $person['user'] != $id) echo '<abbr title="This is a teammate!"><i class="fa fa-users"></i></abbr> ';
 							# Figure out their name!
@@ -429,6 +477,28 @@ function stars($miles, $gender) {
 								<td class="hidden-xs">'.round($person['season_run'],3).'</td>';
 							}
 							echo '</tr>';
+							
+							if($person['season_total'] > 0) {
+								echo '<tr class="show-team-members distrib-'.$person['user'].'" data-target=".distrib-'.$person['user'].'" style="display: none;">
+								<td colspan="4">
+								<div class="progress">';
+								$progress_total = 0;
+								foreach($distrib_colors as $type => $context) {
+									if($person['stat_'.$type] > 0) {
+										echo '<abbr title="'.round($person['stat_'.$type], 2).' points ('.floor(($person['stat_'.$type] / $person['season_total']) * 100).'% of total) for '.$display_names[$type].'"><div class="progress-bar progress-bar-'.$context.'" style="';
+										echo 'width:'.floor(($person['stat_'.$type] / $person['season_total']) * 100).'%"></div></abbr>';
+										$progress_total += floor(($person['stat_'.$type] / $person['season_total']) * 100);
+									}
+								}
+								if($progress_total < 100) {
+									echo '<div class="progress-bar progress-bar-'.$context.'" style="width:'.(100 - $progress_total).'%"></div>';
+								}
+								echo '
+								</div>
+								</td>
+								<td class="hidden-xs"></td>
+								</tr>';
+							}
 						}
 						echo '</tbody>
 						</table>';
@@ -444,3 +514,8 @@ function stars($miles, $gender) {
 <?php
 include('../php/foot.php');
 ?>
+<script>
+$(".show-team-members").hover(function() {
+	$($(this).data("target")).toggle();
+})
+</script>
